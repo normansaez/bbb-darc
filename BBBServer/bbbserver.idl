@@ -1,0 +1,9 @@
+module BBBServer {
+    interface Server {
+        string set_high(in string pinout);
+        string set_low(in string pinout);
+        string get_status(in string pinout);
+    };
+};
+
+
