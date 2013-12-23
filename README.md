@@ -24,5 +24,6 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    9. powered up it will boot into Ubuntu.
 
 *Adafruit Version*:
+-------------------
 * git clone https://github.com/adafruit/adafruit-beaglebone-io-python.git
 * git version: f70c915
