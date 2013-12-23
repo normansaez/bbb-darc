@@ -1,0 +1,10 @@
+    4  2013-12-21T22:16:48 sudo apt-get install vim
+   13  2013-12-21T22:21:51 sudo apt-get install python-omniorb
+   45  2013-12-22T18:44:52 sudo apt-get install omniidl 
+   48  2013-12-22T18:45:57 sudo apt-get install omniidl omniidl-python
+   59  2013-12-22T18:47:37 sudo apt-get install tree
+  127  2013-12-22T21:50:29 sudo apt-get install omniorb
+  128  2013-12-22T21:51:13 sudo apt-get install omniorb omniorb-nameserver
+  172  2013-12-23T01:53:33 sudo apt-get install build-essential
+  185  2013-12-23T02:00:31 sudo apt-get install ntpdate
+  206  2013-12-23T02:05:01 sudo apt-get install python-dev
