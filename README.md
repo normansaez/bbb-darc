@@ -8,6 +8,7 @@ Ubuntu version:
 --------------
 BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 
+* wget https://rcn-ee.net/deb/flasher/raring/BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img.xz
 * unzx BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * sudo dd if=BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img of=/dev/sdX bs=1M
 
@@ -22,6 +23,6 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    8. Power down the BBB and remove the microSD card. Next time it is
    9. powered up it will boot into Ubuntu.
 
-*Adafruit*:
-* adafruit-beaglebone-io-python/
+*Adafruit Version*:
+* git clone https://github.com/adafruit/adafruit-beaglebone-io-python.git
 * git version: f70c915
