@@ -5,15 +5,15 @@ import Adafruit_BBIO.PWM as PWM
 from time import sleep
 
 def turn_off():
-    ####################################
-    GPIO.setup("P8_1", GPIO.OUT)
-    GPIO.output("P8_1",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P8_2", GPIO.OUT)
-    GPIO.output("P8_2",GPIO.LOW)
-
-    ####################################
+#    ####################################
+#    GPIO.setup("P8_1", GPIO.OUT)
+#    GPIO.output("P8_1",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P8_2", GPIO.OUT)
+#    GPIO.output("P8_2",GPIO.LOW)
+#
+#    ####################################
     GPIO.setup("P8_3", GPIO.OUT)
     GPIO.output("P8_3",GPIO.LOW)
 
@@ -222,39 +222,39 @@ def turn_off():
     GPIO.setup("P9_2", GPIO.OUT)
     GPIO.output("P9_2",GPIO.LOW)
 
-    ####################################
-    GPIO.setup("P9_3", GPIO.OUT)
-    GPIO.output("P9_3",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_4", GPIO.OUT)
-    GPIO.output("P9_4",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_5", GPIO.OUT)
-    GPIO.output("P9_5",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_6", GPIO.OUT)
-    GPIO.output("P9_6",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_7", GPIO.OUT)
-    GPIO.output("P9_7",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_8", GPIO.OUT)
-    GPIO.output("P9_8",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_9", GPIO.OUT)
-    GPIO.output("P9_9",GPIO.LOW)
-
-    ####################################
-    GPIO.setup("P9_10", GPIO.OUT)
-    GPIO.output("P9_10",GPIO.LOW)
-
-    ####################################
+#    ####################################
+#    GPIO.setup("P9_3", GPIO.OUT)
+#    GPIO.output("P9_3",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_4", GPIO.OUT)
+#    GPIO.output("P9_4",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_5", GPIO.OUT)
+#    GPIO.output("P9_5",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_6", GPIO.OUT)
+#    GPIO.output("P9_6",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_7", GPIO.OUT)
+#    GPIO.output("P9_7",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_8", GPIO.OUT)
+#    GPIO.output("P9_8",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_9", GPIO.OUT)
+#    GPIO.output("P9_9",GPIO.LOW)
+#
+#    ####################################
+#    GPIO.setup("P9_10", GPIO.OUT)
+#    GPIO.output("P9_10",GPIO.LOW)
+#
+#    ####################################
     GPIO.setup("P9_11", GPIO.OUT)
     GPIO.output("P9_11",GPIO.LOW)
 
