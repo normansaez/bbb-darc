@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stddef.h>
+#include <unistd.h>
 #include <time.h>
 #define  output "out"
 #define  input  "in"
@@ -35,7 +36,7 @@ int  main (void)
         fclose(ofp_P8_13_value);
 
         logic_status = logic_status?0:1;
-
+        sleep(5);
     }
     return 1;
 }
