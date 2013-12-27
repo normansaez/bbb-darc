@@ -10,29 +10,14 @@ from time import sleep
 from random import randint
 
 class Server_i (BBBServer__POA.Server):
-    def set_high(self, cmd):
-        print cmd
-        s = randint(1,40)
-        print sys._getframe().f_code.co_name, 
-        print " sleeping %d" % s
-        sleep(s)
-        return cmd
+    def led_on(pin_led, pin_pwm, pin_enable):
+        print "led on"
 
-    def set_low(self, cmd):
-        print cmd
-        s = randint(1,40)
-        print sys._getframe().f_code.co_name, 
-        print "sleeping %d" % s
-        sleep(s)
-        return cmd
+    def led_off(pin_led, pin_pwm, pin_enable):
+        print "led off"
 
-    def get_status(self, cmd):
-        print cmd
-        s = randint(1,40)
-        print sys._getframe().f_code.co_name, 
-        print "sleeping %d" % s
-        sleep(s)
-        return cmd
+    def motor_move(pin_dir, pin_step, pin_sleep, stat_der, stat_izq):
+        print "motor move"
 
 orb = CORBA.ORB_init(sys.argv)
 poa = orb.resolve_initial_references("RootPOA")
