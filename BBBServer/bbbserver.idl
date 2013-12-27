@@ -1,8 +1,8 @@
 module BBBServer {
     interface Server {
-        string led_on(in string pin_led, in string pin_pwm, in string pin_enable);
-        string led_off(in string pin_led, in string pin_pwm, in string pin_enable);
-        string motor_move(in string pin_dir, in string pin_step, in string pin_sleep, in string stat_der, in string stat_izq);
+        string led_on(in string name, in string pin_led, in string pin_pwm, in string pin_enable);
+        string led_off(in string name, in string pin_led, in string pin_pwm, in string pin_enable);
+        string motor_move(in string name, in string steps, in string vel, in string pin_dir, in string pin_step, in string pin_sleep, in string stat_der, in string stat_izq);
     };
 };
 
