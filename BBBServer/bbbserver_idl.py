@@ -33,9 +33,9 @@ _0_BBBServer._tc_Server = omniORB.tcInternal.createTypeCode(_0_BBBServer._d_Serv
 omniORB.registerType(Server._NP_RepositoryId, _0_BBBServer._d_Server, _0_BBBServer._tc_Server)
 
 # Server operations and attributes
-Server._d_set_high = (((omniORB.tcInternal.tv_string,0), ), ((omniORB.tcInternal.tv_string,0), ), None)
-Server._d_set_low = (((omniORB.tcInternal.tv_string,0), ), ((omniORB.tcInternal.tv_string,0), ), None)
-Server._d_get_status = (((omniORB.tcInternal.tv_string,0), ), ((omniORB.tcInternal.tv_string,0), ), None)
+Server._d_led_on = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0)), ((omniORB.tcInternal.tv_string,0), ), None)
+Server._d_led_off = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0)), ((omniORB.tcInternal.tv_string,0), ), None)
+Server._d_motor_move = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0)), ((omniORB.tcInternal.tv_string,0), ), None)
 
 # Server object reference
 class _objref_Server (CORBA.Object):
@@ -44,16 +44,16 @@ class _objref_Server (CORBA.Object):
     def __init__(self):
         CORBA.Object.__init__(self)
 
-    def set_high(self, *args):
-        return _omnipy.invoke(self, "set_high", _0_BBBServer.Server._d_set_high, args)
+    def led_on(self, *args):
+        return _omnipy.invoke(self, "led_on", _0_BBBServer.Server._d_led_on, args)
 
-    def set_low(self, *args):
-        return _omnipy.invoke(self, "set_low", _0_BBBServer.Server._d_set_low, args)
+    def led_off(self, *args):
+        return _omnipy.invoke(self, "led_off", _0_BBBServer.Server._d_led_off, args)
 
-    def get_status(self, *args):
-        return _omnipy.invoke(self, "get_status", _0_BBBServer.Server._d_get_status, args)
+    def motor_move(self, *args):
+        return _omnipy.invoke(self, "motor_move", _0_BBBServer.Server._d_motor_move, args)
 
-    __methods__ = ["set_high", "set_low", "get_status"] + CORBA.Object.__methods__
+    __methods__ = ["led_on", "led_off", "motor_move"] + CORBA.Object.__methods__
 
 omniORB.registerObjref(Server._NP_RepositoryId, _objref_Server)
 _0_BBBServer._objref_Server = _objref_Server
@@ -65,7 +65,7 @@ class Server (PortableServer.Servant):
     _NP_RepositoryId = _0_BBBServer.Server._NP_RepositoryId
 
 
-    _omni_op_d = {"set_high": _0_BBBServer.Server._d_set_high, "set_low": _0_BBBServer.Server._d_set_low, "get_status": _0_BBBServer.Server._d_get_status}
+    _omni_op_d = {"led_on": _0_BBBServer.Server._d_led_on, "led_off": _0_BBBServer.Server._d_led_off, "motor_move": _0_BBBServer.Server._d_motor_move}
 
 Server._omni_skeleton = Server
 _0_BBBServer__POA.Server = Server
