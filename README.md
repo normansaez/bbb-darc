@@ -27,3 +27,11 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 -------------------
 * git clone https://github.com/adafruit/adafruit-beaglebone-io-python.git
 * git version: f70c915
+
+Mode 7
+------
+
+* http://www.embedded-things.com/bbb/patching-the-device-tree-compiler-for-ubuntu/
+* dtc -O dtb -o pinctrl-test-7-00A0.dtbo -b 0 -@ pinmux-test-7.dts 
+* cp pinctrl-test-7-00A0.dtbo /lib/firmware/
+* echo pinctrl-test-7 > $SLOTS 
