@@ -73,7 +73,7 @@ pinctrl_test: pinctrl_test_7_pins {
 			      0x04c 0x17 /* P9_16 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      0x15c 0x17 /* P9_17 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      0x158 0x17 /* P9_18 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      0x17c 0x17 /* P9_19 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      /*0x17c 0x17  P9_19 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      0x178 0x17 /* P9_20 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      0x154 0x17 /* P9_21 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      0x150 0x17 /* P9_22 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
