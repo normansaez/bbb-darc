@@ -31,7 +31,18 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 Mode 7
 ------
 
-* http://www.embedded-things.com/bbb/patching-the-device-tree-compiler-for-ubuntu/
-* dtc -O dtb -o pinctrl-test-7-00A0.dtbo -b 0 -@ pinmux-test-7.dts 
-* cp pinctrl-test-7-00A0.dtbo /lib/firmware/
-* echo pinctrl-test-7 > $SLOTS 
+* sudo apt-get install build-essential bison flex
+* git clone http://jdl.com/software/dtc.git/
+* cd dtc
+* git reset --hard f8cb5dd94903a5cfa1609695328b8f1d5557367f
+* wget https://patchwork.kernel.org/patch/1934471/raw/ -O dynamic-symbols.patch
+* git apply dynamic-symbols.patch
+* make
+* sudo cp dtc /usr/local/bin
+* dtc -O dtb -o <overlay filename> -b 0 -@ <source filename>
+
+Example:
+-------
+   1. dtc -O dtb -o pinctrl-test-7-00A0.dtbo -b 0 -@ pinmux-test-7.dts 
+   2. cp pinctrl-test-7-00A0.dtbo /lib/firmware/
+   3.  echo pinctrl-test-7 > $SLOTS 
