@@ -37,12 +37,12 @@ def turn_off_pwm(pin):
 if __name__ == '__main__':
     timeout = 3 #secs
     
-    print ('start to turn on PWM ...')
+    print ('\nstart to turn on PWM ...')
     turn_on_gpio('P9_14')
     turn_on_gpio('P8_13')
     turn_on_gpio('P9_16')
     turn_off_gpio('P8_19')
-    print ('start to turn on LE ...')
+    print ('\nstart to turn on LE ...')
     turn_on_gpio('P8_45')
     turn_off_gpio('P8_5')
     turn_off_gpio('P8_42')
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     turn_off_gpio('P8_4')
     turn_off_gpio('P8_3')
     turn_off_gpio('P8_17')
-    print ('start to turn on PIN ...')
+    print ('\nstart to turn on PIN ...')
     turn_on_gpio('P8_20')
     turn_off_gpio('P8_22')
     turn_off_gpio('P8_24')
@@ -59,4 +59,4 @@ if __name__ == '__main__':
     turn_off_gpio('P8_14')
     turn_off_gpio('P8_12')
     turn_off_gpio('P8_6')
-    raw_input('press a key to quit !!')
+    raw_input('\n\nIF you press ANY KEY,THEN you WILL QUIT!!!')
