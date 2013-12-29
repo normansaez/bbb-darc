@@ -24,18 +24,28 @@ def turn_off_pwm(pin):
 if __name__ == '__main__':
     timeout = 3 #secs
     
-    print "PWM"
-    turn_on_gpio('P9_14')
-    print('P9_14')
+    ### LE ###
+    print ('start to turn on ...')
+    turn_on_gpio('P8_45')
+    print('LE: P8_45')
     raw_input('press a key to continue')
-    turn_on_gpio('P8_13')
-    print('P8_13')
+    turn_on_gpio('P8_5')
+    print('LE: P8_5')
     raw_input('press a key to continue')
-    turn_on_gpio('P8_19')
-    print('P8_19')
+    turn_on_gpio('P8_42')
+    print('LE: P8_42')
     raw_input('press a key to continue')
-##################################################
-    turn_off_gpio('P9_16')
-    print('P9_16')
+    turn_on_gpio('P8_46')
+    print('LE: P8_46')
     raw_input('press a key to continue')
+    turn_on_gpio('P8_4')
+    print('LE: P8_4')
+    raw_input('press a key to continue')
+    turn_on_gpio('P8_3')
+    print('LE: P8_3')
+    raw_input('press a key to continue')
+    turn_on_gpio('P8_17')
+    print('LE: P8_17')
+    raw_input('press a key to continue')
+
 
