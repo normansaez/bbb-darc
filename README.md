@@ -28,7 +28,6 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * git version: f70c915
 
 *set gpio to mode 7*:
---------------------
 See:
 * http://www.embedded-things.com/bbb/patching-the-device-tree-compiler-for-ubuntu/
 
@@ -43,7 +42,6 @@ See:
    9. dtc -O dtb -o <overlay filename> -b 0 -@ <source filename>
 
 Example:
--------
    1. export SLOTS=/sys/devices/bone_capemgr.9/slots 
    2. export PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins
    3. dtc -O dtb -o pinctrl-test-7-00A0.dtbo -b 0 -@ pinmux-test-7.dts 
