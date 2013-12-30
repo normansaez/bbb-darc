@@ -12,12 +12,12 @@ def turn_off_gpio(pin):
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin,GPIO.LOW)
 
-def turn_on_pwm(pin)
+def turn_on_pwm(pin):
     PWM.start(pin, 50)
     PWM.set_duty_cycle(pin, 25.5)
     PWM.set_frequency(pin, 10)
 
-def turn_off_pwm(pin)
+def turn_off_pwm(pin):
     PWM.stop(pin)
     PWM.cleanup()
 
@@ -36,11 +36,11 @@ if __name__ == '__main__':
     turn_off_gpio('P8_14')
     turn_off_gpio('P8_12')
     turn_off_gpio('P8_6')
-    print 'finish to turn off ...')
+    print ('finish to turn off ...')
     raw_input('press a key to continue')
 ##################################################
     ### LE ###
-    print 'start to turn on ...')
+    print ('start to turn on ...')
     turn_on_gpio('P8_44')
     print('LE: P8_44')
     raw_input('press a key to continue')

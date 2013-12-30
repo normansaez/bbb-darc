@@ -9,8 +9,11 @@
 		__overlay__ {
 pinctrl_test: pinctrl_test_7_pins {
 		      pinctrl-single,pins = <
+			      0x018 0x07 /* P8_03 muxRegOffset, OUTPUT | MODE7 */
+			      0x0a4 0x07 /* P8_46 muxRegOffset, OUTPUT | MODE7 */
 			      0x1b4 0x07 /* P9_41 muxRegOffset, OUTPUT | MODE7 */
 			      0x164 0x07 /* P9_42 muxRegOffset, OUTPUT | MODE7 */
+			      0x0ac 0x17 /* P8_44 muxRegOffset, OUTPUT | MODE7 */
 			      >;
 	      };
 		};
