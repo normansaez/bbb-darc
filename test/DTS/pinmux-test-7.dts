@@ -65,27 +65,27 @@ pinctrl_test: pinctrl_test_7_pins {
 			      /* 0x 0x17    P9_08 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /* 0x 0x17    P9_09 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /* 0x 0x17    P9_10 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x070 0x17  P9_11 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x078 0x17  P9_12 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x074 0x17  P9_13 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x048 0x17  P9_14 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x040 0x17  P9_15 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x04c 0x17  P9_16 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x15c 0x17  P9_17 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x158 0x17  P9_18 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x17c 0x17  P9_19 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x178 0x17 P9_20 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x154 0x17 P9_21 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x150 0x17 P9_22 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x044 0x17 P9_23 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x184 0x17 P9_24 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x1ac 0x17 P9_25 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x180 0x17 P9_26 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x1a4 0x17 P9_27 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x19c 0x17 P9_28 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x194 0x17 P9_29 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x198 0x17 P9_30 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x190 0x17 P9_31 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x070 0x17 /* P9_11 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x078 0x17 /* P9_12 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x074 0x17 /* P9_13 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x048 0x17 /* P9_14 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x040 0x17 /* P9_15 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x04c 0x17 /* P9_16 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			         /* 0x15c 0x17  P9_17 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			         /* 0x158 0x17  P9_18 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			         /* 0x17c 0x17  P9_19 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			         /* 0x178 0x17 P9_20 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x154 0x17 /* P9_21 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x150 0x17 /* P9_22 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x044 0x17 /* P9_23 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x184 0x17 /* P9_24 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x1ac 0x17 /* P9_25 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x180 0x17 /* P9_26 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x1a4 0x17 /* P9_27 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x19c 0x17 /* P9_28 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x194 0x17 /* P9_29 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x198 0x17 /* P9_30 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x190 0x17 /* P9_31 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*   0x 0x17  P9_32 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*   0x 0x17  P9_33 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*   0x 0x17  P9_34 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
@@ -95,8 +95,8 @@ pinctrl_test: pinctrl_test_7_pins {
 			      /*   0x 0x17  P9_38 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*   0x 0x17  P9_39 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*   0x 0x17  P9_40 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x1b4 0x17 P9_41 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
-			      /* 0x164 0x17 P9_42 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x1b4 0x17 /* P9_41 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
+			      0x164 0x17 /* P9_42 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*    0x 0x17 P9_43 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*    0x 0x17 P9_44 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
 			      /*    0x 0x17 P9_45 muxRegOffset, OUTPUT | MODE7 | PULLUP*/
