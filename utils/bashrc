@@ -1,0 +1,25 @@
+alias tololo='ssh -X -Y detector@146.155.14.35'
+alias rtcaolab='ssh -X -Y dani@146.155.14.15'
+
+HISTIGNORE="&:ls:[bf]g:exit"
+HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S "
+HISTSIZE=10000
+PROMPT_COMMAND="history -a"
+HISTFILE=~/.bash_history
+
+
+export GIT_AUTHOR_NAME="Norman Saez"
+export GIT_COMMITTER_NAME="Norman Saez"
+export GIT_AUTHOR_EMAIL="nfsaez@uc.cl"
+export GIT_COMMITTER_EMAIL="nfsaez@uc.cl"
+export PYTHONSTARTUP=~/.pythonrc
+export SVN_EDITOR=vim
+
+shopt -s histappend
+
+
+##########################
+export SLOTS=/sys/devices/bone_capemgr.9/slots
+export PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins
+export PINMUX=/sys/kernel/debug/pinctrl/44e10800.pinmux/pinmux-pins
+export PINGROUPS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pingroups
