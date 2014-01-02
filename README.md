@@ -12,6 +12,12 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * unzx BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
 * sudo dd if=BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img of=/dev/sdX bs=1M
 
+*Expanding File System Partition On A microSD*
+   1. use fdisk to delete /dev/mmcblk0p2 partition
+   2. create /dev/mmcblk0p2 again using all free space
+   3. resize2fs /dev/mmcblk0p2
+
+
 *Loading the image*
    1. Power down the BBB.
    2. Insert the microSD card.
