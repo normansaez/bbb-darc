@@ -5,3 +5,5 @@
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 [core]
 	editor = vim
+[diff]
+	external = /home/nsaez/bbb-darc/utils/diff.py
