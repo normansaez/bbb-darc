@@ -18,7 +18,7 @@ BBB-eMMC-flasher-ubuntu-13.04-2013-10-08.img
    3. resize2fs /dev/mmcblk0p2
 
 
-*Loading the image*
+*Loading the image to eMMc*
    1. Power down the BBB.
    2. Insert the microSD card.
    3. Hold down the BOOT button the on the BBB (this is the on at the same end of the board as the microSD card slot.
