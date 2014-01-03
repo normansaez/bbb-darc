@@ -39,7 +39,11 @@ poa = orb.resolve_initial_references("RootPOA")
 servant = Server_i()
 poa.activate_object(servant)
 
+#XXX Dirty hack to accomplish deadline
+f = open('/tmp/IOR.txt','w')
+f.write(orb.object_to_string(servant._this()))
 print orb.object_to_string(servant._this())
+f.close()
 
 poa._get_the_POAManager().activate()
 orb.run()
