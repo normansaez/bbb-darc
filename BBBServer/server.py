@@ -6,11 +6,11 @@
 
 import sys, os
 import CORBA, BBBServer, BBBServer__POA
-import Adafruit_BBIO.GPIO as GPIO
-import Adafruit_BBIO.PWM as PWM
+#import Adafruit_BBIO.GPIO as GPIO
+#import Adafruit_BBIO.PWM as PWM
 
 class Server_i (BBBServer__POA.Server):
-    def led_on(name, pin_led, pin_pwm, pin_enable):
+    def led_on(self, name, pin_led, pin_pwm, pin_enable):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         print "preparing ..."
         GPIO.setup(pin_led, GPIO.OUT)
@@ -23,12 +23,12 @@ class Server_i (BBBServer__POA.Server):
         print "..."
         print "led on"
         return "ok"
-    def led_off(name, pin_led, pin_pwm, pin_enable):
+    def led_off(self, name, pin_led, pin_pwm, pin_enable):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         print "led off"
         return "ok"
 
-    def motor_move(name, steps, vel, pin_dir, pin_step, pin_sleep, stat_der, stat_izq):
+    def motor_move(self, name, steps, vel, pin_dir, pin_step, pin_sleep, stat_der, stat_izq):
         print "%s(%s,%s,%s,%s,%s) => (%s, %s)" % (name, steps, vel, pin_dir, pin_step, pin_sleep, stat_der, stat_izq)
         print "motor move"
         return "ok"
