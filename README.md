@@ -59,3 +59,6 @@ Example:
    3. export PINMUX=/sys/kernel/debug/pinctrl/44e10800.pinmux/pinmux-pins
    4. export PINGROUPS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pingroups
 
+
+*PYTHONPATH*
+* add this ~/bbb-darc/BBBServer to PYTHONPATH
