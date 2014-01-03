@@ -6,8 +6,8 @@
 
 import sys, os
 import CORBA, BBBServer, BBBServer__POA
-#import Adafruit_BBIO.GPIO as GPIO
-#import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.GPIO as GPIO
+import Adafruit_BBIO.PWM as PWM
 
 class Server_i (BBBServer__POA.Server):
     def led_on(self, name, pin_led, pin_pwm, pin_enable):
