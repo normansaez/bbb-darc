@@ -1,8 +1,49 @@
 module BBBServer {
     interface Server {
-        string led_on(in string name, in string pin_led, in string pin_pwm, in string pin_enable);
-        string led_off(in string name, in string pin_led, in string pin_pwm, in string pin_enable);
-        string motor_move(in string name, in string steps, in string vel, in string pin_dir, in string pin_step, in string pin_sleep, in string stat_der, in string stat_izq);
+        string led_on(in string pin_led,
+                in string pin_pwm,
+                in string pin_enable,
+                in string name,
+                in string simulated,
+                in string exp_time,
+                in string brightness);
+
+        string led_off(in string pin_led,
+                in string pin_pwm,
+                in string pin_enable,
+                in string name,
+                in string simulated,
+                in string exp_time,
+                in string brightness);
+
+        string motor_move(in string name,
+                in string pin_dir, 
+                in string pin_step, 
+                in string pin_sleep, 
+                in string pin_opto1, 
+                in string pin_opto2, 
+                in string simulated, 
+                in string direction,
+                in string velocity, 
+                in string steps, 
+                in string vr_init, 
+                in string vr_end, 
+                in string cur_pos);
+
+        string motor_move_skip_sensor(in string name, 
+                in string pin_dir, 
+                in string pin_step, 
+                in string pin_sleep, 
+                in string pin_opto1, 
+                in string pin_opto2, 
+                in string simulated, 
+                in string direction,
+                in string velocity, 
+                in string steps, 
+                in string vr_init, 
+                in string vr_end, 
+                in string cur_pos);
+
     };
 };
 

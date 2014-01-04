@@ -99,7 +99,7 @@ class Controller:
 
     def star_off(self, star_id):
         star = Star(star_id)
-#        self.cli_obj.led_off(name, pin_led, pin_pwm, pin_enable)
+        self.cli_obj.led_off(star.name, star.pin_led, star.pin_pwm, star.pin_enable)
 
     #layer methods
     def layer_move(self, layer_id):
