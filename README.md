@@ -62,3 +62,8 @@ Example:
 
 *PYTHONPATH*
 * add this ~/bbb-darc/BBBServer to PYTHONPATH
+
+Package to install:
+-------------------
+* sudo apt-get update
+* sudo apt-get install vim python-omniorb omniidl omniidl-python tree omniorb omniorb-nameserver build-essential ntpdate python-dev bison flex  
