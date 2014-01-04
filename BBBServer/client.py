@@ -15,11 +15,8 @@ ior = ior_[0].split('\n')[0]
 f.close()
 #print ior
 o = orb.string_to_object(ior)
-name = 'lala'
-pin_led = 'lele'
-pin_pwm = 'lili'
-pin_enable = 'lolo'
-o.led_on(name, pin_led, pin_pwm, pin_enable)
+o.led_on('pin_led', 'pin_pwm', 'pin_enable', 'name', 'simulated', 'exp_time', 'brightness')
+
  
 
 
