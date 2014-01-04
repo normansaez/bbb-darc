@@ -28,9 +28,9 @@ class Layer(object):
     def __init__(self, config_name):
         self.bd = BD()
         self._config_name = config_name
-        self._pin_enable = None
-        self._pin_direction = None
-        self._pin_steps = None
+        self._pin_sleep = None
+        self._pin_dir = None
+        self._pin_step = None
         self._name = None
         self._simulated = None
         self._direction = None
@@ -42,34 +42,34 @@ class Layer(object):
         self._image_prefix = None
         
     @property
-    def pin_enable(self):
-        self._pin_enable = self.bd.config.get(self._config_name, 'pin_enable')
-        return self._pin_enable
+    def pin_sleep(self):
+        self._pin_sleep = self.bd.config.get(self._config_name, 'pin_sleep')
+        return self._pin_sleep
 
-    @pin_enable.setter
-    def pin_enable(self, value):
-        self.bd.write(self._config_name, 'pin_enable', value)
-        self._pin_enable = value
-
-    @property
-    def pin_direction(self):
-        self._pin_direction = self.bd.config.get(self._config_name, 'pin_direction')
-        return self._pin_direction
-
-    @pin_direction.setter
-    def pin_direction(self, value):
-        self.bd.write(self._config_name, 'pin_direction', value)
-        self._pin_direction = value
+    @pin_sleep.setter
+    def pin_sleep(self, value):
+        self.bd.write(self._config_name, 'pin_sleep', value)
+        self._pin_sleep = value
 
     @property
-    def pin_steps(self):
-        self._pin_steps = self.bd.config.get(self._config_name, 'pin_steps')
-        return self._pin_steps
+    def pin_dir(self):
+        self._pin_dir = self.bd.config.get(self._config_name, 'pin_dir')
+        return self._pin_dir
 
-    @pin_steps.setter
-    def pin_steps(self, value):
-        self.bd.write(self._config_name, 'pin_steps', value)
-        self._pin_steps = value
+    @pin_dir.setter
+    def pin_dir(self, value):
+        self.bd.write(self._config_name, 'pin_dir', value)
+        self._pin_dir = value
+
+    @property
+    def pin_step(self):
+        self._pin_step = self.bd.config.get(self._config_name, 'pin_step')
+        return self._pin_step
+
+    @pin_step.setter
+    def pin_step(self, value):
+        self.bd.write(self._config_name, 'pin_step', value)
+        self._pin_step = value
 
     @property
     def name(self):

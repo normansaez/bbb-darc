@@ -12,9 +12,9 @@ with open('mapping.csv', 'rb') as csvfile:
             if row[1] == 'm3':
                 print "[horizontal_altitude_layer]"
                 print "name = horizontal_altitude_layer"
-            print "pin_enable = %s" % row[4]
-            print "pin_direction = %s" % row[2]
-            print "pin_steps = %s" % row[3]
+            print "pin_dir = %s" % row[2]
+            print "pin_step = %s" % row[3]
+            print "pin_sleep = %s" % row[4]
             print "pin_opto1 = %s" % row[5]
             print "pin_opto2 = %s" % row[6]
             print "simulated = False"

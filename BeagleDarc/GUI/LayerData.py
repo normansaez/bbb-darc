@@ -39,11 +39,11 @@ class LayerData:
         self.combobox_layer.add_attribute(cell, 'text', 0)
     
         #PIN
-        self.entry_pin_enable = self.builder.get_object("entry_pin_enable")
+        self.entry_pin_sleep = self.builder.get_object("entry_pin_sleep")
         #PIN
-        self.entry_pin_steps = self.builder.get_object("entry_pin_steps")
+        self.entry_pin_step = self.builder.get_object("entry_pin_step")
         #PIN
-        self.entry_pin_direction = self.builder.get_object("entry_pin_direction")
+        self.entry_pin_dir = self.builder.get_object("entry_pin_dir")
         
         #NAME
         self.entry_name = self.builder.get_object("entry_name")
@@ -95,9 +95,9 @@ class LayerData:
 
     def fill_info(self, config_name):
         layer = Layer(config_name)
-        self.entry_pin_enable.set_text(layer.pin_enable)
-        self.entry_pin_steps.set_text(layer.pin_steps)
-        self.entry_pin_direction.set_text(layer.pin_direction)
+        self.entry_pin_sleep.set_text(layer.pin_sleep)
+        self.entry_pin_step.set_text(layer.pin_step)
+        self.entry_pin_dir.set_text(layer.pin_dir)
         self.entry_name.set_text(layer.name)
         if layer.simulated is True:
             self.checkbutton_sim.set_active(layer.simulated)
@@ -123,9 +123,9 @@ class LayerData:
         print "### SAVE ###"
         config_name = self.combobox_layer.get_active_text() 
         layer = Layer(config_name)
-        layer.pin_enable = self.entry_pin_enable.get_text()
-        layer.pin_steps = self.entry_pin_steps.get_text()
-        layer.pin_direction = self.entry_pin_direction.get_text()
+        layer.pin_sleep = self.entry_pin_sleep.get_text()
+        layer.pin_step = self.entry_pin_step.get_text()
+        layer.pin_dir = self.entry_pin_dir.get_text()
         layer.name = self.entry_name.get_text()
         layer.sim = self.checkbutton_sim.get_active()
         layer.direction = self.combobox_direction.get_active_text()
@@ -134,9 +134,9 @@ class LayerData:
         layer.vr_init = self.entry_vr_init.get_text()
         layer.vr_end = self.entry_vr_end.get_text()
         layer.image_prefix = self.entry_image_prefix.get_text()
-        print layer.pin_enable
-        print layer.pin_steps
-        print layer.pin_direction
+        print layer.pin_sleep
+        print layer.pin_step
+        print layer.pin_dir
         print layer.name 
         print layer.sim
         print layer.direction

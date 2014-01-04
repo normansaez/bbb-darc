@@ -25,7 +25,7 @@
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">pin enable</property>
+            <property name="label" translatable="yes">pin sleep</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -37,7 +37,7 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">pin direction</property>
+            <property name="label" translatable="yes">pin dir</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -139,7 +139,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="entry_pin_enable">
+          <object class="GtkEntry" id="entry_pin_sleep">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">&#x25CF;</property>
@@ -267,7 +267,7 @@
         <child>
           <object class="GtkLabel" id="label6">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">pin steps</property>
+            <property name="label" translatable="yes">pin step</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -277,7 +277,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="entry_pin_steps">
+          <object class="GtkEntry" id="entry_pin_step">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">&#x25CF;</property>
@@ -302,7 +302,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="entry_pin_direction">
+          <object class="GtkEntry" id="entry_pin_dir">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">&#x25CF;</property>
