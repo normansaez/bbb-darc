@@ -4,17 +4,17 @@ module BBBServer {
                 in string pin_pwm,
                 in string pin_enable,
                 in string name,
-                in string simulated,
-                in string exp_time,
-                in string brightness);
+                in boolean simulated,
+                in float exp_time,
+                in long brightness);
 
         string led_off(in string pin_led,
                 in string pin_pwm,
                 in string pin_enable,
                 in string name,
-                in string simulated,
-                in string exp_time,
-                in string brightness);
+                in boolean simulated,
+                in float exp_time,
+                in long brightness);
 
         string motor_move(in string name,
                 in string pin_dir, 
@@ -22,12 +22,12 @@ module BBBServer {
                 in string pin_sleep, 
                 in string pin_opto1, 
                 in string pin_opto2, 
-                in string simulated, 
-                in string direction,
-                in string velocity, 
-                in string steps, 
-                in string vr_init, 
-                in string vr_end, 
+                in boolean simulated, 
+                in long direction,
+                in long velocity, 
+                in long steps, 
+                in long vr_init, 
+                in long vr_end, 
                 in string cur_pos);
 
         string motor_move_skip_sensor(in string name, 
@@ -36,12 +36,12 @@ module BBBServer {
                 in string pin_sleep, 
                 in string pin_opto1, 
                 in string pin_opto2, 
-                in string simulated, 
-                in string direction,
-                in string velocity, 
-                in string steps, 
-                in string vr_init, 
-                in string vr_end, 
+                in boolean simulated, 
+                in long direction,
+                in long velocity, 
+                in long steps, 
+                in long vr_init, 
+                in long vr_end, 
                 in string cur_pos);
 
     };
