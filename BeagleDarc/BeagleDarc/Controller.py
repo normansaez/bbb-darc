@@ -11,6 +11,52 @@ from BeagleDarc.Model import Star
 from BeagleDarc.Model import Layer
 from subprocess import Popen, PIPE
 
+class SingletonServer:
+    class __impl:
+        def __init__(self):
+            self.bds = BeagleDarcServerM('beagledarc_server')
+
+        def singleton_id(self):
+            return id(self)
+
+        def start_BBBServer(self):
+            cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &\"" % (self.bds.user, self.bds.host)
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (self.bds.user, self.bds.host)
+            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+            #sts = process.wait()
+            #out = process.stdout.read().strip()
+            #err = process.stderr.read().strip()
+            #self.bds.ior = out
+
+        def stop_BBBServer(self):
+            cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (self.bds.user, self.bds.host)
+            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+            #sts = process.wait()
+            #out = process.stdout.read().strip()
+            #err = process.stderr.read().strip()
+
+    __instance = None
+    def __init__(self):
+        '''
+        Creates the Singleton (the only instance)
+        '''
+        if SingletonServer.__instance is None:
+            SingletonServer.__instance = SingletonServer.__impl()
+        self.__dict__['_Singleton__instance'] = SingletonServer.__instance   
+
+    def __getattr__(self, attr):
+        '''
+        Overwritten __getattr__ method
+        '''
+        return getattr(self.__instance, attr)
+
+    def __setattr__(self, attr, value):
+        '''
+        Overwritten __setattr__ method
+        '''
+        return setattr(self.__instance, attr, value)
+
 class Controller:
     '''
     Controller:
@@ -19,34 +65,24 @@ class Controller:
         '''
         Init server in BBB called BBBServer
         '''
-        self.bds = BeagleDarcServerM('beagledarc_server')
-        self.start_BBBServer()
+        self.sserver = SingletonServer()
+        self.sserver.start_BBBServer()
         #init corba client:
         orb = CORBA.ORB_init()
-        self.cli_obj = orb.string_to_object(self.bds.ior)
+        self.cli_obj = orb.string_to_object(self.sserver.bds.ior)
 
     def __del__(self):
         '''
         Stop server in BBB
         '''
-        self.stop_BBBServer()
+        self.sserver.stop_BBBServer()
 
     def start_BBBServer(self):
-        cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &\"" % (self.bds.user, self.bds.host)
-        process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-        cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (self.bds.user, self.bds.host)
-        process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-#        sts = process.wait()
-#        out = process.stdout.read().strip()
-#        err = process.stderr.read().strip()
-#        self.bds.ior = out
+        self.sserver.start_BBBServer()
 
     def stop_BBBServer(self):
-        cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (self.bds.user, self.bds.host)
-        process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-#        sts = process.wait()
-#        out = process.stdout.read().strip()
-#        err = process.stderr.read().strip()
+        self.sserver.stop_BBBServer()
+
 
     #star methods
     def star_on(self, star_id):
