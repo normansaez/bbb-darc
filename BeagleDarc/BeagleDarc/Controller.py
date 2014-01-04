@@ -94,20 +94,21 @@ class Controller:
     #star methods
     def star_on(self, star_id):
         star = Star(star_id)
-        self.cli_obj.led_on(star.name, star.pin_led, star.pin_pwm, star.pin_enable)
+        self.cli_obj.led_on(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
 
 
     def star_off(self, star_id):
         star = Star(star_id)
-        self.cli_obj.led_off(star.name, star.pin_led, star.pin_pwm, star.pin_enable)
+        self.cli_obj.led_off(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
 
     #layer methods
     def layer_move(self, layer_id):
         layer = Layer(layer_id)
-#        self.cli_obj.motor_move(name, steps, vel, pin_dir, pin_step, pin_sleep, stat_der, stat_izq)
+        self.cli_obj.motor_move(layer.name, layer.pin_dir, layer.pin_step, layer.pin_sleep, layer.pin_opto1, layer.pin_opto2, layer.simulated, layer.direction, layer.velocity, layer.steps, layer.vr_init, layer.vr_end, layer.cur_pos)
 
     def layer_move_skip_sensor(self, layer_id):
         layer = Layer(layer_id)
+        self.cli_obj.motor_move_skip_sensor(layer.name, layer.pin_dir, layer.pin_step, layer.pin_sleep, layer.pin_opto1, layer.pin_opto2, layer.simulated, layer.direction, layer.velocity, layer.steps, layer.vr_init, layer.vr_end, layer.cur_pos)
 
 if __name__ == '__main__':
     c = Controller()
