@@ -5,9 +5,9 @@ import pygtk
 pygtk.require("2.0")  
 import gtk  
 
-from subprocess import Popen, PIPE
 
 from BeagleDarc.Model import BeagleDarcServerM 
+from BeagleDarc.Controller import Controller
 
 class BeagleDarcGui:
 
@@ -16,6 +16,8 @@ class BeagleDarcGui:
     def __init__( self ):
         path, fil = os.path.split(os.path.abspath(__file__))
         bds = BeagleDarcServerM('beagledarc_server')
+        #self.controller = Controller()
+        self.controller = None
 
         self.builder = gtk.Builder()
         self.builder.add_from_file(path+"/glade/beagledarc.glade")
@@ -54,33 +56,17 @@ class BeagleDarcGui:
         '''
         callback
         '''
-        bds = BeagleDarcServerM('beagledarc_server')
+        self.controller = Controller()
         print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
         if widget.get_active() is True:
             widget.set_label(gtk.STOCK_DISCONNECT)
             widget.set_use_stock(True)
-            ### XXX DIRTY HACK
-            cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &\"" % (bds.user, bds.host)
-            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            ###
-            cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (bds.user, bds.host)
-            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-            sts = process.wait()
-            out = process.stdout.read().strip()
-            err = process.stderr.read().strip()
-            print out
-            bds.ior = out
+            self.controller.start_BBBServer()
 
         if widget.get_active() is False:
             widget.set_label(gtk.STOCK_CONNECT)
             widget.set_use_stock(True)
-            cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (bds.user, bds.host)
-            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-            #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            sts = process.wait()
-            out = process.stdout.read().strip()
-            err = process.stderr.read().strip()
-            print cmd
+            self.controller.stop_BBBServer()
 
     def quit(self, widget):
         sys.exit(0)
