@@ -29,7 +29,7 @@ with open('mapping.csv', 'rb') as csvfile:
         else:
             print "[led_%s]" % row[0]
             print "pin_led = %s" % row[2]
-            print "pin_group = %s" % row[3]
+            print "pin_pwm = %s" % row[3]
             print "pin_enable = %s" % row[4]
             print "name = %s" % row[1]
             print "simulated = False"

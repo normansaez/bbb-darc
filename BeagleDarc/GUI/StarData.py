@@ -43,7 +43,7 @@ class StarData:
         #PIN
         self.entry_pin_led = self.builder.get_object("entry_pin_led")
         #PIN
-        self.entry_pin_group = self.builder.get_object("entry_pin_group")
+        self.entry_pin_pwm = self.builder.get_object("entry_pin_pwm")
         #PIN
         self.entry_pin_enable = self.builder.get_object("entry_pin_enable")
         
@@ -88,7 +88,7 @@ class StarData:
     def fill_info(self, star_id):
         star = Star(int(star_id))
         self.entry_pin_led.set_text(star.pin_led)
-        self.entry_pin_group.set_text(star.pin_group)
+        self.entry_pin_pwm.set_text(star.pin_pwm)
         self.entry_pin_enable.set_text(star.pin_enable)
         self.entry_name.set_text(star.name)
         if star.simulated is True:
@@ -111,7 +111,7 @@ class StarData:
     def save(self, widget):
         star = Star(int(self.combobox_star.get_active_text()))
         star.pin_led = self.entry_pin_led.get_text()
-        star.pin_group = self.entry_pin_group.get_text()
+        star.pin_pwm = self.entry_pin_pwm.get_text()
         star.pin_enable = self.entry_pin_enable.get_text()
         star.name = self.entry_name.get_text()
         star.sim = self.checkbutton_sim.get_active()
@@ -119,7 +119,7 @@ class StarData:
         star.bright = self.combobox_brightness.get_active_text()
         star.img_prefix = self.entry_image_prefix.get_text()
         print star.pin_led
-        print star.pin_group
+        print star.pin_pwm
         print star.pin_enable
         print star.name 
         print star.sim
