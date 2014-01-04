@@ -10,6 +10,7 @@ from BeagleDarc.Model import BeagleDarcServerM
 from BeagleDarc.Model import Star
 from BeagleDarc.Model import Layer
 from subprocess import Popen, PIPE
+import omniORB
 
 class Controller:
     '''
@@ -22,7 +23,12 @@ class Controller:
         self.bds = BeagleDarcServerM('beagledarc_server')
         #init corba client:
         orb = CORBA.ORB_init()
-        self.cli_obj = orb.string_to_object(self.bds.ior)
+        self.cli_obj = None
+        try:
+            self.cli_obj = orb.string_to_object(self.bds.ior)
+        except omniORB.CORBA.MARSHAL, e:
+            print "START SERVER ON BEAGLEBONE OR SET IOR CORRECTLY"
+            sys.exit(-1)
     #star methods
     def star_on(self, star_id):
         star = Star(star_id)

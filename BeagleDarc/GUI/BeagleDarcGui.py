@@ -15,7 +15,7 @@ class BeagleDarcGui:
 
     def __init__( self ):
         path, fil = os.path.split(os.path.abspath(__file__))
-        bds = BeagleDarcServerM('beagledarc_server')
+        self.bds = BeagleDarcServerM('beagledarc_server')
         self.controller = Controller()
 
         self.builder = gtk.Builder()
@@ -34,12 +34,11 @@ class BeagleDarcGui:
         self.entry1 = self.builder.get_object("entry1")
         self.entry2 = self.builder.get_object("entry2")
         self.entry3 = self.builder.get_object("entry3")
-        self.entry4 = self.builder.get_object("entry4")
+        self.image4 = self.builder.get_object("image4")
 
-        self.entry1.set_text(bds.host ) 
-        self.entry2.set_text(bds.user ) 
-        self.entry3.set_text(bds.password) 
-        self.entry4.set_text(bds.port ) 
+        self.entry1.set_text(self.bds.host ) 
+        self.entry2.set_text(self.bds.user ) 
+        self.entry3.set_text(self.bds.ior) 
 
         dic = { 
             "on_buttonQuit_clicked" : self.quit,
@@ -55,16 +54,18 @@ class BeagleDarcGui:
         '''
         callback
         '''
-        print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
+        print "%s: %s" % (data, ("disconnecting", "connecting")[widget.get_active()])
+        #CONN
         if widget.get_active() is True:
             widget.set_label(gtk.STOCK_DISCONNECT)
             widget.set_use_stock(True)
-            self.controller.start_BBBServer()
+            self.image4.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
+            self.bds.ior = self.entry3.get_text()
 
         if widget.get_active() is False:
             widget.set_label(gtk.STOCK_CONNECT)
             widget.set_use_stock(True)
-            self.controller.stop_BBBServer()
+            self.image4.set_from_stock(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_MENU)
 
     def quit(self, widget):
         sys.exit(0)
