@@ -31,6 +31,8 @@ class Layer(object):
         self._pin_sleep = None
         self._pin_dir = None
         self._pin_step = None
+        self._pin_opto1 = None
+        self._pin_opto2 = None
         self._name = None
         self._simulated = None
         self._direction = None
@@ -70,6 +72,26 @@ class Layer(object):
     def pin_step(self, value):
         self.bd.write(self._config_name, 'pin_step', value)
         self._pin_step = value
+
+    @property
+    def pin_opto1(self):
+        self._pin_opto1 = self.bd.config.get(self._config_name, 'pin_opto1')
+        return self._pin_opto1
+
+    @pin_opto1.setter
+    def pin_opto1(self, value):
+        self.bd.write(self._config_name, 'pin_opto1', value)
+        self._pin_opto1 = value
+
+    @property
+    def pin_opto2(self):
+        self._pin_opto2 = self.bd.config.get(self._config_name, 'pin_opto2')
+        return self._pin_opto2
+
+    @pin_opto2.setter
+    def pin_opto2(self, value):
+        self.bd.write(self._config_name, 'pin_opto2', value)
+        self._pin_opto2 = value
 
     @property
     def name(self):
