@@ -284,6 +284,7 @@ class BeagleDarcServerM(object):
         self._user = None
         self._password = None
         self._port = None
+        self._ior = None
 
     @property
     def host(self):

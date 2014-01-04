@@ -3,7 +3,6 @@
 Controller
 '''
 
-from BeagleDarc.BeagleDarcClient import BeagleDarcClient
 from BeagleDarc.Model import BeagleDarcServerM 
 from BeagleDarc.Model import Star
 from BeagleDarc.Model import Layer
