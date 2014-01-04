@@ -81,6 +81,12 @@ class LayerData:
 
         #VR_END
         self.entry_image_prefix = self.builder.get_object("entry_image_prefix")
+        
+        #OPTO1
+        self.entry_pin_opto1 = self.builder.get_object("entry_pin_opto1")
+
+        #OPTO2
+        self.entry_pin_opto2 = self.builder.get_object("entry_pin_opto2")
 
         #SAVE/RESTORE BUTTONS
         self.button_default = self.builder.get_object("button_default")
@@ -107,6 +113,8 @@ class LayerData:
         self.entry_steps.set_text(str(layer.steps))
         self.entry_vr_init.set_text(str(layer.vr_init))
         self.entry_vr_end.set_text(str(layer.vr_end))
+        self.entry_pin_opto1.set_text(str(layer.pin_opto1))
+        self.entry_pin_opto2.set_text(str(layer.pin_opto2))
         self.entry_image_prefix.set_text(layer.image_prefix)
 
     def changed_cb(self, entry):
@@ -126,6 +134,8 @@ class LayerData:
         layer.pin_sleep = self.entry_pin_sleep.get_text()
         layer.pin_step = self.entry_pin_step.get_text()
         layer.pin_dir = self.entry_pin_dir.get_text()
+        layer.pin_opto1 = self.entry_pin_opto1.get_text()
+        layer.pin_opto2 = self.entry_pin_opto2.get_text()
         layer.name = self.entry_name.get_text()
         layer.sim = self.checkbutton_sim.get_active()
         layer.direction = self.combobox_direction.get_active_text()
