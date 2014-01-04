@@ -8,6 +8,7 @@ import sys, os
 import CORBA, BBBServer, BBBServer__POA
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
+import getpass
 
 class Server_i (BBBServer__POA.Server):
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
@@ -36,19 +37,22 @@ class Server_i (BBBServer__POA.Server):
     def motor_move_skip_sensor(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
         print "motor move"
         return "ok"
-
-orb = CORBA.ORB_init(sys.argv)
-poa = orb.resolve_initial_references("RootPOA")
-
-servant = Server_i()
-poa.activate_object(servant)
-
-#XXX DIRTY workaround to carry out with deadline
-f = open('/tmp/IOR.txt','w')
-f.write(orb.object_to_string(servant._this()))
-print orb.object_to_string(servant._this())
-f.close()
-
-poa._get_the_POAManager().activate()
-orb.run()
-
+if __name__ == '__main__':
+    if getpass.getuser() == 'root':
+        orb = CORBA.ORB_init(sys.argv)
+        poa = orb.resolve_initial_references("RootPOA")
+        
+        servant = Server_i()
+        poa.activate_object(servant)
+        
+        #XXX DIRTY workaround to carry out with deadline
+        f = open('/tmp/IOR.txt','w')
+        f.write(orb.object_to_string(servant._this()))
+        print orb.object_to_string(servant._this())
+        f.close()
+        
+        poa._get_the_POAManager().activate()
+        orb.run()
+    else:
+        print "The server should run as root!!:\nsudo su -\npython\
+        /home/ubuntu/bbb-darc/BBBServer/server.py"
