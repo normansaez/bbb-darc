@@ -15,26 +15,31 @@ class SingletonServer:
     class __impl:
         def __init__(self):
             self.bds = BeagleDarcServerM('beagledarc_server')
+            self.status = None
 
         def singleton_id(self):
             return id(self)
 
         def start_BBBServer(self):
-            cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &\"" % (self.bds.user, self.bds.host)
-            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (self.bds.user, self.bds.host)
-            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+            #cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &\"" % (self.bds.user, self.bds.host)
+            #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            #cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (self.bds.user, self.bds.host)
+            #process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
             #sts = process.wait()
             #out = process.stdout.read().strip()
             #err = process.stderr.read().strip()
             #self.bds.ior = out
+            self.status = "ON"
+            print "status: ON"
 
         def stop_BBBServer(self):
-            cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (self.bds.user, self.bds.host)
-            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+            #cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (self.bds.user, self.bds.host)
+            #process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
             #sts = process.wait()
             #out = process.stdout.read().strip()
             #err = process.stderr.read().strip()
+            self.status = "OFF"
+            print "status: OFF"
 
     __instance = None
     def __init__(self):
@@ -78,10 +83,12 @@ class Controller:
         self.sserver.stop_BBBServer()
 
     def start_BBBServer(self):
-        self.sserver.start_BBBServer()
+        if self.sserver.status is "OFF":
+            self.sserver.start_BBBServer()
 
     def stop_BBBServer(self):
-        self.sserver.stop_BBBServer()
+        if self.sserver.status is "ON":
+            self.sserver.stop_BBBServer()
 
 
     #star methods

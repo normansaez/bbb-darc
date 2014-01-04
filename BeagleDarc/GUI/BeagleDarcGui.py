@@ -16,8 +16,7 @@ class BeagleDarcGui:
     def __init__( self ):
         path, fil = os.path.split(os.path.abspath(__file__))
         bds = BeagleDarcServerM('beagledarc_server')
-        #self.controller = Controller()
-        self.controller = None
+        self.controller = Controller()
 
         self.builder = gtk.Builder()
         self.builder.add_from_file(path+"/glade/beagledarc.glade")
@@ -56,7 +55,6 @@ class BeagleDarcGui:
         '''
         callback
         '''
-        self.controller = Controller()
         print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
         if widget.get_active() is True:
             widget.set_label(gtk.STOCK_DISCONNECT)
