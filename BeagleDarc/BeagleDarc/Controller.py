@@ -21,23 +21,23 @@ class SingletonServer:
             return id(self)
 
         def start_BBBServer(self):
-            #cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &\"" % (self.bds.user, self.bds.host)
-            #process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
-            #cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (self.bds.user, self.bds.host)
-            #process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-            #sts = process.wait()
-            #out = process.stdout.read().strip()
-            #err = process.stderr.read().strip()
-            #self.bds.ior = out
+            cmd = "ssh %s@%s \"python /home/ubuntu/bbb-darc/BBBServer/server.py &> /var/log/BBBServer.log &\"" % (self.bds.user, self.bds.host)
+            process = Popen(cmd , stdout=sys.stdout , stderr=sys.stderr , shell=True)
+            cmd = "ssh %s@%s \"cat /tmp/IOR.txt &\"" % (self.bds.user, self.bds.host)
+            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+            sts = process.wait()
+            out = process.stdout.read().strip()
+            err = process.stderr.read().strip()
+            self.bds.ior = out
             self.status = "ON"
             print "status: ON"
 
         def stop_BBBServer(self):
-            #cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (self.bds.user, self.bds.host)
-            #process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-            #sts = process.wait()
-            #out = process.stdout.read().strip()
-            #err = process.stderr.read().strip()
+            cmd = "ssh %s@%s \"ps aux |grep server.py|awk \'{print \\$2}\'|xargs kill -9 && rm -fr /tmp/IOR.txt \"" % (self.bds.user, self.bds.host)
+            process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+            sts = process.wait()
+            out = process.stdout.read().strip()
+            err = process.stderr.read().strip()
             self.status = "OFF"
             print "status: OFF"
 
