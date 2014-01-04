@@ -29,9 +29,6 @@ class Server_i (BBBServer__POA.Server):
         print "led off"
         return "ok"
 
-    def motor_move(self, name, steps, vel, pin_dir, pin_step, pin_sleep, stat_der, stat_izq):
-        print "%s(%s,%s,%s,%s,%s) => (%s, %s)" % (name, steps, vel, pin_dir, pin_step, pin_sleep, stat_der, stat_izq)
-
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
         print "motor move"
         return "ok"
