@@ -42,19 +42,6 @@ class Controller:
     #layer methods
     def layer_move(self, layer_id):
         layer = Layer(layer_id)
-#        print "layer.name      %s"         % type(layer.name)
-#        print "layer.pin_dir   %s"         % type(layer.pin_dir)
-#        print "layer.pin_step  %s"         % type(layer.pin_step)
-#        print "layer.pin_sleep %s"         % type(layer.pin_sleep)
-#        print "layer.pin_opto1 %s"         % type(layer.pin_opto1)
-#        print "layer.pin_opto2 %s"         % type(layer.pin_opto2)
-#        print "layer.simulated %s"         % type(layer.simulated)
-#        print "layer.direction %s"         % type(layer.direction)
-#        print "layer.velocity  %s"         % type(layer.velocity)
-#        print "layer.steps     %s"         % type(layer.steps)
-#        print "layer.vr_init   %s"         % type(layer.vr_init)
-#        print "layer.vr_end    %s"         % type(layer.vr_end)
-#        print "layer.cur_pos   %s"         % type(layer.cur_pos)
         self.cli_obj.motor_move(layer.name, layer.pin_dir, layer.pin_step, layer.pin_sleep, layer.pin_opto1, layer.pin_opto2, layer.simulated, layer.direction, layer.velocity, layer.steps, layer.vr_init, layer.vr_end, layer.cur_pos)
 
     def layer_move_skip_sensor(self, layer_id):
