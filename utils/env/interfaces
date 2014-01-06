@@ -10,7 +10,7 @@ auto eth0
 iface eth0 inet static
     address 146.155.14.12
     netmask 255.255.255.0
-#    network 146.155.14.0
+    network 146.155.14.0
     broadcast 146.155.14.255
     gateway 146.155.14.1
     dns-nameservers 146.155.4.4
