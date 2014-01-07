@@ -4,4 +4,5 @@ cp -v pythonrc ~/.pythonrc
 cp -v vimrc ~/.vimrc
 if [ "$USER" = "root" ]; then
     cp -v sudoers /etc/sudoers
+    cp -v interfaces /etc/network/interfaces
 fi
