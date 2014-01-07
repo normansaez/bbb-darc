@@ -9,7 +9,7 @@ import CORBA, BBBServer, BBBServer__POA
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import getpass
-
+from time import sleep
 
 
 LE_DICT = {"P8_3":1,
@@ -155,54 +155,57 @@ STAR_STATUS = {"NGS_A_1":["P8_20","OFF"],
 
 class Server_i (BBBServer__POA.Server):
 
+    def __init__(self):
+        self.turn_off()
+
     def turn_off(self):    
         #0- PWM to LOW
-        turn_off_gpio("P8_13")
-        turn_off_gpio("P8_19")
-        turn_off_gpio("P9_14")
-        turn_off_gpio("P9_16")
+        self.turn_off_gpio("P8_13")
+        self.turn_off_gpio("P8_19")
+        self.turn_off_gpio("P9_14")
+        self.turn_off_gpio("P9_16")
         
         #1- LE Enable
-        turn_on_gpio("P8_3")
-        turn_on_gpio("P8_4")
-        turn_on_gpio("P8_5")
-        turn_on_gpio("P8_11")
-        turn_on_gpio("P8_15")
-        turn_on_gpio("P8_17")
-        turn_on_gpio("P8_42")
-        turn_on_gpio("P8_44")
-        turn_on_gpio("P8_45")
-        turn_on_gpio("P8_46")
-        turn_on_gpio("P9_12")
-        turn_on_gpio("P9_15")
-        turn_on_gpio("P9_41")
-        turn_on_gpio("P9_42")
+        self.turn_on_gpio("P8_3")
+        self.turn_on_gpio("P8_4")
+        self.turn_on_gpio("P8_5")
+        self.turn_on_gpio("P8_11")
+        self.turn_on_gpio("P8_15")
+        self.turn_on_gpio("P8_17")
+        self.turn_on_gpio("P8_42")
+        self.turn_on_gpio("P8_44")
+        self.turn_on_gpio("P8_45")
+        self.turn_on_gpio("P8_46")
+        self.turn_on_gpio("P9_12")
+        self.turn_on_gpio("P9_15")
+        self.turn_on_gpio("P9_41")
+        self.turn_on_gpio("P9_42")
     
         #2- D-bus Disable
-        turn_off_gpio("P8_6")
-        turn_off_gpio("P8_12")
-        turn_off_gpio("P8_14")
-        turn_off_gpio("P8_16")
-        turn_off_gpio("P8_18")
-        turn_off_gpio("P8_20")
-        turn_off_gpio("P8_22")
-        turn_off_gpio("P8_24")
+        self.turn_off_gpio("P8_6")
+        self.turn_off_gpio("P8_12")
+        self.turn_off_gpio("P8_14")
+        self.turn_off_gpio("P8_16")
+        self.turn_off_gpio("P8_18")
+        self.turn_off_gpio("P8_20")
+        self.turn_off_gpio("P8_22")
+        self.turn_off_gpio("P8_24")
     
         #3- LE Disable
-        turn_off_gpio("P8_3")
-        turn_off_gpio("P8_4")
-        turn_off_gpio("P8_5")
-        turn_off_gpio("P8_11")
-        turn_off_gpio("P8_15")
-        turn_off_gpio("P8_17")
-        turn_off_gpio("P8_42")
-        turn_off_gpio("P8_44")
-        turn_off_gpio("P8_45")
-        turn_off_gpio("P8_46")
-        turn_off_gpio("P9_12")
-        turn_off_gpio("P9_15")
-        turn_off_gpio("P9_41")
-        turn_off_gpio("P9_42")
+        self.turn_off_gpio("P8_3")
+        self.turn_off_gpio("P8_4")
+        self.turn_off_gpio("P8_5")
+        self.turn_off_gpio("P8_11")
+        self.turn_off_gpio("P8_15")
+        self.turn_off_gpio("P8_17")
+        self.turn_off_gpio("P8_42")
+        self.turn_off_gpio("P8_44")
+        self.turn_off_gpio("P8_45")
+        self.turn_off_gpio("P8_46")
+        self.turn_off_gpio("P9_12")
+        self.turn_off_gpio("P9_15")
+        self.turn_off_gpio("P9_41")
+        self.turn_off_gpio("P9_42")
 
     def turn_on_gpio(self, pin):
         GPIO.setup(pin, GPIO.OUT)
@@ -216,30 +219,30 @@ class Server_i (BBBServer__POA.Server):
         print sys._getframe().f_code.co_name,
         print(' '+pin)
 
-    def refresh_status(pin_pwm, pin_enable):
+    def refresh_status(self, pin_pwm, pin_enable):
         '''
         '''
-        turn_on_gpio(pin_pwm)
-        turn_on_gpio(pin_enable)
+        self.turn_off_gpio(pin_pwm)
+        self.turn_on_gpio(pin_enable)
         le_list = "LE_%d" % LE_DICT[pin_enable]
         for star in eval(le_list):
             star_sts = STAR_STATUS[star]
             if star_sts[1] == "OFF":
-                turn_off_gpio(star_sts[0])
+                self.turn_off_gpio(star_sts[0])
             else:
-                turn_on_gpio(star_sts[0])
-        turn_off_gpio(pin_enable)
-
+                self.turn_on_gpio(star_sts[0])
+        sleep(30)
+        self.turn_off_gpio(pin_enable)
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
-        STATUS[name] = "ON"
-        self.refresh_status(pin_pwm, pin_enable, pin_led)
+        STAR_STATUS[name][1] = "ON"
+        self.refresh_status(pin_pwm, pin_enable)
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
-        STATUS[name] = "ON"
-        self.refresh_status(pin_pwm, pin_enable, pin_led)
+        STAR_STATUS[name][1] = "OFF"
+        self.refresh_status(pin_pwm, pin_enable)
         return "ok"
 
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
