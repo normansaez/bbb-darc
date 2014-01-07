@@ -39,11 +39,13 @@
 #            print
 #
 import csv
+print "STAR_STATUS = {"
 with open('mapping.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
             pass
         else:
-            print '"%s":["%s":"%s"],' % (row[1],row[2],"OFF")
+            print '"%s":["%s","%s"],' % (row[1],row[2],"OFF")
+print "}"
 
