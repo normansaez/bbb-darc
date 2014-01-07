@@ -42,6 +42,114 @@ LE_12  = ["NGS_B_12", "NGS_B_13", "NGS_B_20", "NGS_B_21","NGS_B_22","NGS_B_23","
 LE_13  = ["NGS_B_1", "NGS_B_2", "NGS_B_3", "NGS_B_14","NGS_B_15","NGS_B_16","NGS_B_17", "NGS_B_18"]
 LE_14  = ["NGS_A_1", "NGS_A_2", "NGS_A_3", "NGS_A_14","NGS_A_15","NGS_A_16","NGS_A_17", "NGS_A_18"]
 
+STAR_STATUS = {"NGS_A_1":["P8_20","OFF"],
+"NGS_A_2":["P8_22","OFF"],
+"NGS_A_3":["P8_24","OFF"],
+"NGS_A_4":["P8_6","OFF"],
+"NGS_A_5":["P8_12","OFF"],
+"NGS_A_6":["P8_14","OFF"],
+"NGS_A_7":["P8_16","OFF"],
+"NGS_A_8":["P8_18","OFF"],
+"NGS_A_9":["P8_20","OFF"],
+"NGS_A_10":["P8_22","OFF"],
+"NGS_A_11":["P8_24","OFF"],
+"NGS_A_12":["P8_6","OFF"],
+"NGS_A_13":["P8_12","OFF"],
+"NGS_A_14":["P8_18","OFF"],
+"NGS_A_15":["P8_16","OFF"],
+"NGS_A_16":["P8_14","OFF"],
+"NGS_A_17":["P8_12","OFF"],
+"NGS_A_18":["P8_6","OFF"],
+"NGS_A_20":["P8_24","OFF"],
+"NGS_A_21":["P8_22","OFF"],
+"NGS_A_22":["P8_20","OFF"],
+"NGS_A_23":["P8_18","OFF"],
+"NGS_A_24":["P8_16","OFF"],
+"NGS_A_25":["P8_14","OFF"],
+"NGS_B_1":["P8_14","OFF"],
+"NGS_B_2":["P8_12","OFF"],
+"NGS_B_3":["P8_6","OFF"],
+"NGS_B_4":["P8_24","OFF"],
+"NGS_B_5":["P8_22","OFF"],
+"NGS_B_6":["P8_20","OFF"],
+"NGS_B_7":["P8_18","OFF"],
+"NGS_B_8":["P8_16","OFF"],
+"NGS_B_9":["P8_14","OFF"],
+"NGS_B_10":["P8_12","OFF"],
+"NGS_B_11":["P8_6","OFF"],
+"NGS_B_12":["P8_24","OFF"],
+"NGS_B_13":["P8_22","OFF"],
+"NGS_B_14":["P8_16","OFF"],
+"NGS_B_15":["P8_18","OFF"],
+"NGS_B_16":["P8_20","OFF"],
+"NGS_B_17":["P8_22","OFF"],
+"NGS_B_18":["P8_24","OFF"],
+"NGS_B_20":["P8_6","OFF"],
+"NGS_B_21":["P8_12","OFF"],
+"NGS_B_22":["P8_14","OFF"],
+"NGS_B_23":["P8_16","OFF"],
+"NGS_B_24":["P8_18","OFF"],
+"NGS_B_25":["P8_20","OFF"],
+"NGS_C_10":["P8_18","OFF"],
+"NGS_C_11":["P8_16","OFF"],
+"NGS_C_12":["P8_14","OFF"],
+"NGS_C_13":["P8_12","OFF"],
+"NGS_C_25":["P8_6","OFF"],
+"LGS_A_1":["P8_20","OFF"],
+"LGS_A_2":["P8_22","OFF"],
+"LGS_A_3":["P8_24","OFF"],
+"LGS_A_4":["P8_6","OFF"],
+"LGS_A_5":["P8_12","OFF"],
+"LGS_A_6":["P8_14","OFF"],
+"LGS_A_7":["P8_16","OFF"],
+"LGS_A_8":["P8_18","OFF"],
+"LGS_A_9":["P8_20","OFF"],
+"LGS_A_10":["P8_22","OFF"],
+"LGS_A_11":["P8_24","OFF"],
+"LGS_A_12":["P8_6","OFF"],
+"LGS_A_13":["P8_12","OFF"],
+"LGS_A_14":["P8_18","OFF"],
+"LGS_A_15":["P8_16","OFF"],
+"LGS_A_16":["P8_14","OFF"],
+"LGS_A_17":["P8_12","OFF"],
+"LGS_A_18":["P8_6","OFF"],
+"LGS_A_20":["P8_24","OFF"],
+"LGS_A_21":["P8_22","OFF"],
+"LGS_A_22":["P8_20","OFF"],
+"LGS_A_23":["P8_18","OFF"],
+"LGS_A_24":["P8_16","OFF"],
+"LGS_A_25":["P8_14","OFF"],
+"LGS_B_1":["P8_14","OFF"],
+"LGS_B_2":["P8_12","OFF"],
+"LGS_B_3":["P8_6","OFF"],
+"LGS_B_4":["P8_24","OFF"],
+"LGS_B_5":["P8_22","OFF"],
+"LGS_B_6":["P8_20","OFF"],
+"LGS_B_7":["P8_18","OFF"],
+"LGS_B_8":["P8_16","OFF"],
+"LGS_B_9":["P8_14","OFF"],
+"LGS_B_10":["P8_12","OFF"],
+"LGS_B_11":["P8_6","OFF"],
+"LGS_B_12":["P8_24","OFF"],
+"LGS_B_13":["P8_22","OFF"],
+"LGS_B_14":["P8_16","OFF"],
+"LGS_B_15":["P8_18","OFF"],
+"LGS_B_16":["P8_20","OFF"],
+"LGS_B_17":["P8_22","OFF"],
+"LGS_B_18":["P8_24","OFF"],
+"LGS_B_20":["P8_6","OFF"],
+"LGS_B_21":["P8_12","OFF"],
+"LGS_B_22":["P8_14","OFF"],
+"LGS_B_23":["P8_16","OFF"],
+"LGS_B_24":["P8_18","OFF"],
+"LGS_B_25":["P8_20","OFF"],
+"LGS_C_10":["P8_18","OFF"],
+"LGS_C_11":["P8_16","OFF"],
+"LGS_C_12":["P8_14","OFF"],
+"LGS_C_13":["P8_12","OFF"],
+"LGS_C_25":["P8_6","OFF"],
+}
+
 
 
 
@@ -108,27 +216,30 @@ class Server_i (BBBServer__POA.Server):
         print sys._getframe().f_code.co_name,
         print(' '+pin)
 
-    def refresh_status(pin_pwm, pin_enable, pin_led):
+    def refresh_status(pin_pwm, pin_enable):
         '''
         '''
         turn_on_gpio(pin_pwm)
         turn_on_gpio(pin_enable)
         le_list = "LE_%d" % LE_DICT[pin_enable]
         for star in eval(le_list):
-            sts = STATUS[star]
-            if sts = "OFF":
-                turn_off_gpio(pin_led)
+            star_sts = STAR_STATUS[star]
+            if star_sts[1] == "OFF":
+                turn_off_gpio(star_sts[0])
             else:
+                turn_on_gpio(star_sts[0])
         turn_off_gpio(pin_enable)
 
-    def on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
+    def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
+        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         STATUS[name] = "ON"
         self.refresh_status(pin_pwm, pin_enable, pin_led)
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
-        print "led off"
+        STATUS[name] = "ON"
+        self.refresh_status(pin_pwm, pin_enable, pin_led)
         return "ok"
 
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
