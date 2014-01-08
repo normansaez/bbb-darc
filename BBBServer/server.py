@@ -249,17 +249,27 @@ class Server_i (BBBServer__POA.Server):
             else:
                 self.turn_on_gpio(star_sts[0])
         self.turn_off_gpio(pin_enable)
-
+        for key, value in STAR_STATUS.iteritems():
+            if value[1] == "ON":
+                msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
+                print msg
+            else:
+                print key, value
+                
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        print "---------------------------------------------------"
         STAR_STATUS[name][1] = "ON"
         self.refresh_status(pin_pwm, pin_enable)
+        print "---------------------------------------------------"
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        print "---------------------------------------------------"
         STAR_STATUS[name][1] = "OFF"
         self.refresh_status(pin_pwm, pin_enable)
+        print "---------------------------------------------------"
         return "ok"
 
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
