@@ -157,6 +157,7 @@ class Server_i (BBBServer__POA.Server):
 
     def __init__(self):
         self.turn_off()
+        self.initial_status_motors()
 
     def turn_off(self):    
         #0- PWM to LOW
@@ -164,7 +165,7 @@ class Server_i (BBBServer__POA.Server):
         self.turn_off_gpio("P8_19")
         self.turn_off_gpio("P9_14")
         self.turn_off_gpio("P9_16")
-        
+
         #1- LE Enable
         self.turn_on_gpio("P8_3")
         self.turn_on_gpio("P8_4")
@@ -206,6 +207,21 @@ class Server_i (BBBServer__POA.Server):
         self.turn_off_gpio("P9_15")
         self.turn_off_gpio("P9_41")
         self.turn_off_gpio("P9_42")
+    def initial_status_motors(self):
+        self.turn_off_gpio("P8_28")
+        self.turn_off_gpio("P8_25")
+        self.turn_off_gpio("P8_41")
+        self.turn_off_gpio("P8_43")
+
+        self.turn_off_gpio("P8_26")
+        self.turn_off_gpio("P8_21")
+        self.turn_off_gpio("P8_40")
+        self.turn_off_gpio("P8_39")
+
+        self.turn_off_gpio("P9_23")
+        self.turn_off_gpio("P9_27")
+        self.turn_off_gpio("P8_30")
+        self.turn_off_gpio("P8_29")
 
     def turn_on_gpio(self, pin):
         GPIO.setup(pin, GPIO.OUT)

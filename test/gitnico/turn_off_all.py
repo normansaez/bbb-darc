@@ -20,7 +20,7 @@ def turn_off_gpio(pin):
     print(' '+pin)
 #    raw_input('press a key to continue')
 
-def turn_off():    
+def turn_off_led():    
     #0- PWM to LOW
     turn_off_gpio("P8_13")
     turn_off_gpio("P8_19")
@@ -69,7 +69,13 @@ def turn_off():
     turn_off_gpio("P9_41")
     turn_off_gpio("P9_42")
     
- 
+def turn_off_motor():    
+    #0- PWM to LOW
+    turn_off_gpio("P8_13")
+    turn_off_gpio("P8_19")
+    turn_off_gpio("P9_14")
+    turn_off_gpio("P9_16")
+  
 
     
    
