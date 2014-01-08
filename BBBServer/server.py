@@ -207,6 +207,7 @@ class Server_i (BBBServer__POA.Server):
         self.turn_off_gpio("P9_15")
         self.turn_off_gpio("P9_41")
         self.turn_off_gpio("P9_42")
+
     def initial_status_motors(self):
         self.turn_off_gpio("P8_28")
         self.turn_off_gpio("P8_25")
@@ -248,6 +249,7 @@ class Server_i (BBBServer__POA.Server):
             else:
                 self.turn_on_gpio(star_sts[0])
         self.turn_off_gpio(pin_enable)
+
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         STAR_STATUS[name][1] = "ON"
