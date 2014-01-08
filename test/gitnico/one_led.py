@@ -46,20 +46,123 @@ if __name__ == '__main__':
     turn_off_gpio('P9_16')
     turn_off_gpio('P8_19')
     
+    # Prende 1
+    raw_input('Press enter to turn led_1 on')
     # LE
-    turn_on_gpio('P8_45')
+    turn_on_gpio('P9_41')
+    raw_input('LE arriba')
     # Bus D 
-    turn_on_gpio('P8_20')
+    turn_on_gpio('P8_24')
     turn_off_gpio('P8_22')
-    turn_off_gpio('P8_24')
+    turn_off_gpio('P8_20')
     turn_off_gpio('P8_18')
     turn_off_gpio('P8_16')
     turn_off_gpio('P8_14')
     turn_off_gpio('P8_12')
     turn_off_gpio('P8_6')
-    raw_input('press a key to disable')
+    raw_input('Bus D seteado')
 
     # Disable LE
-    turn_off_gpio('P8_45')
+    turn_off_gpio('P9_41')
+    raw_input('LE abajo')
+
+    # Prende 6
+    raw_input('Press enter to turn led_6 on')
+    # LE
+    turn_on_gpio('P9_12')
+    raw_input('LE arriba')
+
+    # Bus D
+    turn_off_gpio('P8_24')
+    turn_off_gpio('P8_22')
+    turn_off_gpio('P8_20')
+    turn_off_gpio('P8_18')
+    turn_off_gpio('P8_16')
+    turn_on_gpio('P8_14')
+    turn_off_gpio('P8_12')
+    turn_off_gpio('P8_6')
+
+    # Disable LE
+    turn_off_gpio('P9_12')
+    raw_input('LE abajo')
+    
+    # Prende 20
+    raw_input('Press enter to turn led_20 on')
+    # LE
+    turn_on_gpio('P9_12')
+    raw_input('LE arriba')
+    # Bus D
+    turn_off_gpio('P8_24')
+    turn_off_gpio('P8_22')
+    turn_on_gpio('P8_20')
+    turn_off_gpio('P8_18')
+    turn_off_gpio('P8_16')
+    turn_on_gpio('P8_14')
+    turn_off_gpio('P8_12')
+    turn_off_gpio('P8_6')
+
+    # Disable LE
+    turn_off_gpio('P9_12')
+    raw_input('LE abajo')
+
+
+
+    # Apaga 1
+    raw_input('Press enter to turn led_1 off')
+    # LE
+    turn_on_gpio('P9_41')
+    raw_input('LE arriba')
+    # Bus D 
+    turn_off_gpio('P8_24')
+    turn_off_gpio('P8_22')
+    turn_off_gpio('P8_20')
+    turn_off_gpio('P8_18')
+    turn_off_gpio('P8_16')
+    turn_off_gpio('P8_14')
+    turn_off_gpio('P8_12')
+    turn_off_gpio('P8_6')
+
+    # Disable LE
+    turn_off_gpio('P9_41')
+    raw_input('LE abajo')
+
+    # Apaga 6
+    raw_input('Press enter to turn led_6 off')
+    #LE
+    turn_on_gpio('P9_12')
+    raw_input('LE arriba')
+    # Bus D
+    turn_off_gpio('P8_24')
+    turn_off_gpio('P8_22')
+    turn_on_gpio('P8_20')
+    turn_off_gpio('P8_18')
+    turn_off_gpio('P8_16')
+    turn_off_gpio('P8_14')
+    turn_off_gpio('P8_12')
+    turn_off_gpio('P8_6')
+
+    # Disable LE
+    turn_off_gpio('P9_12')
+    raw_input('LE abajo')
+    
+    # Apaga 20
+    raw_input('Press enter to turn led_20 off')
+    #LE
+    turn_on_gpio('P9_12')
+    raw_input('LE arriba')
+    # Bus D
+    turn_off_gpio('P8_24')
+    turn_off_gpio('P8_22')
+    turn_off_gpio('P8_20')
+    turn_off_gpio('P8_18')
+    turn_off_gpio('P8_16')
+    turn_off_gpio('P8_14')
+    turn_off_gpio('P8_12')
+    turn_off_gpio('P8_6')
+
+    # Disable LE
+    turn_off_gpio('P9_12')
+    raw_input('LE abajo')
+ 
 
     raw_input('\n\nIF you press ANY KEY,THEN you WILL QUIT!!!')

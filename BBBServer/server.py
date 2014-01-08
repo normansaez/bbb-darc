@@ -240,15 +240,49 @@ class Server_i (BBBServer__POA.Server):
         '''
         '''
         self.turn_off_gpio(pin_pwm)
+        #3- LE Disable
+        self.turn_off_gpio("P8_3")
+        self.turn_off_gpio("P8_4")
+        self.turn_off_gpio("P8_5")
+        self.turn_off_gpio("P8_11")
+        self.turn_off_gpio("P8_15")
+        self.turn_off_gpio("P8_17")
+        self.turn_off_gpio("P8_42")
+        self.turn_off_gpio("P8_44")
+        self.turn_off_gpio("P8_45")
+        self.turn_off_gpio("P8_46")
+        self.turn_off_gpio("P9_12")
+        self.turn_off_gpio("P9_15")
+        self.turn_off_gpio("P9_41")
+        self.turn_off_gpio("P9_42")
+        #
         self.turn_on_gpio(pin_enable)
         le_list = "LE_%d" % LE_DICT[pin_enable]
+        print "%s" % str(le_list)
         for star in eval(le_list):
+            print star
             star_sts = STAR_STATUS[star]
             if star_sts[1] == "OFF":
                 self.turn_off_gpio(star_sts[0])
             else:
                 self.turn_on_gpio(star_sts[0])
-        self.turn_off_gpio(pin_enable)
+        #self.turn_off_gpio(pin_enable)
+        self.turn_off_gpio("P8_3")
+        self.turn_off_gpio("P8_4")
+        self.turn_off_gpio("P8_5")
+        self.turn_off_gpio("P8_11")
+        self.turn_off_gpio("P8_15")
+        self.turn_off_gpio("P8_17")
+        self.turn_off_gpio("P8_42")
+        self.turn_off_gpio("P8_44")
+        self.turn_off_gpio("P8_45")
+        self.turn_off_gpio("P8_46")
+        self.turn_off_gpio("P9_12")
+        self.turn_off_gpio("P9_15")
+        self.turn_off_gpio("P9_41")
+        self.turn_off_gpio("P9_42")
+        ###############################################################
+        print "#########################################"
         for key, value in STAR_STATUS.iteritems():
             if value[1] == "ON":
                 msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
@@ -257,16 +291,18 @@ class Server_i (BBBServer__POA.Server):
                 print key, value
                 
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         print "---------------------------------------------------"
+        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        print "-----------"
         STAR_STATUS[name][1] = "ON"
         self.refresh_status(pin_pwm, pin_enable)
         print "---------------------------------------------------"
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         print "---------------------------------------------------"
+        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        print "-----------"
         STAR_STATUS[name][1] = "OFF"
         self.refresh_status(pin_pwm, pin_enable)
         print "---------------------------------------------------"
