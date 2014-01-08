@@ -247,7 +247,6 @@ class Server_i (BBBServer__POA.Server):
                 self.turn_off_gpio(star_sts[0])
             else:
                 self.turn_on_gpio(star_sts[0])
-        sleep(30)
         self.turn_off_gpio(pin_enable)
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
