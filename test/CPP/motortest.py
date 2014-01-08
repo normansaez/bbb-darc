@@ -22,11 +22,12 @@ def turn_off_gpio(pin):
     #raw_input('press a key to continue')
 
 def move_step_pin(motor, steps):
-    os.system("./motor %d %d" % motor, steps)
+    os.system("./motor %d %d" % (motor, steps))
 if __name__ == '__main__':
     timeout = 0.0000001 #secs
-    
-    turn_off_all.turn_off()
+    pasos = 4000
+
+    turn_off_all.turn_off_motor()
     turn_off_gpio("P8_28")
     turn_off_gpio("P8_25")
     turn_off_gpio("P8_41")
@@ -44,26 +45,26 @@ if __name__ == '__main__':
 
     # Motor primero
     turn_on_gpio('P8_25')
-    move_step_pin(1,5000)
+    move_step_pin(1,pasos)
 
     turn_on_gpio("P8_28")
-    move_step_pin(1,5000)
+    move_step_pin(1,pasos)
     
     raw_input('siguiente motor')
     turn_off_gpio('P8_25')
 
     #Motor segundo
     turn_on_gpio('P8_21')
-    move_step_pin(2,5000)
+    move_step_pin(2,pasos)
     turn_on_gpio("P8_26")
-    move_step_pin(2,5000)
+    move_step_pin(2,pasos)
     raw_input('siguiente motor')    
     turn_off_gpio('P8_21')
 
     #Motor tercero
     turn_on_gpio('P9_27')
-    move_step_pin(3,5000)
+    move_step_pin(3,pasos)
     turn_on_gpio("P9_23")
-    move_step_pin(3,5000)
+    move_step_pin(3,pasos)
     turn_off_gpio('P9_27')
     raw_input('\n\nIF you press ANY KEY,THEN you WILL QUIT!!!')

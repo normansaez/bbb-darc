@@ -15,15 +15,12 @@ int main (int argc, char *argv[]) {
     int pin_number = 23, logic_status = 1;
     char* pin_direction = output;
 
-    int i=0;
     int steps = 0;
     int motor = 0;
     int stop = 0;
 
-    for (i=1; i< argc; i++) {
-        motor= atoi(argv[i]);
-        steps = atoi(argv[i]);
-    }
+        motor = atoi(argv[1]);
+        steps = atoi(argv[2]);
 //step
 //m1 => P8_27 => 86 
 //m2 => P8_23 => 36
@@ -57,6 +54,7 @@ printf("m%d, steps=%d\n",motor,steps);
             //write to gpio86
             fprintf(ofp_value, "%d", logic_status);
             fflush(ofp_value);
+            printf("%d\n",stop);
             stop += 1;
         }
         fclose(ofp_export);
@@ -91,6 +89,7 @@ printf("m%d, steps=%d\n",motor,steps);
             //write to gpio36
             fprintf(ofp_value, "%d", logic_status);
             fflush(ofp_value);
+            printf("%d\n",stop);
             stop += 1;
         }
         fclose(ofp_export);
@@ -125,6 +124,7 @@ printf("m%d, steps=%d\n",motor,steps);
             //write to gpio117
             fprintf(ofp_value, "%d", logic_status);
             fflush(ofp_value);
+            printf("%d\n",stop);
             stop += 1;
         }
         fclose(ofp_export);
