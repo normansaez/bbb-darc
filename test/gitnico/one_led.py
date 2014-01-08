@@ -39,6 +39,7 @@ if __name__ == '__main__':
     timeout = 3 #secs
     
     turn_off_all.turn_off()
+    turn_off_all.turn_off_motor()
     # Se prende NGS-A1
     print ('\nstart to turn on PWM ...')
     turn_off_gpio('P9_14')

@@ -70,11 +70,10 @@ def turn_off():
     turn_off_gpio("P9_42")
     
 def turn_off_motor():    
-    #0- PWM to LOW
-    turn_off_gpio("P8_13")
-    turn_off_gpio("P8_19")
-    turn_off_gpio("P9_14")
-    turn_off_gpio("P9_16")
+    #0- Sleeps activados
+    turn_off_gpio("P8_25")
+    turn_off_gpio("P8_21")
+    turn_off_gpio("P9_27")
   
 
     
