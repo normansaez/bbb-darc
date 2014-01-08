@@ -263,12 +263,17 @@ class Server_i (BBBServer__POA.Server):
         return "ok"
 
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
-        print "motor move"
+        for s in steps:
+            turn_off_gpio(pin_step)
+            turn_on_gpio(pin_step)
         return "ok"
 
     def motor_move_skip_sensor(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
-        print "motor move"
+        for s in steps:
+            turn_off_gpio(pin_step)
+            turn_on_gpio(pin_step)
         return "ok"
+
 if __name__ == '__main__':
     if getpass.getuser() == 'root':
         orb = CORBA.ORB_init(sys.argv)
