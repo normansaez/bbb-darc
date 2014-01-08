@@ -50,11 +50,13 @@ class Main:
 
         #Create all buttons here:
         for i in range(1, star_coord.__len__() +1):
-            button = gtk.ToggleButton("%d"%i)
-            button.connect("toggled", self.callback, "%d"%i)
-            button.show()
-            self.fix.put(button, star_coord[i][0], star_coord[i][1])
-
+            if i <= 53:
+                button = gtk.ToggleButton("%d"%i)
+                button.connect("toggled", self.callback, "%d"%i)
+                button.show()
+                self.fix.put(button, star_coord[i][0], star_coord[i][1])
+            else:
+                pass
         #Creating controller
         self.controller = Controller()
 

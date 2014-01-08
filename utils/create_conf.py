@@ -1,4 +1,19 @@
 import csv
+
+print "[beagledarc_server]"
+print "host = 192.168.7.2"
+print "user = root"
+print "password = "
+print "port = "
+print "ior = IOR:010000001900000049444c3a4242425365727665722f5365727665723a312e3000000000010000000000000064000000010102000b00000031302e34322e302e3937000052e700000e000000fed0a5cc5200000b99000000000000000200000000000000080000000100000000545441010000001c00000001000000010001000100000001000105090101000100000009010100 "
+print " "
+print "[darc]"
+print "camera = ShackHartmann"
+print "pxlx = 1920"
+print "pxly = 1080"
+print "image_path = /home/dani/nsaez/images/"
+print 
+
 with open('mapping.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
