@@ -8,6 +8,10 @@ import gtk
 
 from BeagleDarc.Model import BeagleDarcServerM 
 from BeagleDarc.Controller import Controller
+from GUI import LayersGui
+from GUI import LayerData
+from GUI import StarsGui
+from GUI import StarData
 
 class BeagleDarcGui:
 
@@ -61,6 +65,11 @@ class BeagleDarcGui:
             widget.set_use_stock(True)
             self.image4.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_MENU)
             self.bds.ior = self.entry3.get_text()
+            #Layers
+            #LayersGui.Layers()
+            #LayerData.LayerData()
+            #StarsGui.Main()
+            #StarData.StarData()
 
         if widget.get_active() is False:
             widget.set_label(gtk.STOCK_CONNECT)
@@ -72,14 +81,10 @@ class BeagleDarcGui:
 
 
     def phasescreen(self, widget):
-        from GUI import LayersGui
-        from GUI import LayerData
         LayersGui.Layers()
         LayerData.LayerData()
 
     def stars(self, widget):
-        from GUI import StarsGui
-        from GUI import StarData
         StarsGui.Main()
         StarData.StarData()
 
