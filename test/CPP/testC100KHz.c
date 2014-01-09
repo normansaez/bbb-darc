@@ -5,6 +5,7 @@
 #define output "out"
 #define input "in"
 void delay_us(int);
+
 int main (void)
 {
     //define file handles
