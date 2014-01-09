@@ -119,7 +119,7 @@ printf("m%d, steps=%d\n",motor,steps);
         while( stop <= steps)
         {
             //delay_us(5000);
-            delay_us(5);
+            //delay_us(5);
             logic_status = logic_status?0:1;
             //write to gpio117
             fprintf(ofp_value, "%d", logic_status);

@@ -40,7 +40,7 @@ if __name__ == '__main__':
     turn_off_gpio("P8_30")
     turn_off_gpio("P8_29")
 
-    num = range(1,5000)
+    num = range(1,2000)
     # Motor primero
     turn_on_gpio('P8_25')
     for i in num:
