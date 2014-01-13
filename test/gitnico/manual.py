@@ -29,26 +29,53 @@ def move_motor(motor_number):
     m = {1:"ground_layer",2:"vertical_altitude_layer",3:"horizontal_altitude_layer"}.get(motor_number)
     motor = Layer(m)
     turn_on_gpio(motor.pin_sleep)
-    count1 = 0
+    cmd_pos = 40000
+    sumando = 0
+    while(motor.cur_pos+cmd_pos>motor.vr_end or motor.cur_pos+cmd_pos<0)
+        cmd_pos=raw_input('How many steps\n(sign does count)')
+    if(cmd_pos>0):
+        sumando = 1
+        turn_off_gpio(motor.pin_dir)
+    else:
+        turn_on_gpio(motor.pin_dir)
+        sumando = -1
+    destino = motor.cur_pos + cmd_pos
     flag = True
-    while(flag):
+    while(flag and destino != motor.cur_pos):
         try:
             turn_off_gpio(motor.pin_step)
             turn_on_gpio(motor.pin_step)
+            motor.cur_pos += sumando
         except KeyboardInterrupt:
             flag = False
    
-    # Cambio de direccion
-    flag = True
-    turn_on_gpio(motor.pin_dir)
-    while(motor.vr_end > count1):
-        try:
-            turn_off_gpio(motor.pin_step)
-            turn_on_gpio(motor.pin_step)
-            count1 += 1
-        except KeyboardInterrupt:
-            flag = False
-    turn_off_gpio(motor.pin_dir)
+    turn_off_gpio(motor.pin_sleep)
+
+def calibrate_motor():
+    for i in range(1,3+1)      
+        m = {1:"ground_layer",2:"vertical_altitude_layer",3:"horizontal_altitude_layer"}.get(motor_number)
+        motor = Layer(m)
+        turn_on_gpio(motor.pin_sleep)
+        cmd_pos = 40000
+        flag = True
+        turn_off_gpio(motor.pin_dir)
+        while(flag):
+            try:
+                turn_off_gpio(motor.pin_step)
+                turn_on_gpio(motor.pin_step)
+            except KeyboardInterrupt:
+                flag = False
+        motor.cur_pos = motot.vr_end
+        turn_on_gpio(motor.pin_dir)
+        flag = True
+        while(flag and motor.cur_pos>0)
+                try:
+                    turn_off_gpio(motor.pin_step)
+                    turn_on_gpio(motor.pin_step)
+                    motor.cur_pos -= 1
+                except KeyboardInterrupt:
+                    flag = False
+        turn_off_gpio(motor.pin_sleep)
 
  
 
@@ -69,7 +96,19 @@ if __name__ == '__main__':
     turn_off_gpio("P8_26")
     turn_off_gpio("P9_23")
 
-    for i in range(1,3+1):
-        move_motor(i)
-    
-    opcion = raw_input('Tell me, what can I do for you?\n1- Turn on a LED\n2- Move ground layer')
+    calibrate_motor()
+    while(True):
+        opcion = raw_input('Tell me, what can I do for you?\n1- Turn on a
+                LED\n2- Move motor')
+        if(opcion ==1):
+            one_led(raw_input('Enter LED\'s id number'))
+        else:
+            move_motor(raw_input('Enter motor\' id number\n1- Ground Layer\n2-
+                        Vertical altitud layer\n3- Horizontal altitud
+                        layer'))
+
+
+
+
+
+
