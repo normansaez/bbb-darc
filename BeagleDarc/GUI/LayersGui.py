@@ -251,7 +251,7 @@ class Layers:
     def ground_scale_pos_moved(self, event):
         print "ground_scale_moved"
         print self.ground_scale_pos.get_value()
-        self.fix.move(self.img_ground_cmd, 100+int(self.ground_scale_pos.get_value()*4), 500)
+        self.fix.move(self.img_ground_cmd, 100+int(self.ground_scale_pos.get_value()*3), 500)
 
     def altitude_scale_pos_X_moved(self, event):
         print "altitude_scale_X_moved"
