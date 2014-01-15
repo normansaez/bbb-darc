@@ -106,6 +106,11 @@ if __name__ == '__main__':
 #        sleep(timeout)
 #    
 #    turn_off_gpio('P9_27')
+    turn_off_all.turn_off()
+    turn_on_gpio('P9_41')
+    turn_on_gpio('P8_24')
+    turn_off_gpio('P9_41')
+    
     turn_on_gpio('P9_27')
     count1 = 0
     flag = True
