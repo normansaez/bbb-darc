@@ -5,8 +5,9 @@ import numpy
 import pylab
 
 c=darc.Control("ShackHartmann")
-#cent = c.Get("refCentroids")
-# setear centroides de referencia on-axis c.Set("refCentroids",None)
+# funcion de prender led que setee bg, refs, subaps y todo
+# con el shutter correcto
+c.Set("refCentroids",None)
 niter = 200
 nsubaps = 500                                               # number of subaps
 nBrightest = 100                                            # range of values
