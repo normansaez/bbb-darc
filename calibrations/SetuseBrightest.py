@@ -6,8 +6,9 @@ import pylab
 
 c=darc.Control("ShackHartmann")
 # funcion de prender led que setee bg, refs, subaps y todo
-# con el shutter correcto
-c.Set("refCentroids",None)
+# con el shutter correcto. Si todo ya está seteado y la GUI ya prendió el led,
+# entonces no-problemo
+# c.Set("refCentroids",None)
 niter = 200
 nsubaps = 500                                               # number of subaps
 nBrightest = 100                                            # range of values
