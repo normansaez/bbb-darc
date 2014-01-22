@@ -26,7 +26,7 @@ print noise.argmin(0)
 pylab.plot(noise)
 pylab.show()
 
-FITS.Write(cent.astype(numpy.float32),'cent_led_1.fits')
+FITS.Write(noise.astype(numpy.float32),'noise_vs_useBrightest.fits')
 
 
 
