@@ -6,7 +6,7 @@ import numpy
 c=darc.Control("ShackHartmann")
 #cent = c.Get("refCentroids")
 c.Set("refCentroids",None)
-niter = 14
+niter = 100
 cent = c.SumData("rtcCentBuf",niter,"f")[0]/float(niter)
 print cent.max(), cent.min()
 c.Set("refCentroids", cent)
