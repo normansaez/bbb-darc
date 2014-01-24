@@ -2,13 +2,17 @@
 import FITS
 import darc
 import numpy
+import pylab
 
 c=darc.Control("ShackHartmann")
-#cent = c.Get("refCentroids")
-c.Set("refCentroids",None)
-niter = 200
-cent = c.SumData("rtcCentBuf",niter,"f")[0]/float(niter)
-print cent.max(), cent.min()
-c.Set("refCentroids", cent)
-FITS.Write(cent.astype(numpy.float32),'cent_led_1.fits')
+niter = 5000 
+cent = c.GetStreamBlock(cameraName+'rtcCentBuf',niter)   # niter frames - as a list
+FITS.Write(cent.astype(numpy.float32),'Slopes_Noise.fits')
+pylab.plot(cent)
+pylab.show()
+
+
+
+
+
 
