@@ -16,7 +16,7 @@ nBrightest = 100                                            # range of values
 noise = numpy.zeros(nBrightest)
 cameraName = 'ShackHartmann'
 frames = numpy.zeros([niter,nsubaps])
-for i in range(1,nBrightest+1):
+for i in range(0,nBrightest):
     print '\nRecording with useBrightest:%3.0f ' %i
     c.Set('useBrightest',-i)
     cent = c.GetStreamBlock(cameraName+'rtcCentBuf',niter)   # niter frames - as a dict
@@ -27,8 +27,8 @@ for i in range(1,nBrightest+1):
     centy2 = numpy.square(frames[:,1::2])
     noise[i] = ((centx2+centy2).sum(0)/float(niter)).sum(0)/float(nsubaps)       #
 
-c.Set('useBrightest',noise.argmin(0))
 print noise.argmin(0)
+c.Set('useBrightest',-float(noise.argmin(0)))
 pylab.plot(noise)
 pylab.show()
 
