@@ -9,7 +9,6 @@ niter = 5000
 nsubaps = 416                                            
 c.Set('useBrightest',-85)
                                           
-noise = numpy.zeros(nBrightest)
 cameraName = 'ShackHartmann'
 frames = numpy.zeros([niter,nsubaps])
 
