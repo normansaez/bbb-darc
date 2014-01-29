@@ -3,19 +3,35 @@ import FITS
 import darc
 import numpy
 import pylab
+from BeagleDarc.Controller import Controller
 
+#Darc Controller instance
 c=darc.Control("ShackHartmann")
-# funcion de prender led que setee bg, refs, subaps y todo
-# con el shutter correcto. Si todo ya esta seteado y la GUI ya prendio el led,
-# entonces no-problemo
-# c.Set("refCentroids",None)
+#Beagle Controller instance
+bbbc = Controller.__init__()
+
+#Parameters
 niter = 100
+finalniter = 1000
 nsubaps = 416                                               # number of subaps
 nBrightest = 100                                            # range of values
-                                                            # to test
-noise = numpy.zeros(nBrightest)
+nstars = 53                                                 # number of stars
+maxshutter = 4095                                           # maximum shutter time
+SHsat = 65532                                               # SH saturation value
 cameraName = 'ShackHartmann'
-frames = numpy.zeros([niter,nsubaps])
+
+#Auxiliary arrays                                    
+cent = numpy.zeros([niter,nsubaps])
+bgImage = c.SumData("rtcPxlBuf",1,"f")[0]
+
+#1- Setting useBrightest, as found with ~/bbb-darc/calibrations/SetuseBrightest.py
+c.Set('useBrightest',-85)
+
+#Main loop. Calibrates for each star
+for star_id in range(1,nstars):
+    bbbc.star_on(star_id)
+    
+
 for i in range(0,nBrightest):
     print '\nRecording with useBrightest:%3.0f ' %i
     c.Set('useBrightest',-i)
