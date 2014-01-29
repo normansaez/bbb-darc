@@ -14,12 +14,11 @@ bbbc = Controller.__init__()
 niter = float(100)
 finalniter = float(1000)
 nsubaps = 416                                               # number of subaps
-nBrightest = 100                                            # range of values
 nstars = 53                                                 # number of stars
-maxShutter = 4095                                           # maximum shutter time
+maxShutter = float(4095)                                    # maximum shutter time
 SHsat = float(65532)                                        # SH saturation value
 cameraName = 'ShackHartmann'
-shutter = defaultShutter
+shutter = maxShutter
 
 #Auxiliary arrays                                    
 cent = numpy.zeros([niter,nsubaps])
@@ -32,7 +31,7 @@ c.Set('useBrightest',-85)
 
 #Main loop. Calibrates for each star
 for star_id in range(1,nstars+1):
-
+    print '\nCalibrating star:%3.0f ' %star_id
     #2-3 bgImage & fwShutter iteration
     auxImageMax = SHsat/float(3)                            # /3 so that the while condition is true
     shutter = maxShutter/float(6)                           # /6 so that in the first iteration shutter = maxShutter*0.3
@@ -53,11 +52,22 @@ for star_id in range(1,nstars+1):
     bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/finalniter
 
     #Saving values found
-    FITS.Write(bg,'/home/dani/BG/bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
+    FITS.Write(bgImage,'/home/dani/BG/bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
 
     #4- Subaps
     c.Get('subapLocation')
 
+    #5- Ref Cent
+    bbbc.star_on(star_id)
+    c.Set("refCentroids",None)
+    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/finalniter
+    FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/cent_led_%d.fits'%(star_id))
+    bbbc.star_off(star_id)
+
+
+###############################
+###############################
+###############################
 
 
 for i in range(0,nBrightest):
