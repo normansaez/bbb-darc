@@ -11,26 +11,54 @@ c=darc.Control("ShackHartmann")
 bbbc = Controller.__init__()
 
 #Parameters
-niter = 100
-finalniter = 1000
+niter = float(100)
+finalniter = float(1000)
 nsubaps = 416                                               # number of subaps
 nBrightest = 100                                            # range of values
 nstars = 53                                                 # number of stars
-maxshutter = 4095                                           # maximum shutter time
-SHsat = 65532                                               # SH saturation value
+maxShutter = 4095                                           # maximum shutter time
+SHsat = float(65532)                                        # SH saturation value
 cameraName = 'ShackHartmann'
+shutter = defaultShutter
 
 #Auxiliary arrays                                    
 cent = numpy.zeros([niter,nsubaps])
 bgImage = c.SumData("rtcPxlBuf",1,"f")[0]
+auxImage = bgImage
+auxImageMax = numpy.amax(auxImage)
 
 #1- Setting useBrightest, as found with ~/bbb-darc/calibrations/SetuseBrightest.py
 c.Set('useBrightest',-85)
 
 #Main loop. Calibrates for each star
-for star_id in range(1,nstars):
-    bbbc.star_on(star_id)
+for star_id in range(1,nstars+1):
+
+    #2-3 bgImage & fwShutter iteration
+    auxImageMax = SHsat/float(3)                            # /3 so that the while condition is true
+    shutter = maxShutter/float(6)                           # /6 so that in the first iteration shutter = maxShutter*0.3
+    while(numpy.absolute(auxImageMax/SHsat-0.6)>0.1):
+        shutter = shutter*(SHsat*float(0.6))/auxImageMax
+        c.Set('bgImage',None)
+        c.Set('fwShutter',int(shutter))
+        bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/niter
+        c.Set('bgImage',bgImage)
+        bbbc.star_on(star_id)
+        auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/niter
+        bbbc.star_off(star_id)
+        auxImageMax = amax(auxImage)
     
+    shutter = shutter*(SHsat*float(0.6))/auxImageMax
+    c.Set('bgImage',None)
+    c.Set('fwShutter',int(shutter))
+    bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/finalniter
+
+    #Saving values found
+    FITS.Write(bg,'/home/dani/BG/bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
+
+    #4- Subaps
+    c.Get('subapLocation')
+
+
 
 for i in range(0,nBrightest):
     print '\nRecording with useBrightest:%3.0f ' %i
