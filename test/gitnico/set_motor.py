@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     num = range(1,2000)
     
-#    # Motor primero
+#    # Altitud vertical
 #    # Prende el motor
 #    turn_on_gpio('P8_25')
 #    count1 = 0
@@ -65,8 +65,8 @@ if __name__ == '__main__':
 #            flag = False
 #    turn_off_gpio('P8_25')
 #    print count1
-#    
-##   Motor segundo
+    
+##   Motor GROUND LAYER
 #    turn_on_gpio('P8_21')
 #    count1 = 0
 #    flag = True
@@ -106,6 +106,8 @@ if __name__ == '__main__':
 #        sleep(timeout)
 #    
 #    turn_off_gpio('P9_27')
+
+#Altitud horizontal
     turn_off_all.turn_off()
     turn_on_gpio('P9_41')
     turn_on_gpio('P8_24')
