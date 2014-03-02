@@ -5,9 +5,11 @@
 #!/usr/bin/env python
 
 import sys, os
-import CORBA, BBBServer, BBBServer__POA
-import Adafruit_BBIO.GPIO as GPIO
-import Adafruit_BBIO.PWM as PWM
+import BBBServer, BBBServer__POA
+from omniORB import CORBA, PortableServer
+import CosNaming
+#import Adafruit_BBIO.GPIO as GPIO
+#import Adafruit_BBIO.PWM as PWM
 import getpass
 from time import sleep
 
@@ -156,8 +158,8 @@ STAR_STATUS = {"NGS_A_1":["P8_20","OFF"],
 class Server_i (BBBServer__POA.Server):
 
     def __init__(self):
-        self.turn_off()
-        self.initial_status_motors()
+#        self.turn_off()
+#        self.initial_status_motors()
         self.timeout = 0.0000001 #secs
 
     def turn_off(self):    
@@ -226,14 +228,14 @@ class Server_i (BBBServer__POA.Server):
         self.turn_off_gpio("P8_29")
 
     def turn_on_gpio(self, pin):
-        GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin,GPIO.HIGH)
+#       GPIO.setup(pin, GPIO.OUT)
+#        GPIO.output(pin,GPIO.HIGH)
         print sys._getframe().f_code.co_name,
         print(' '+pin)
     
     def turn_off_gpio(self, pin):
-        GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin,GPIO.LOW)
+#        GPIO.setup(pin, GPIO.OUT)
+#        GPIO.output(pin,GPIO.LOW)
         print sys._getframe().f_code.co_name,
         print(' '+pin)
 
@@ -332,20 +334,49 @@ class Server_i (BBBServer__POA.Server):
         return "ok"
 
 if __name__ == '__main__':
-    if getpass.getuser() == 'root':
-        orb = CORBA.ORB_init(sys.argv)
+    if getpass.getuser() != 'root':
+        # Initialise the ORB and find the root POA
+        orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
         poa = orb.resolve_initial_references("RootPOA")
         
-        servant = Server_i()
-        poa.activate_object(servant)
+        servanti = Server_i()
+        servant = servanti._this()
+        # Obtain a reference to the root naming context
+        obj         = orb.resolve_initial_references("NameService")
+        rootContext = obj._narrow(CosNaming.NamingContext)
+        if rootContext is None:
+            print "Failed to narrow the root naming context"
+            sys.exit(1)
         
-        #XXX DIRTY workaround to carry out with deadline
-        f = open('/tmp/IOR.txt','w')
-        f.write(orb.object_to_string(servant._this()))
-        print orb.object_to_string(servant._this())
-        f.close()
+        # Bind a context named "test.my_context" to the root context
+        name = [CosNaming.NameComponent("test", "my_context")]
+        try:
+            testContext = rootContext.bind_new_context(name)
+            print "New test context bound"
+            
+        except CosNaming.NamingContext.AlreadyBound, ex:
+            print "Test context already exists"
+            obj = rootContext.resolve(name)
+            testContext = obj._narrow(CosNaming.NamingContext)
+            if testContext is None:
+                print "test.mycontext exists but is not a NamingContext"
+                sys.exit(1)
         
-        poa._get_the_POAManager().activate()
+        # Bind the Echo object to the test context
+        name = [CosNaming.NameComponent("ExampleEcho", "Object")]
+        try:
+            testContext.bind(name, servant)
+            print "New ExampleEcho object bound"
+        
+        except CosNaming.NamingContext.AlreadyBound:
+            testContext.rebind(name, servant)
+            print "ExampleEcho binding already existed -- rebound"
+        
+        # Activate the POA
+        poaManager = poa._get_the_POAManager()
+        poaManager.activate()
+        
+        # Block for ever (or until the ORB is shut down)
         orb.run()
     else:
         print "The server should run as root!!:\nsudo su -\npython\
