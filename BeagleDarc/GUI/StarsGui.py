@@ -57,6 +57,7 @@ class Main:
                 self.fix.put(button, star_coord[i][0], star_coord[i][1])
             else:
                 pass
+        self.default_style_toogle = button.get_modifier_style()
         #Creating controller
         self.controller = Controller()
 
@@ -67,14 +68,20 @@ class Main:
         print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
         star = int(data)
         img = gtk.Image()
+        map   = widget.get_colormap()
+        color_on  = map.alloc_color("red")
+
         if widget.get_active() is True:
             img.set_from_file(self.path+'/img/shineStar.png')
+            widget.modify_bg(gtk.STATE_ACTIVE, color_on)
+            
             try:
                 self.controller.star_on(star)
             except Exception, e:
                 print e
         else:
             img.set_from_file(self.path+'/img/darkStar.png')
+            widget.modify_style(self.default_style_toogle)
             try:
                 self.controller.star_off(star)
             except Exception, e:
