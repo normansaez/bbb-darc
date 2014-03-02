@@ -2,14 +2,39 @@
 # The client, on the command line
 #
 
-import CORBA, BBBServer
+import sys
+from omniORB import CORBA
 from random import randint
+import CosNaming, BBBServer
 
-orb = CORBA.ORB_init()
-o = orb.string_to_object('IOR:010000001900000049444c3a4242425365727665722f5365727665723a312e3000000000010000000000000064000000010102000b00000031302e34322e302e39370000abb000000e000000fe9c92cc5200000afe000000000000000200000000000000080000000100000000545441010000001c00000001000000010001000100000001000105090101000100000009010100')
-o.led_on('P8_20', 'P8_19', 'P8_45', 'LGS_A_1', False, 1.0, 1)
-raw_input()
- 
+# Initialise the ORB
+orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
 
+# Obtain a reference to the root naming context
+obj         = orb.resolve_initial_references("NameService")
+rootContext = obj._narrow(CosNaming.NamingContext)
+
+if rootContext is None:
+    print "Failed to narrow the root naming context"
+    sys.exit(1)
+
+# Resolve the name "test.my_context/ExampleEcho.Object"
+name = [CosNaming.NameComponent("test", "my_context"),
+        CosNaming.NameComponent("ExampleEcho", "Object")]
+try:
+    obj = rootContext.resolve(name)
+
+except CosNaming.NamingContext.NotFound, ex:
+    print "Name not found"
+    sys.exit(1)
+
+# Narrow the object to an Example::Echo
+eo = obj._narrow(BBBServer.Server)
+
+if (eo is None):
+    print "Object reference is not an Example::Echo"
+    sys.exit(1)
+
+result  = eo.led_on('P8_20', 'P8_19', 'P8_45', 'LGS_A_1', False, 1.0, 1)
 
 
