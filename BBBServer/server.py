@@ -14,20 +14,7 @@ import getpass
 from time import sleep
 
 
-LE_DICT = {"P8_3":1,
-"P8_4":2,
-"P8_5":3,
-"P8_11":4,
-"P8_15":5,
-"P8_17":6,
-"P8_42":7,
-"P8_44":8,
-"P8_45":9,
-"P8_46":10,
-"P9_12":11,
-"P9_15":12,
-"P9_41":13,
-"P9_42":14}
+LE_DICT = {"P8_3":1, "P8_4":2, "P8_5":3, "P8_11":4, "P8_15":5, "P8_17":6, "P8_42":7, "P8_44":8, "P8_45":9, "P8_46":10, "P9_12":11, "P9_15":12, "P9_41":13, "P9_42":14}
 
 LE_1  = ["LGS_B_12", "LGS_B_13", "LGS_B_20", "LGS_B_21","LGS_B_22","LGS_B_23","LGS_B_24", "LGS_B_25"]
 LE_2  = ["LGS_B_4", "LGS_B_5", "LGS_B_6", "LGS_B_7","LGS_B_8","LGS_B_9","LGS_B_10", "LGS_B_11"]
@@ -160,7 +147,7 @@ class Server_i (BBBServer__POA.Server):
     def __init__(self):
 #        self.turn_off()
 #        self.initial_status_motors()
-        self.timeout = 0.0000001 #secs
+        pass
 
     def turn_off(self):    
         #0- PWM to LOW
@@ -316,9 +303,7 @@ class Server_i (BBBServer__POA.Server):
         turn_on_gpio(pin_sleep)
         for s in steps:
             turn_off_gpio(pin_step)
-            sleep(timeout)
             turn_on_gpio(pin_step)
-            sleep(timeout)
         turn_off_gpio(pin_sleep)
         return "ok"
 
@@ -327,9 +312,7 @@ class Server_i (BBBServer__POA.Server):
         turn_on_gpio(pin_sleep)
         for s in steps:
             turn_off_gpio(pin_step)
-            sleep(timeout)
             turn_on_gpio(pin_step)
-            sleep(timeout)
         turn_off_gpio(pin_sleep)
         return "ok"
 
@@ -348,29 +331,29 @@ if __name__ == '__main__':
             print "Failed to narrow the root naming context"
             sys.exit(1)
         
-        # Bind a context named "test.my_context" to the root context
-        name = [CosNaming.NameComponent("test", "my_context")]
+        # Bind a context named "BeagleBone.Server" to the root context
+        name = [CosNaming.NameComponent("BeagleBone", "Server")]
         try:
-            testContext = rootContext.bind_new_context(name)
-            print "New test context bound"
+            BeagleBoneContext = rootContext.bind_new_context(name)
+            print "New BeagleBone context bound"
             
         except CosNaming.NamingContext.AlreadyBound, ex:
-            print "Test context already exists"
+            print "BeagleBone context already exists"
             obj = rootContext.resolve(name)
-            testContext = obj._narrow(CosNaming.NamingContext)
-            if testContext is None:
-                print "test.mycontext exists but is not a NamingContext"
+            BeagleBoneContext = obj._narrow(CosNaming.NamingContext)
+            if BeagleBoneContext is None:
+                print "BeagleBone.Server exists but is not a NamingContext"
                 sys.exit(1)
         
-        # Bind the Echo object to the test context
-        name = [CosNaming.NameComponent("ExampleEcho", "Object")]
+        # Bind the BBBServer object to the BeagleBone context
+        name = [CosNaming.NameComponent("BBBServer", "Object")]
         try:
-            testContext.bind(name, servant)
-            print "New ExampleEcho object bound"
+            BeagleBoneContext.bind(name, servant)
+            print "New BBBServer object bound"
         
         except CosNaming.NamingContext.AlreadyBound:
-            testContext.rebind(name, servant)
-            print "ExampleEcho binding already existed -- rebound"
+            BeagleBoneContext.rebind(name, servant)
+            print "BBBServer binding already existed -- rebound"
         
         # Activate the POA
         poaManager = poa._get_the_POAManager()

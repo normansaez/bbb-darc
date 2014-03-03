@@ -18,9 +18,9 @@ if rootContext is None:
     print "Failed to narrow the root naming context"
     sys.exit(1)
 
-# Resolve the name "test.my_context/ExampleEcho.Object"
-name = [CosNaming.NameComponent("test", "my_context"),
-        CosNaming.NameComponent("ExampleEcho", "Object")]
+# Resolve the name "BeagleBone.Server/BBBServer.Object"
+name = [CosNaming.NameComponent("BeagleBone", "Server"),
+        CosNaming.NameComponent("BBBServer", "Object")]
 try:
     obj = rootContext.resolve(name)
 
@@ -28,11 +28,11 @@ except CosNaming.NamingContext.NotFound, ex:
     print "Name not found"
     sys.exit(1)
 
-# Narrow the object to an Example::Echo
+# Narrow the object to an BBBServer::Server
 eo = obj._narrow(BBBServer.Server)
 
 if (eo is None):
-    print "Object reference is not an Example::Echo"
+    print "Object reference is not an BBBServer::Server"
     sys.exit(1)
 
 result  = eo.led_on('P8_20', 'P8_19', 'P8_45', 'LGS_A_1', False, 1.0, 1)
