@@ -8,6 +8,26 @@ filename_dic = "server_dic.py"
 filehandler_cfg = open(filename_cfg, 'w')
 filehandler_dic = open(filename_dic, 'w')
 
+le_set = Set([])
+pwm_set = Set([])
+dbus_set = Set([])
+
+le_set_dbus0  = Set([])
+le_set_dbus1  = Set([])
+le_set_dbus2  = Set([])
+le_set_dbus3  = Set([])
+le_set_dbus4  = Set([])
+le_set_dbus5  = Set([])
+le_set_dbus6  = Set([])
+le_set_dbus7  = Set([])
+le_set_dbus8  = Set([])
+le_set_dbus9  = Set([])
+le_set_dbus10 = Set([])
+le_set_dbus11 = Set([])
+le_set_dbus12 = Set([])
+le_set_dbus13 = Set([])
+
+#Creating configuration:
 filehandler_cfg.write("[beagledarc_server]\n")
 filehandler_cfg.write("host = 192.168.7.2\n")
 filehandler_cfg.write("user = root\n")
@@ -66,6 +86,7 @@ with open('mapping.csv', 'rb') as csvfile:
                 
 filehandler_cfg.close()
 
+#Creating dictionaries and lists:
 filehandler_dic.write("STAR_STATUS = {")
 lines = ""
 with open('mapping.csv', 'rb') as csvfile:
@@ -75,40 +96,20 @@ with open('mapping.csv', 'rb') as csvfile:
             pass
         else:
             lines += '"%s":["%s","%s"],\n' % (row[1],row[2],"OFF")
+            le_set.add(row[4])
+            pwm_set.add(row[3])
+            dbus_set.add(row[2])
 lines += "}\n"
 lines = lines.replace(",\n}","}")
 filehandler_dic.write(lines)
 filehandler_dic.write("\n\n")
 
+le_list = list(sorted(le_set))
+pwm_list = list(sorted(pwm_set))
+dbus_list = list(sorted(dbus_set))
+
 #Generate LE_DICT
 filehandler_dic.write("LE_DICT = {")
-
-le_set = Set([])
-le_set_dbus0  = Set([])
-le_set_dbus1  = Set([])
-le_set_dbus2  = Set([])
-le_set_dbus3  = Set([])
-le_set_dbus4  = Set([])
-le_set_dbus5  = Set([])
-le_set_dbus6  = Set([])
-le_set_dbus7  = Set([])
-le_set_dbus8  = Set([])
-le_set_dbus9  = Set([])
-le_set_dbus10 = Set([])
-le_set_dbus11 = Set([])
-le_set_dbus12 = Set([])
-le_set_dbus13 = Set([])
-
-with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-        if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
-            pass
-        else:
-            le_set.add(row[4])
-
-le_list = list(sorted(le_set))
-
 with open('mapping.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
@@ -200,6 +201,15 @@ l13 = "'%s':%s}\n" % (le_list[13], sorted(le_set_dbus13))
 l13 = l13.replace('Set(','').replace(')','')
 filehandler_dic.write(l13)
 
+#Generate PWM_LIST
+filehandler_dic.write("\n\nPWM_LIST = ")
+filehandler_dic.write("%s"% pwm_list)
+filehandler_dic.write("\n")
+
+#Generate DBUS_LIST
+filehandler_dic.write("\n\nDBUS_LIST = ")
+filehandler_dic.write("%s"% dbus_list)
+filehandler_dic.write("\n")
 
 filehandler_dic.close()
 

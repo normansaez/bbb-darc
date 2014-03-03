@@ -14,13 +14,15 @@ import getpass
 from time import sleep
 from server_dic import STAR_STATUS
 from server_dic import LE_DICT
+from server_dic import PWM_LIST
+from server_dic import DBUS_LIST
+from BeagleDarc.Model import Layer
 
 class Server_i (BBBServer__POA.Server):
 
     def __init__(self):
         self.turn_off()
         self.initial_status_motors()
-        pass
 
     def turn_off(self):    
         #0- PWM to LOW
@@ -36,72 +38,34 @@ class Server_i (BBBServer__POA.Server):
         self.disable_all_LE()
 
     def initial_status_motors(self):
-        self.turn_off_gpio("P8_28")
-        self.turn_off_gpio("P8_25")
-        self.turn_off_gpio("P8_41")
-        self.turn_off_gpio("P8_43")
-
-        self.turn_off_gpio("P8_26")
-        self.turn_off_gpio("P8_21")
-        self.turn_off_gpio("P8_40")
-        self.turn_off_gpio("P8_39")
-
-        self.turn_off_gpio("P9_23")
-        self.turn_off_gpio("P9_27")
-        self.turn_off_gpio("P8_30")
-        self.turn_off_gpio("P8_29")
+        layer_id =['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
+        for l_id in layer_id:
+            layer = Layer(l_id)
+            self.turn_off_gpio(layer.pin_dir)
+            self.turn_off_gpio(layer.pin_step)
+            self.turn_off_gpio(layer.pin_sleep)
+            self.turn_off_gpio(layer.pin_opto1)
+            self.turn_off_gpio(layer.pin_opto2)
     
     def disable_all_pwm(self):
         #0- PWM to LOW
-        self.turn_off_gpio("P8_13")
-        self.turn_off_gpio("P8_19")
-        self.turn_off_gpio("P9_14")
-        self.turn_off_gpio("P9_16")
+        for pwm in PWM_LIST:
+            self.turn_off_gpio(pwm)
 
     def enable_all_LE(self):
         #1- LE Enable
-        self.turn_on_gpio("P8_3")
-        self.turn_on_gpio("P8_4")
-        self.turn_on_gpio("P8_5")
-        self.turn_on_gpio("P8_11")
-        self.turn_on_gpio("P8_15")
-        self.turn_on_gpio("P8_17")
-        self.turn_on_gpio("P8_42")
-        self.turn_on_gpio("P8_44")
-        self.turn_on_gpio("P8_45")
-        self.turn_on_gpio("P8_46")
-        self.turn_on_gpio("P9_12")
-        self.turn_on_gpio("P9_15")
-        self.turn_on_gpio("P9_41")
-        self.turn_on_gpio("P9_42")
+        for key, value in LE_DICT.items():
+            self.turn_on_gpio(key)
 
     def disable_all_dbus(self):
         #2- D-bus Disable
-        self.turn_off_gpio("P8_6")
-        self.turn_off_gpio("P8_12")
-        self.turn_off_gpio("P8_14")
-        self.turn_off_gpio("P8_16")
-        self.turn_off_gpio("P8_18")
-        self.turn_off_gpio("P8_20")
-        self.turn_off_gpio("P8_22")
-        self.turn_off_gpio("P8_24")
+        for dbus in DBUS_LIST:
+            self.turn_off_gpio(dbus)
     
     def disable_all_LE(self):
         #3- LE Disable
-        self.turn_off_gpio("P8_3")
-        self.turn_off_gpio("P8_4")
-        self.turn_off_gpio("P8_5")
-        self.turn_off_gpio("P8_11")
-        self.turn_off_gpio("P8_15")
-        self.turn_off_gpio("P8_17")
-        self.turn_off_gpio("P8_42")
-        self.turn_off_gpio("P8_44")
-        self.turn_off_gpio("P8_45")
-        self.turn_off_gpio("P8_46")
-        self.turn_off_gpio("P9_12")
-        self.turn_off_gpio("P9_15")
-        self.turn_off_gpio("P9_41")
-        self.turn_off_gpio("P9_42")
+        for key, value in LE_DICT.items():
+            self.turn_off_gpio(key)
 
     def turn_on_gpio(self, pin):
 #       GPIO.setup(pin, GPIO.OUT)

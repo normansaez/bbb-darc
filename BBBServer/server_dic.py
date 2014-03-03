@@ -120,3 +120,9 @@ LE_DICT = {'P8_11':['NGS_A_10', 'NGS_A_11', 'NGS_A_4', 'NGS_A_5', 'NGS_A_6', 'NG
 'P9_15':['NGS_B_12', 'NGS_B_13', 'NGS_B_20', 'NGS_B_21', 'NGS_B_22', 'NGS_B_23', 'NGS_B_24', 'NGS_B_25'],
 'P9_41':['NGS_B_1', 'NGS_B_14', 'NGS_B_15', 'NGS_B_16', 'NGS_B_17', 'NGS_B_18', 'NGS_B_2', 'NGS_B_3'],
 'P9_42':['NGS_A_1', 'NGS_A_14', 'NGS_A_15', 'NGS_A_16', 'NGS_A_17', 'NGS_A_18', 'NGS_A_2', 'NGS_A_3']}
+
+
+PWM_LIST = ['P8_13', 'P8_19', 'P9_14', 'P9_16']
+
+
+DBUS_LIST = ['P8_12', 'P8_14', 'P8_16', 'P8_18', 'P8_20', 'P8_22', 'P8_24', 'P8_6']
