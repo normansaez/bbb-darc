@@ -104,3 +104,19 @@ STAR_STATUS = {"NGS_A_1":["P8_20","OFF"],
 "LGS_C_12":["P8_14","OFF"],
 "LGS_C_13":["P8_12","OFF"],
 "LGS_C_25":["P8_6","OFF"]}
+
+
+LE_DICT = {'P8_11':['NGS_A_10', 'NGS_A_11', 'NGS_A_4', 'NGS_A_5', 'NGS_A_6', 'NGS_A_7', 'NGS_A_8', 'NGS_A_9'],
+'P8_15':['NGS_A_12', 'NGS_A_13', 'NGS_A_20', 'NGS_A_21', 'NGS_A_22', 'NGS_A_23', 'NGS_A_24', 'NGS_A_25'],
+'P8_17':['LGS_C_10', 'LGS_C_11', 'LGS_C_12', 'LGS_C_13', 'LGS_C_25'],
+'P8_3':['LGS_B_12', 'LGS_B_13', 'LGS_B_20', 'LGS_B_21', 'LGS_B_22', 'LGS_B_23', 'LGS_B_24', 'LGS_B_25'],
+'P8_4':['LGS_B_10', 'LGS_B_11', 'LGS_B_4', 'LGS_B_5', 'LGS_B_6', 'LGS_B_7', 'LGS_B_8', 'LGS_B_9'],
+'P8_42':['LGS_A_12', 'LGS_A_13', 'LGS_A_20', 'LGS_A_21', 'LGS_A_22', 'LGS_A_23', 'LGS_A_24', 'LGS_A_25'],
+'P8_44':['NGS_C_10', 'NGS_C_11', 'NGS_C_12', 'NGS_C_13', 'NGS_C_25'],
+'P8_45':['LGS_A_1', 'LGS_A_14', 'LGS_A_15', 'LGS_A_16', 'LGS_A_17', 'LGS_A_18', 'LGS_A_2', 'LGS_A_3'],
+'P8_46':['LGS_B_1', 'LGS_B_14', 'LGS_B_15', 'LGS_B_16', 'LGS_B_17', 'LGS_B_18', 'LGS_B_2', 'LGS_B_3'],
+'P8_5':['LGS_A_10', 'LGS_A_11', 'LGS_A_4', 'LGS_A_5', 'LGS_A_6', 'LGS_A_7', 'LGS_A_8', 'LGS_A_9'],
+'P9_12':['NGS_B_10', 'NGS_B_11', 'NGS_B_4', 'NGS_B_5', 'NGS_B_6', 'NGS_B_7', 'NGS_B_8', 'NGS_B_9'],
+'P9_15':['NGS_B_12', 'NGS_B_13', 'NGS_B_20', 'NGS_B_21', 'NGS_B_22', 'NGS_B_23', 'NGS_B_24', 'NGS_B_25'],
+'P9_41':['NGS_B_1', 'NGS_B_14', 'NGS_B_15', 'NGS_B_16', 'NGS_B_17', 'NGS_B_18', 'NGS_B_2', 'NGS_B_3'],
+'P9_42':['NGS_A_1', 'NGS_A_14', 'NGS_A_15', 'NGS_A_16', 'NGS_A_17', 'NGS_A_18', 'NGS_A_2', 'NGS_A_3']}

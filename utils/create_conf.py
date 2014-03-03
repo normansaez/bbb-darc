@@ -1,5 +1,6 @@
 import csv
 import os
+from sets import Set
 
 filename_cfg = "configurations.cfg"
 filename_dic = "server_dic.py"
@@ -77,6 +78,129 @@ with open('mapping.csv', 'rb') as csvfile:
 lines += "}\n"
 lines = lines.replace(",\n}","}")
 filehandler_dic.write(lines)
+filehandler_dic.write("\n\n")
+
+#Generate LE_DICT
+filehandler_dic.write("LE_DICT = {")
+
+le_set = Set([])
+le_set_dbus0  = Set([])
+le_set_dbus1  = Set([])
+le_set_dbus2  = Set([])
+le_set_dbus3  = Set([])
+le_set_dbus4  = Set([])
+le_set_dbus5  = Set([])
+le_set_dbus6  = Set([])
+le_set_dbus7  = Set([])
+le_set_dbus8  = Set([])
+le_set_dbus9  = Set([])
+le_set_dbus10 = Set([])
+le_set_dbus11 = Set([])
+le_set_dbus12 = Set([])
+le_set_dbus13 = Set([])
+
+with open('mapping.csv', 'rb') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
+            pass
+        else:
+            le_set.add(row[4])
+
+le_list = list(sorted(le_set))
+
+with open('mapping.csv', 'rb') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
+            pass
+        else:
+            if le_list[0] == row[4]:
+                le_set_dbus0.add(row[1])                
+            if le_list[1] == row[4]:
+                le_set_dbus1.add(row[1])                
+            if le_list[2] == row[4]:
+                le_set_dbus2.add(row[1])                
+            if le_list[3] == row[4]:
+                le_set_dbus3.add(row[1])                
+            if le_list[4] == row[4]:
+                le_set_dbus4.add(row[1])                
+            if le_list[5] == row[4]:
+                le_set_dbus5.add(row[1])                
+            if le_list[6] == row[4]:
+                le_set_dbus6.add(row[1])                
+            if le_list[7] == row[4]:
+                le_set_dbus7.add(row[1])                
+            if le_list[8] == row[4]:
+                le_set_dbus8.add(row[1])                
+            if le_list[9] == row[4]:
+                le_set_dbus9.add(row[1])                
+            if le_list[10] == row[4]:
+                le_set_dbus10.add(row[1])                
+            if le_list[11] == row[4]:
+                le_set_dbus11.add(row[1])                
+            if le_list[12] == row[4]:
+                le_set_dbus12.add(row[1])                
+            if le_list[13] == row[4]:
+                le_set_dbus13.add(row[1])                
+
+l0 = "'%s':%s,\n" % (le_list[0], sorted(le_set_dbus0))
+l0 = l0.replace('Set(','').replace(')','')
+filehandler_dic.write(l0)
+
+l1 = "'%s':%s,\n" % (le_list[1], sorted(le_set_dbus1))
+l1 = l1.replace('Set(','').replace(')','')
+filehandler_dic.write(l1)
+
+l2 = "'%s':%s,\n" % (le_list[2], sorted(le_set_dbus2))
+l2 = l2.replace('Set(','').replace(')','')
+filehandler_dic.write(l2)
+
+l3 = "'%s':%s,\n" % (le_list[3], sorted(le_set_dbus3))
+l3 = l3.replace('Set(','').replace(')','')
+filehandler_dic.write(l3)
+
+l4 = "'%s':%s,\n" % (le_list[4], sorted(le_set_dbus4))
+l4 = l4.replace('Set(','').replace(')','')
+filehandler_dic.write(l4)
+
+l5 = "'%s':%s,\n" % (le_list[5], sorted(le_set_dbus5))
+l5 = l5.replace('Set(','').replace(')','')
+filehandler_dic.write(l5)
+
+l6 = "'%s':%s,\n" % (le_list[6], sorted(le_set_dbus6))
+l6 = l6.replace('Set(','').replace(')','')
+filehandler_dic.write(l6)
+
+l7 = "'%s':%s,\n" % (le_list[7], sorted(le_set_dbus7))
+l7 = l7.replace('Set(','').replace(')','')
+filehandler_dic.write(l7)
+
+l8 = "'%s':%s,\n" % (le_list[8], sorted(le_set_dbus8))
+l8 = l8.replace('Set(','').replace(')','')
+filehandler_dic.write(l8)
+
+l9 = "'%s':%s,\n" % (le_list[9], sorted(le_set_dbus9))
+l9 = l9.replace('Set(','').replace(')','')
+filehandler_dic.write(l9)
+
+l10 = "'%s':%s,\n" % (le_list[10], sorted(le_set_dbus10))
+l10 = l10.replace('Set(','').replace(')','')
+filehandler_dic.write(l10)
+
+l11 = "'%s':%s,\n" % (le_list[11], sorted(le_set_dbus11))
+l11 = l11.replace('Set(','').replace(')','')
+filehandler_dic.write(l11)
+
+l12 = "'%s':%s,\n" % (le_list[12], sorted(le_set_dbus12))
+l12 = l12.replace('Set(','').replace(')','')
+filehandler_dic.write(l12)
+
+l13 = "'%s':%s}\n" % (le_list[13], sorted(le_set_dbus13))
+l13 = l13.replace('Set(','').replace(')','')
+filehandler_dic.write(l13)
+
+
 filehandler_dic.close()
 
 os.rename(filename_cfg,"../BeagleDarc/BeagleDarc/%s"%filename_cfg)
