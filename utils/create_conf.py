@@ -87,7 +87,7 @@ with open('mapping.csv', 'rb') as csvfile:
 filehandler_cfg.close()
 
 #Creating dictionaries and lists:
-filehandler_dic.write("STAR_STATUS = {")
+filehandler_dic.write("LED_STATUS = {")
 lines = ""
 with open('mapping.csv', 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')

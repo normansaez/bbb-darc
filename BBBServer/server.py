@@ -12,7 +12,7 @@ import CosNaming
 #import Adafruit_BBIO.PWM as PWM
 import getpass
 from time import sleep
-from server_dic import STAR_STATUS
+from server_dic import LED_STATUS
 from server_dic import LE_DICT
 from server_dic import PWM_LIST
 from server_dic import DBUS_LIST
@@ -21,10 +21,10 @@ from BeagleDarc.Model import Layer
 class Server_i (BBBServer__POA.Server):
 
     def __init__(self):
-        self.turn_off()
-        self.initial_status_motors()
+        self.turn_off_all_leds()
+        self.turn_off_all_motors()
 
-    def turn_off(self):    
+    def turn_off_all_leds(self):    
         #0- PWM to LOW
         self.disable_all_pwm()
 
@@ -37,15 +37,15 @@ class Server_i (BBBServer__POA.Server):
         #3- LE Disable
         self.disable_all_LE()
 
-    def initial_status_motors(self):
-        layer_id =['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
-        for l_id in layer_id:
-            layer = Layer(l_id)
-            self.turn_off_gpio(layer.pin_dir)
-            self.turn_off_gpio(layer.pin_step)
-            self.turn_off_gpio(layer.pin_sleep)
-            self.turn_off_gpio(layer.pin_opto1)
-            self.turn_off_gpio(layer.pin_opto2)
+    def turn_off_all_motors(self):
+        motor_names =['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
+        for motor_id in motor_names:
+            motor = Layer(motor_id)
+            self.turn_off_gpio(motor.pin_dir)
+            self.turn_off_gpio(motor.pin_step)
+            self.turn_off_gpio(motor.pin_sleep)
+            self.turn_off_gpio(motor.pin_opto1)
+            self.turn_off_gpio(motor.pin_opto2)
     
     def disable_all_pwm(self):
         #0- PWM to LOW
@@ -79,27 +79,27 @@ class Server_i (BBBServer__POA.Server):
         print sys._getframe().f_code.co_name,
         print(' '+pin)
 
-    def refresh_status(self, pin_pwm, pin_enable):
+    def refresh_led_status(self, pin_pwm, pin_enable):
         '''
         '''
         self.turn_off_gpio(pin_pwm)
         #Disable all LE
         self.disable_all_LE()
-        #
+        
         self.turn_on_gpio(pin_enable)
         le_list = LE_DICT[pin_enable]
-        for star in le_list:
-            #print star
-            star_sts = STAR_STATUS[star]
-            if star_sts[1] == "OFF":
-                self.turn_off_gpio(star_sts[0])
+        for led in le_list:
+            #print led
+            led_sts = LED_STATUS[led]
+            if led_sts[1] == "OFF":
+                self.turn_off_gpio(led_sts[0])
             else:
-                self.turn_on_gpio(star_sts[0])
+                self.turn_on_gpio(led_sts[0])
         self.turn_off_gpio(pin_enable)
         #Disable all LE
         self.disable_all_LE()
-        #
-        for key, value in STAR_STATUS.iteritems():
+        
+        for key, value in LED_STATUS.iteritems():
             if value[1] == "ON":
                 msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
                 print msg
@@ -110,8 +110,8 @@ class Server_i (BBBServer__POA.Server):
         print "---------------------------------------------------"
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         print "-----------"
-        STAR_STATUS[name][1] = "ON"
-        self.refresh_status(pin_pwm, pin_enable)
+        LED_STATUS[name][1] = "ON"
+        self.refresh_led_status(pin_pwm, pin_enable)
         print "---------------------------------------------------"
         return "ok"
 
@@ -119,8 +119,8 @@ class Server_i (BBBServer__POA.Server):
         print "---------------------------------------------------"
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         print "-----------"
-        STAR_STATUS[name][1] = "OFF"
-        self.refresh_status(pin_pwm, pin_enable)
+        LED_STATUS[name][1] = "OFF"
+        self.refresh_led_status(pin_pwm, pin_enable)
         print "---------------------------------------------------"
         return "ok"
 

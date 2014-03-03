@@ -1,4 +1,4 @@
-STAR_STATUS = {"NGS_A_1":["P8_20","OFF"],
+LED_STATUS = {"NGS_A_1":["P8_20","OFF"],
 "NGS_A_2":["P8_22","OFF"],
 "NGS_A_3":["P8_24","OFF"],
 "NGS_A_4":["P8_6","OFF"],
