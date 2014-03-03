@@ -256,7 +256,7 @@ class Server_i (BBBServer__POA.Server):
                 self.turn_off_gpio(star_sts[0])
             else:
                 self.turn_on_gpio(star_sts[0])
-        #self.turn_off_gpio(pin_enable)
+        self.turn_off_gpio(pin_enable)
         self.turn_off_gpio("P8_3")
         self.turn_off_gpio("P8_4")
         self.turn_off_gpio("P8_5")
@@ -299,21 +299,21 @@ class Server_i (BBBServer__POA.Server):
         return "ok"
 
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
-        turn_on_gpio(pin_dir)
-        turn_on_gpio(pin_sleep)
-        for s in steps:
-            turn_off_gpio(pin_step)
-            turn_on_gpio(pin_step)
-        turn_off_gpio(pin_sleep)
+        self.turn_on_gpio(pin_dir)
+        self.turn_on_gpio(pin_sleep)
+        for s in range(0, steps):
+            self.turn_off_gpio(pin_step)
+            self.turn_on_gpio(pin_step)
+        self.turn_off_gpio(pin_sleep)
         return "ok"
 
     def motor_move_skip_sensor(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
-        turn_on_gpio(pin_dir)
-        turn_on_gpio(pin_sleep)
-        for s in steps:
-            turn_off_gpio(pin_step)
-            turn_on_gpio(pin_step)
-        turn_off_gpio(pin_sleep)
+        self.turn_on_gpio(pin_dir)
+        self.turn_on_gpio(pin_sleep)
+        for s in range(0, steps):
+            self.turn_off_gpio(pin_step)
+            self.turn_on_gpio(pin_step)
+        self.turn_off_gpio(pin_sleep)
         return "ok"
 
 if __name__ == '__main__':

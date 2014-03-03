@@ -3,14 +3,14 @@
 Controller
 '''
 
-import CORBA
-import BBBServer
 import sys
+import BBBServer
+import CosNaming
 from BeagleDarc.Model import BeagleDarcServerM 
 from BeagleDarc.Model import Star
 from BeagleDarc.Model import Layer
 from subprocess import Popen, PIPE
-import omniORB
+from omniORB import CORBA
 
 class Controller:
     '''
@@ -21,15 +21,34 @@ class Controller:
         Init server in BBB called BBBServer
         '''
         self.bds = BeagleDarcServerM('beagledarc_server')
-        #init corba client:
-        orb = CORBA.ORB_init()
-        self.cli_obj = None
-#        self.cli_obj  = orb.string_to_object('IOR:')
-#        try:
-        self.cli_obj = orb.string_to_object(self.bds.ior)
-#        except omniORB.CORBA.MARSHAL, e:
-#            print "START SERVER ON BEAGLEBONE OR SET IOR CORRECTLY"
-#            sys.exit(-1)
+        # Initialise the ORB
+        orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
+        
+        # Obtain a reference to the root naming context
+        obj         = orb.resolve_initial_references("NameService")
+        rootContext = obj._narrow(CosNaming.NamingContext)
+        
+        if rootContext is None:
+            print "Failed to narrow the root naming context"
+            sys.exit(1)
+        
+        # Resolve the name "BeagleBone.Server/BBBServer.Object"
+        name = [CosNaming.NameComponent("BeagleBone", "Server"),
+                CosNaming.NameComponent("BBBServer", "Object")]
+        try:
+            obj = rootContext.resolve(name)
+        
+        except CosNaming.NamingContext.NotFound, ex:
+            print "Name not found"
+            sys.exit(1)
+        
+        # Narrow the object to an BBBServer::Server
+        self.cli_obj = obj._narrow(BBBServer.Server)
+        
+        if (self.cli_obj is None):
+            print "Object reference is not an BBBServer::Server"
+            sys.exit(1)
+
     #star methods
     def star_on(self, star_id):
         star = Star(star_id)
