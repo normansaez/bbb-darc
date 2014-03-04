@@ -43,13 +43,8 @@ class Main:
                 button.show()
                 self.fix.put(button, star_coord[i][0], star_coord[i][1])
                 self.default_style_toogle = button.get_modifier_style()
-                print star_status[i]
                 if star_status[i].__contains__('ON') is True:
-                    print " %s---> %d" % (star_status[i],i)
-                    map   = button.get_colormap()
-                    color_on  = map.alloc_color("red")
-                    button.modify_bg(gtk.STATE_ACTIVE, color_on)
-                    print button.get_active()
+                    button.set_active(True)
             else:
                 pass
         
