@@ -95,7 +95,7 @@ with open('mapping.csv', 'rb') as csvfile:
         if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
             pass
         else:
-            lines += '"%s":["%s","%s"],\n' % (row[1],row[2],"OFF")
+            lines += '"%s":["%s","%s","LED(%s)"],\n' % (row[1],row[2],"OFF", row[0])
             le_set.add(row[4])
             pwm_set.add(row[3])
             dbus_set.add(row[2])
