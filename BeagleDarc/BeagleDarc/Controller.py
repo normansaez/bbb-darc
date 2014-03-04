@@ -68,6 +68,16 @@ class Controller:
         layer = Layer(layer_id)
         self.cli_obj.motor_move_skip_sensor(layer.name, layer.pin_dir, layer.pin_step, layer.pin_sleep, layer.pin_opto1, layer.pin_opto2, layer.simulated, layer.direction, layer.velocity, layer.steps, layer.vr_init, layer.vr_end, layer.cur_pos)
 
+    def get_stars_status(self):
+        led_status = {}
+        key_list = self.cli_obj.get_stars_status_keys()
+        for i in key_list:
+            status = self.cli_obj.get_stars_status_value(i)
+            star_id = status[2]
+            sts = status[1]
+            led_status[int(star_id)] = sts
+        return led_status
+
 if __name__ == '__main__':
     c = Controller()
     c.star_on(1)

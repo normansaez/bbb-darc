@@ -15,6 +15,18 @@ _0_BBBServer = omniORB.openModule("BBBServer", r"bbbserver.idl")
 _0_BBBServer__POA = omniORB.openModule("BBBServer__POA", r"bbbserver.idl")
 
 
+# typedef ... list
+class list:
+    _NP_RepositoryId = "IDL:BBBServer/list:1.0"
+    def __init__(self, *args, **kw):
+        raise RuntimeError("Cannot construct objects of this type.")
+_0_BBBServer.list = list
+_0_BBBServer._d_list  = (omniORB.tcInternal.tv_sequence, (omniORB.tcInternal.tv_string,0), 0)
+_0_BBBServer._ad_list = (omniORB.tcInternal.tv_alias, list._NP_RepositoryId, "list", (omniORB.tcInternal.tv_sequence, (omniORB.tcInternal.tv_string,0), 0))
+_0_BBBServer._tc_list = omniORB.tcInternal.createTypeCode(_0_BBBServer._ad_list)
+omniORB.registerType(list._NP_RepositoryId, _0_BBBServer._ad_list, _0_BBBServer._tc_list)
+del list
+
 # interface Server
 _0_BBBServer._d_Server = (omniORB.tcInternal.tv_objref, "IDL:BBBServer/Server:1.0", "Server")
 omniORB.typeMapping["IDL:BBBServer/Server:1.0"] = _0_BBBServer._d_Server
@@ -37,6 +49,8 @@ Server._d_led_on = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_st
 Server._d_led_off = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_boolean, omniORB.tcInternal.tv_float, omniORB.tcInternal.tv_long), ((omniORB.tcInternal.tv_string,0), ), None)
 Server._d_motor_move = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_boolean, (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, (omniORB.tcInternal.tv_string,0)), ((omniORB.tcInternal.tv_string,0), ), None)
 Server._d_motor_move_skip_sensor = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_boolean, (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, (omniORB.tcInternal.tv_string,0)), ((omniORB.tcInternal.tv_string,0), ), None)
+Server._d_get_stars_status_keys = ((), (omniORB.typeMapping["IDL:BBBServer/list:1.0"], ), None)
+Server._d_get_stars_status_value = (((omniORB.tcInternal.tv_string,0), ), (omniORB.typeMapping["IDL:BBBServer/list:1.0"], ), None)
 
 # Server object reference
 class _objref_Server (CORBA.Object):
@@ -57,7 +71,13 @@ class _objref_Server (CORBA.Object):
     def motor_move_skip_sensor(self, *args):
         return _omnipy.invoke(self, "motor_move_skip_sensor", _0_BBBServer.Server._d_motor_move_skip_sensor, args)
 
-    __methods__ = ["led_on", "led_off", "motor_move", "motor_move_skip_sensor"] + CORBA.Object.__methods__
+    def get_stars_status_keys(self, *args):
+        return _omnipy.invoke(self, "get_stars_status_keys", _0_BBBServer.Server._d_get_stars_status_keys, args)
+
+    def get_stars_status_value(self, *args):
+        return _omnipy.invoke(self, "get_stars_status_value", _0_BBBServer.Server._d_get_stars_status_value, args)
+
+    __methods__ = ["led_on", "led_off", "motor_move", "motor_move_skip_sensor", "get_stars_status_keys", "get_stars_status_value"] + CORBA.Object.__methods__
 
 omniORB.registerObjref(Server._NP_RepositoryId, _objref_Server)
 _0_BBBServer._objref_Server = _objref_Server
@@ -69,7 +89,7 @@ class Server (PortableServer.Servant):
     _NP_RepositoryId = _0_BBBServer.Server._NP_RepositoryId
 
 
-    _omni_op_d = {"led_on": _0_BBBServer.Server._d_led_on, "led_off": _0_BBBServer.Server._d_led_off, "motor_move": _0_BBBServer.Server._d_motor_move, "motor_move_skip_sensor": _0_BBBServer.Server._d_motor_move_skip_sensor}
+    _omni_op_d = {"led_on": _0_BBBServer.Server._d_led_on, "led_off": _0_BBBServer.Server._d_led_off, "motor_move": _0_BBBServer.Server._d_motor_move, "motor_move_skip_sensor": _0_BBBServer.Server._d_motor_move_skip_sensor, "get_stars_status_keys": _0_BBBServer.Server._d_get_stars_status_keys, "get_stars_status_value": _0_BBBServer.Server._d_get_stars_status_value}
 
 Server._omni_skeleton = Server
 _0_BBBServer__POA.Server = Server

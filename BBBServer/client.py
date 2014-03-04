@@ -37,4 +37,6 @@ if (eo is None):
 
 result  = eo.led_on('P8_20', 'P8_19', 'P8_45', 'LGS_A_1', False, 1.0, 1)
 
+print eo.get_stars_status_keys()
+print eo.get_stars_status_value('LGS_B_4')
 

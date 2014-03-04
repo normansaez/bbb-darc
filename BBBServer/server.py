@@ -70,14 +70,16 @@ class Server_i (BBBServer__POA.Server):
     def turn_on_gpio(self, pin):
 #       GPIO.setup(pin, GPIO.OUT)
 #        GPIO.output(pin,GPIO.HIGH)
-        print sys._getframe().f_code.co_name,
-        print(' '+pin)
-    
+#        print sys._getframe().f_code.co_name,
+#        print(' '+pin)
+        pass
+
     def turn_off_gpio(self, pin):
 #        GPIO.setup(pin, GPIO.OUT)
 #        GPIO.output(pin,GPIO.LOW)
-        print sys._getframe().f_code.co_name,
-        print(' '+pin)
+#        print sys._getframe().f_code.co_name,
+#        print(' '+pin)
+        pass
 
     def refresh_led_status(self, pin_pwm, pin_enable):
         '''
@@ -104,7 +106,8 @@ class Server_i (BBBServer__POA.Server):
                 msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
                 print msg
             else:
-                print key, value
+#                print key, value
+                pass
                 
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
         print "---------------------------------------------------"
@@ -141,6 +144,15 @@ class Server_i (BBBServer__POA.Server):
             self.turn_on_gpio(pin_step)
         self.turn_off_gpio(pin_sleep)
         return "ok"
+    
+    def get_stars_status_keys(self):
+        key_list = []
+        for key, value in LED_STATUS.items():
+            key_list.append(key)
+        return key_list
+
+    def get_stars_status_value(self, key):
+        return LED_STATUS[key]
 
 if __name__ == '__main__':
     #XXX: replace != by == 

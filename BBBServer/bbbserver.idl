@@ -1,4 +1,6 @@
 module BBBServer {
+    typedef sequence<string> list;
+
     interface Server {
         string led_on(in string pin_led,
                 in string pin_pwm,
@@ -43,6 +45,9 @@ module BBBServer {
                 in long vr_init, 
                 in long vr_end, 
                 in string cur_pos);
+
+        list get_stars_status_keys();
+        list get_stars_status_value(in string key);
 
     };
 };
