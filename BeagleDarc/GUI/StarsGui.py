@@ -11,9 +11,9 @@ import gtk
 from star_coord import star_coord
 from BeagleDarc.Controller import Controller
 
-class Main:
+class Stars:
     '''
-    Main
+    Stars
     '''
     def __init__(self):
         self.path, fil = os.path.split(os.path.abspath(__file__))
@@ -72,5 +72,5 @@ class Main:
                 print e
 
 if __name__ == '__main__':
-    app = Main()
+    app = Stars()
     gtk.main()

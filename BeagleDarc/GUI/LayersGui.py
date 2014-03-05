@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Stars
+Layers
 '''
 
 import os
