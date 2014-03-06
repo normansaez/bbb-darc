@@ -287,19 +287,28 @@ class Layers:
     #Vel callbacks
     def ground_scale_vel_moved(self, event):
         print "ground_scale_moved"
-        print self.ground_scale_vel.get_value()
+        self.ground_vel = self.ground_scale_vel.get_value()
+        print self.ground_vel
 
     def altitude_scale_vel_X_moved(self, event):
         print "altitude_scale_X_moved"
-        print self.altitude_scale_vel_X.get_value()
+        self.alt_x_vel = self.altitude_scale_vel_X.get_value()
+        print self.alt_x_vel
 
     def altitude_scale_vel_Y_moved(self, event):
         print "altitude_scale_Y_moved"
-        print self.altitude_scale_vel_Y.get_value()
+        self.alt_y_vel = self.altitude_scale_vel_Y.get_value()
+        print self.alt_y_vel
 
     def execute_now(self, event):        
         print "pressed"
-
+        print "ground_pos = %1.1f" %  self.ground_pos
+        print "alt_x_pos  = %1.1f" %  self.alt_x_pos 
+        print "alt_y_pos  = %1.1f" %  self.alt_y_pos 
+        print "ground_vel = %1.1f" %  self.ground_vel
+        print "alt_x_vel  = %1.1f" %  self.alt_x_vel 
+        print "alt_y_vel  = %1.1f" %  self.alt_y_vel 
+        
 if __name__ == '__main__':
     app = Layers()
     gtk.main()
