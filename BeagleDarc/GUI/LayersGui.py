@@ -30,6 +30,7 @@ class Layers:
         self.win.add(self.fix)
         self.win.show_all()
 
+        ### LED POSITION ###
         # ground: sts init
         self.sts_ground_init = gtk.Image()
         self.sts_ground_init.set_from_file(self.path+'/img/led-green.gif')
@@ -66,6 +67,7 @@ class Layers:
         self.fix.put(self.sts_altitude_Y_end, 705, 490)
         self.sts_altitude_Y_end.show()
 
+        ### Layer IMG ###
         # ground: cur
         self.img_ground_cur = gtk.Image()
         self.img_ground_cur.set_from_file(self.path+'/img/gl_full_s.png')
@@ -87,6 +89,7 @@ class Layers:
         self.img_altitude_cmd.set_from_file(self.path+'/img/al_empty_s.png')
         self.fix.put(self.img_altitude_cmd, 100, 450)
         self.img_altitude_cmd.show()
+
         ############ labels       ##########
         self.label1 = gtk.Label()
         self.label1.modify_font(pango.FontDescription("sans 8"))
@@ -170,8 +173,10 @@ class Layers:
         self.label13.set_text("velocity")
         self.label13.show()
         self.fix.put(self.label13, 725, 510)
+
+        # POSITION BAR 
         ########################
-        # ground_scale
+        # ground_scale (pos)
         #
         adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.ground_scale_pos = gtk.HScale(adjustment)
@@ -182,18 +187,20 @@ class Layers:
         self.ground_scale_pos.show()
         self.fix.put(self.ground_scale_pos, 150, 680)
         ########################
-        # ground_scale
+        # ground_scale (vel)
         #
         adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.ground_scale_vel = gtk.HScale(adjustment)
         self.ground_scale_vel.set_digits(0)
         self.ground_scale_vel.set_update_policy(gtk.UPDATE_CONTINUOUS)
-#        self.ground_scale_vel.connect("value-changed", self.ground_scale_vel_moved)
+        self.ground_scale_vel.connect("value-changed", self.ground_scale_vel_moved)
         self.ground_scale_vel.set_size_request(500, 30)
         self.ground_scale_vel.show()
         self.fix.put(self.ground_scale_vel, 150, 700)
+
+
         ########################
-        # altitude_scale X
+        # altitude_scale X (pos)
         #
         adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.altitude_scale_pos_X = gtk.HScale(adjustment)
@@ -204,18 +211,18 @@ class Layers:
         self.altitude_scale_pos_X.show()
         self.fix.put(self.altitude_scale_pos_X, 150, 600)
         ########################
-        # altitude_scale X
+        # altitude_scale X (vel)
         #
         adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.altitude_scale_vel_X = gtk.HScale(adjustment)
         self.altitude_scale_vel_X.set_digits(0)
         self.altitude_scale_vel_X.set_update_policy(gtk.UPDATE_CONTINUOUS)
-#        self.altitude_scale_vel_X.connect("value-changed", self.altitude_scale_vel_X_moved)
+        self.altitude_scale_vel_X.connect("value-changed", self.altitude_scale_vel_X_moved)
         self.altitude_scale_vel_X.set_size_request(500, 30)
         self.altitude_scale_vel_X.show()
-        self.fix.put(self.altitude_scale_vel_X, 150, 622)
+        self.fix.put(self.altitude_scale_vel_X, 150, 620)
         ########################
-        # altitude_scale Y
+        # altitude_scale Y (pos)
         #
         adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.altitude_scale_pos_Y = gtk.VScale(adjustment)
@@ -228,7 +235,7 @@ class Layers:
         self.altitude_scale_pos_Y.show()
         self.fix.put(self.altitude_scale_pos_Y, 700, 40)
         ########################
-        # altitude_scale Y
+        # altitude_scale Y (vel)
         #
         adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.altitude_scale_vel_Y = gtk.VScale(adjustment)
@@ -236,32 +243,62 @@ class Layers:
         #self.altitude_scale_vel_Y.set_value_pos(gtk.POS_BOTTOM) 
         self.altitude_scale_vel_Y.set_inverted(True)
         self.altitude_scale_vel_Y.set_update_policy(gtk.UPDATE_CONTINUOUS)
-        #self.altitude_scale_vel_Y.connect("value-changed", self.altitude_scale_vel_Y_moved)
+        self.altitude_scale_vel_Y.connect("value-changed", self.altitude_scale_vel_Y_moved)
         self.altitude_scale_vel_Y.set_size_request(30, 450)
         self.altitude_scale_vel_Y.show()
         self.fix.put(self.altitude_scale_vel_Y, 720, 40)
         # Apply button:
         self.button_ok = gtk.Button("Execute Now")
         self.button_ok.show()
+        self.button_ok.connect("clicked", self.execute_now)
         self.fix.put(self.button_ok, 650, 750)
 
         ##Creating controller
         self.controller = Controller()
+        
+        ## cmd pos/vel
+        self.ground_pos = 0.0
+        self.alt_x_pos = 0.0
+        self.alt_y_pos = 0.0
 
+        self.ground_vel = 0.0
+        self.alt_x_vel = 0.0
+        self.alt_y_vel = 0.0
+
+    #Pos callbacks
     def ground_scale_pos_moved(self, event):
         print "ground_scale_moved"
-        print self.ground_scale_pos.get_value()
+        self.ground_pos = self.ground_scale_pos.get_value()
+        print self.ground_pos
         self.fix.move(self.img_ground_cmd, 100+int(self.ground_scale_pos.get_value()*3), 500)
 
     def altitude_scale_pos_X_moved(self, event):
         print "altitude_scale_X_moved"
-        print self.altitude_scale_pos_X.get_value()
+        self.alt_x_pos = self.altitude_scale_pos_X.get_value()
+        print self.alt_x_pos
         self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*4), 450 - int(self.altitude_scale_pos_Y.get_value()*4))
 
     def altitude_scale_pos_Y_moved(self, event):
         print "altitude_scale_Y_moved"
-        print self.altitude_scale_pos_Y.get_value()
+        self.alt_y_pos = self.altitude_scale_pos_Y.get_value()
+        print self.alt_y_pos
         self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*4), 450 - int(self.altitude_scale_pos_Y.get_value()*4))
+
+    #Vel callbacks
+    def ground_scale_vel_moved(self, event):
+        print "ground_scale_moved"
+        print self.ground_scale_vel.get_value()
+
+    def altitude_scale_vel_X_moved(self, event):
+        print "altitude_scale_X_moved"
+        print self.altitude_scale_vel_X.get_value()
+
+    def altitude_scale_vel_Y_moved(self, event):
+        print "altitude_scale_Y_moved"
+        print self.altitude_scale_vel_Y.get_value()
+
+    def execute_now(self, event):        
+        print "pressed"
 
 if __name__ == '__main__':
     app = Layers()
