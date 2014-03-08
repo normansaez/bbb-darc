@@ -18,6 +18,8 @@ from server_dic import PWM_LIST
 from server_dic import DBUS_LIST
 from BeagleDarc.Model import Layer
 
+MOTORS = ['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
+
 class Server_i (BBBServer__POA.Server):
 
     def __init__(self):
@@ -38,8 +40,7 @@ class Server_i (BBBServer__POA.Server):
         self.disable_all_LE()
 
     def turn_off_all_motors(self):
-        motor_names =['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
-        for motor_id in motor_names:
+        for motor_id in MOTORS:
             motor = Layer(motor_id)
             self.turn_off_gpio(motor.pin_dir)
             self.turn_off_gpio(motor.pin_step)
@@ -110,34 +111,44 @@ class Server_i (BBBServer__POA.Server):
                 pass
                 
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        print sys._getframe().f_code.co_name,
+        print ": %s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         LED_STATUS[name][1] = "ON"
         self.refresh_led_status(pin_pwm, pin_enable)
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        print sys._getframe().f_code.co_name,
+        print ": %s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         LED_STATUS[name][1] = "OFF"
         self.refresh_led_status(pin_pwm, pin_enable)
         return "ok"
 
-    def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
-        self.turn_on_gpio(pin_dir)
-        self.turn_on_gpio(pin_sleep)
+    def motor_move(self, name, direction, velocity, steps, cur_pos, cmd_pos):
+        motor = Layer(name)
+        self.turn_on_gpio(motor.pin_dir)
+        self.turn_on_gpio(motor.pin_sleep)
+        motor.steps = steps
         for s in range(0, steps):
-            self.turn_off_gpio(pin_step)
-            self.turn_on_gpio(pin_step)
-        self.turn_off_gpio(pin_sleep)
-        return "ok"
+            self.turn_off_gpio(motor.pin_step)
+            self.turn_on_gpio(motor.pin_step)
+        self.turn_off_gpio(motor.pin_sleep)
+        print sys._getframe().f_code.co_name,
+        print ": %s -> %1.2f" % (name, steps)
+        return steps
 
-    def motor_move_skip_sensor(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):
-        self.turn_on_gpio(pin_dir)
-        self.turn_on_gpio(pin_sleep)
+    def motor_move_skip_sensor(self, name, direction, velocity, steps, cur_pos, cmd_pos):
+        motor = Layer(name)
+        self.turn_on_gpio(motor.pin_dir)
+        self.turn_on_gpio(motor.pin_sleep)
+        motor.steps = steps
         for s in range(0, steps):
-            self.turn_off_gpio(pin_step)
-            self.turn_on_gpio(pin_step)
-        self.turn_off_gpio(pin_sleep)
-        return "ok"
+            self.turn_off_gpio(motor.pin_step)
+            self.turn_on_gpio(motor.pin_step)
+        self.turn_off_gpio(motor.pin_sleep)
+        print sys._getframe().f_code.co_name,
+        print ": %s -> %1.2f" % (name, steps)
+        return steps
     
     def get_stars_status_keys(self):
         key_list = []
@@ -147,6 +158,14 @@ class Server_i (BBBServer__POA.Server):
 
     def get_stars_status_value(self, key):
         return LED_STATUS[key]
+
+    def get_motor_cur_pos(self, name):
+        motor = Layer(name)
+        return motor.cur_pos
+
+    def get_motor_cmd_pos(self, name): 
+        motor = Layer(name)
+        return motor.cmd_pos
 
 if __name__ == '__main__':
     #XXX: replace != by == 

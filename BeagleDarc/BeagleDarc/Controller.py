@@ -75,34 +75,20 @@ class Controller:
     def layer_move(self, layer_id):
         layer = Layer(layer_id)
         self.client.motor_move(layer.name, 
-                layer.pin_dir, 
-                layer.pin_step, 
-                layer.pin_sleep, 
-                layer.pin_opto1, 
-                layer.pin_opto2, 
-                layer.simulated, 
                 layer.direction, 
                 layer.velocity, 
                 layer.steps, 
-                layer.vr_init, 
-                layer.vr_end, 
-                layer.cur_pos)
+                layer.cur_pos,
+                layer.cmd_pos)
 
     def layer_move_skip_sensor(self, layer_id):
         layer = Layer(layer_id)
         self.client.motor_move_skip_sensor(layer.name, 
-                layer.pin_dir, 
-                layer.pin_step, 
-                layer.pin_sleep, 
-                layer.pin_opto1, 
-                layer.pin_opto2, 
-                layer.simulated, 
                 layer.direction, 
                 layer.velocity, 
                 layer.steps, 
-                layer.vr_init, 
-                layer.vr_end, 
-                layer.cur_pos)
+                layer.cur_pos,
+                layer.cmd_pos)
 
     def get_stars_status(self):
         led_status = {}
@@ -129,7 +115,12 @@ class Controller:
 
         
         
-    def get_position(self, layer_id, pos, vel):
+    def get_cmd_pos(self, layer_id, pos, vel):
+        '''
+        '''
+        layer = Layer(layer_id)
+
+    def get_cur_pos(self, layer_id, pos, vel):
         '''
         '''
         layer = Layer(layer_id)

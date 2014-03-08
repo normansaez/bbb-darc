@@ -18,33 +18,22 @@ module BBBServer {
                 in float exp_time,
                 in long brightness);
 
-        string motor_move(in string name,
-                in string pin_dir, 
-                in string pin_step, 
-                in string pin_sleep, 
-                in string pin_opto1, 
-                in string pin_opto2, 
-                in boolean simulated, 
+        long motor_move(in string name,
                 in string direction,
                 in long velocity, 
                 in long steps, 
-                in long vr_init, 
-                in long vr_end, 
-                in string cur_pos);
+                in string cur_pos,
+                in string cmd_pos);
 
-        string motor_move_skip_sensor(in string name, 
-                in string pin_dir, 
-                in string pin_step, 
-                in string pin_sleep, 
-                in string pin_opto1, 
-                in string pin_opto2, 
-                in boolean simulated, 
+        long motor_move_skip_sensor(in string name, 
                 in string direction,
                 in long velocity, 
                 in long steps, 
-                in long vr_init, 
-                in long vr_end, 
-                in string cur_pos);
+                in string cur_pos,
+                in string cmd_pos);
+
+        long get_motor_cur_pos(in string name); 
+        long get_motor_cmd_pos(in string name); 
 
         list get_stars_status_keys();
         list get_stars_status_value(in string key);

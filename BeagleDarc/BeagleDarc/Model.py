@@ -41,6 +41,7 @@ class Layer(object):
         self._vr_init = None
         self._vr_end = None
         self._cur_pos = None
+        self._cmd_pos = None
         self._image_prefix = None
         
     @property
@@ -172,6 +173,16 @@ class Layer(object):
     def cur_pos(self, value):
         self.bd.write(self._config_name, 'cur_pos', value)
         self._cur_pos = value
+
+    @property
+    def cmd_pos(self):
+        self._cmd_pos = self.bd.config.get(self._config_name, 'cmd_pos')
+        return self._cmd_pos
+
+    @cmd_pos.setter
+    def cmd_pos(self, value):
+        self.bd.write(self._config_name, 'cmd_pos', value)
+        self._cmd_pos = value
 
     @property
     def image_prefix(self):
