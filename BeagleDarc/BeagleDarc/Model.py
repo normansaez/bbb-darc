@@ -166,7 +166,7 @@ class Layer(object):
 
     @property
     def cur_pos(self):
-        self._cur_pos = self.bd.config.get(self._config_name, 'cur_pos')
+        self._cur_pos = self.bd.config.getint(self._config_name, 'cur_pos')
         return self._cur_pos
 
     @cur_pos.setter
@@ -176,7 +176,7 @@ class Layer(object):
 
     @property
     def cmd_pos(self):
-        self._cmd_pos = self.bd.config.get(self._config_name, 'cmd_pos')
+        self._cmd_pos = self.bd.config.getint(self._config_name, 'cmd_pos')
         return self._cmd_pos
 
     @cmd_pos.setter

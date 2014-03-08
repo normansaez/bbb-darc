@@ -1,6 +1,6 @@
 #!/bin/bash
-python /home/nsaez/bbb-darc/BeagleDarc/GUI/BeagleDarcGui.py &
-python /home/nsaez/bbb-darc/BeagleDarc/GUI/LayerData.py &
+#python /home/nsaez/bbb-darc/BeagleDarc/GUI/BeagleDarcGui.py &
+#python /home/nsaez/bbb-darc/BeagleDarc/GUI/LayerData.py &
 python /home/nsaez/bbb-darc/BeagleDarc/GUI/LayersGui.py &
-python /home/nsaez/bbb-darc/BeagleDarc/GUI/StarData.py &
-python /home/nsaez/bbb-darc/BeagleDarc/GUI/StarsGui.py &
+#python /home/nsaez/bbb-darc/BeagleDarc/GUI/StarData.py &
+#python /home/nsaez/bbb-darc/BeagleDarc/GUI/StarsGui.py &

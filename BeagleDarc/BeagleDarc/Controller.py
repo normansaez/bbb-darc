@@ -104,6 +104,9 @@ class Controller:
         '''
         '''
         layer = Layer(layer_id)
+        layer.cmd_pos = cmd_pos
+        layer.velocity = vel
+
         steps = cmd_pos - layer.cur_pos
         if steps > 0:
             layer.direction = 'END_POSITION'
@@ -111,6 +114,7 @@ class Controller:
             layer.direction = 'INIT_POSITION'
             steps = abs(steps)
         layer.steps = steps
+        self.layer_move_skip_sensor(layer_id)
         layer.cur_pos = cmd_pos
 
         

@@ -22,15 +22,15 @@ module BBBServer {
                 in string direction,
                 in long velocity, 
                 in long steps, 
-                in string cur_pos,
-                in string cmd_pos);
+                in long cur_pos,
+                in long cmd_pos);
 
         long motor_move_skip_sensor(in string name, 
                 in string direction,
                 in long velocity, 
                 in long steps, 
-                in string cur_pos,
-                in string cmd_pos);
+                in long cur_pos,
+                in long cmd_pos);
 
         long get_motor_cur_pos(in string name); 
         long get_motor_cmd_pos(in string name); 
