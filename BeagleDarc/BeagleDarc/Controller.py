@@ -116,7 +116,7 @@ class Controller:
         layer.steps = steps
         layer.cur_pos = self.layer_move_skip_sensor(layer_id)
         
-    def get_motor_cur_pos(self, layer_id, pos, vel):
+    def get_motor_cur_pos(self, layer_id):
         '''
         '''
         layer = Layer(layer_id)

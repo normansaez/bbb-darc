@@ -261,13 +261,23 @@ class Layers:
         self.controller = Controller()
         
         ## cmd pos/vel
-        self.ground_pos = 0.0
-        self.alt_x_pos = 0.0
-        self.alt_y_pos = 0.0
+        self.ground_pos = self.controller.get_motor_cur_pos('ground_layer')
+        self.alt_x_pos =  self.controller.get_motor_cur_pos('horizontal_altitude_layer')
+        self.alt_y_pos =  self.controller.get_motor_cur_pos('vertical_altitude_layer')
 
         self.ground_vel = 0.0
         self.alt_x_vel = 0.0
         self.alt_y_vel = 0.0
+        # moving according
+        self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
+        self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
+        self.fix.move(self.img_ground_cmd, 100+int(self.ground_pos*(3/200.)), 500)
+        self.controller.set_position('horizontal_altitude_layer', int(self.alt_x_pos), int(self.alt_x_vel))
+        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+        self.fix.move(self.img_altitude_cmd, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+        self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
+        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+        self.fix.move(self.img_altitude_cmd, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
 
     #Pos callbacks
     def ground_scale_pos_moved(self, event):
