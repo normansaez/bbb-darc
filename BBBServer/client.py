@@ -1,7 +1,4 @@
-#
-# The client, on the command line
-#
-
+#!/usr/bin/env python
 import sys
 from omniORB import CORBA
 from random import randint
@@ -39,4 +36,12 @@ result  = eo.led_on('P8_20', 'P8_19', 'P8_45', 'LGS_A_1', False, 1.0, 1)
 
 print eo.get_stars_status_keys()
 print eo.get_stars_status_value('LGS_B_4')
+name = 'ground_layer'
+direction = 'INIT_POSITION'
+velocity = 0
+steps = 1000
+cur_pos = 1
+cmd_pos = 3
+print eo.motor_move(name, direction, velocity, steps, cur_pos, cmd_pos)
+print eo.motor_move_skip_sensor(name, direction, velocity, steps, cur_pos, cmd_pos)
 

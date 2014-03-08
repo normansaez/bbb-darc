@@ -74,7 +74,7 @@ class Controller:
     #layer methods
     def layer_move(self, layer_id):
         layer = Layer(layer_id)
-        self.client.motor_move(layer.name, 
+        return self.client.motor_move(layer.name, 
                 layer.direction, 
                 layer.velocity, 
                 layer.steps, 
@@ -83,7 +83,7 @@ class Controller:
 
     def layer_move_skip_sensor(self, layer_id):
         layer = Layer(layer_id)
-        self.client.motor_move_skip_sensor(layer.name, 
+        return self.client.motor_move_skip_sensor(layer.name, 
                 layer.direction, 
                 layer.velocity, 
                 layer.steps, 
@@ -114,10 +114,7 @@ class Controller:
             layer.direction = 'INIT_POSITION'
             steps = abs(steps)
         layer.steps = steps
-        self.layer_move_skip_sensor(layer_id)
-        layer.cur_pos = cmd_pos
-
-        
+        layer.cur_pos = self.layer_move_skip_sensor(layer_id)
         
     def get_cmd_pos(self, layer_id, pos, vel):
         '''
@@ -133,5 +130,5 @@ if __name__ == '__main__':
     c = Controller()
     c.star_on(1)
     c.star_off(1)
-    c.layer_move('ground_layer')
-    c.layer_move_skip_sensor('ground_layer')
+    print c.layer_move('ground_layer')
+    print c.layer_move_skip_sensor('ground_layer')
