@@ -122,28 +122,41 @@ class Server_i (BBBServer__POA.Server):
 
     def motor_move(self, name, direction, velocity, steps, cur_pos, cmd_pos):
         motor = Layer(name)
+        motor.steps = steps
+        motor.direction = direction
+        motor.velocity = velocity
+
         self.turn_on_gpio(motor.pin_dir)
         self.turn_on_gpio(motor.pin_sleep)
-        motor.steps = steps
         for s in range(0, steps):
             self.turn_off_gpio(motor.pin_step)
             self.turn_on_gpio(motor.pin_step)
         self.turn_off_gpio(motor.pin_sleep)
         print sys._getframe().f_code.co_name,
         print ": %s -> %1.2f" % (name, steps)
+
+        motor.cur_pos = cur_pos
+        motor.cmd_pos = cmd_pos
         return steps
+    
 
     def motor_move_skip_sensor(self, name, direction, velocity, steps, cur_pos, cmd_pos):
         motor = Layer(name)
+        motor.steps = steps
+        motor.direction = direction
+        motor.velocity = velocity
+
         self.turn_on_gpio(motor.pin_dir)
         self.turn_on_gpio(motor.pin_sleep)
-        motor.steps = steps
         for s in range(0, steps):
             self.turn_off_gpio(motor.pin_step)
             self.turn_on_gpio(motor.pin_step)
         self.turn_off_gpio(motor.pin_sleep)
         print sys._getframe().f_code.co_name,
         print ": %s -> %1.2f" % (name, steps)
+
+        motor.cur_pos = cur_pos
+        motor.cmd_pos = cmd_pos
         return steps
     
     def get_stars_status_keys(self):
