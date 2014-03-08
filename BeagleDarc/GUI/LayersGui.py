@@ -11,6 +11,7 @@ import pango
 
 from star_coord import star_coord
 from BeagleDarc.Controller import Controller
+from BeagleDarc.Model import Layer
 
 class Layers:
     '''
@@ -178,7 +179,8 @@ class Layers:
         ########################
         # ground_scale (pos)
         #
-        adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
+        layer = Layer('ground_layer')
+        adjustment = gtk.Adjustment(value=float(layer.cur_pos), lower=layer.vr_init, upper=layer.vr_end+1, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.ground_scale_pos = gtk.HScale(adjustment)
         self.ground_scale_pos.set_digits(0)
         self.ground_scale_pos.set_update_policy(gtk.UPDATE_CONTINUOUS)
@@ -202,7 +204,8 @@ class Layers:
         ########################
         # altitude_scale X (pos)
         #
-        adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
+        layer = Layer('horizontal_altitude_layer')
+        adjustment = gtk.Adjustment(value=float(layer.cur_pos), lower=layer.vr_init, upper=layer.vr_end+1, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.altitude_scale_pos_X = gtk.HScale(adjustment)
         self.altitude_scale_pos_X.set_digits(0)
         self.altitude_scale_pos_X.set_update_policy(gtk.UPDATE_CONTINUOUS)
@@ -224,7 +227,8 @@ class Layers:
         ########################
         # altitude_scale Y (pos)
         #
-        adjustment = gtk.Adjustment(value=0.0, lower=0.0, upper=101.0, step_incr=0.1, page_incr=1.0, page_size=1.0)
+        layer = Layer('vertical_altitude_layer')
+        adjustment = gtk.Adjustment(value=float(layer.cur_pos), lower=layer.vr_init, upper=layer.vr_end+1, step_incr=0.1, page_incr=1.0, page_size=1.0)
         self.altitude_scale_pos_Y = gtk.VScale(adjustment)
         self.altitude_scale_pos_Y.set_digits(0)
         #self.altitude_scale_pos_Y.set_value_pos(gtk.POS_BOTTOM) 
@@ -270,19 +274,19 @@ class Layers:
         print "ground_scale_moved"
         self.ground_pos = self.ground_scale_pos.get_value()
         print self.ground_pos
-        self.fix.move(self.img_ground_cmd, 100+int(self.ground_scale_pos.get_value()*3), 500)
+        self.fix.move(self.img_ground_cmd, 100+int(self.ground_scale_pos.get_value()*(3/200.)), 500)
 
     def altitude_scale_pos_X_moved(self, event):
         print "altitude_scale_X_moved"
         self.alt_x_pos = self.altitude_scale_pos_X.get_value()
         print self.alt_x_pos
-        self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*4), 450 - int(self.altitude_scale_pos_Y.get_value()*4))
+        self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*(4/200.)), 450 - int(self.altitude_scale_pos_Y.get_value()*(4/200.)))
 
     def altitude_scale_pos_Y_moved(self, event):
         print "altitude_scale_Y_moved"
         self.alt_y_pos = self.altitude_scale_pos_Y.get_value()
         print self.alt_y_pos
-        self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*4), 450 - int(self.altitude_scale_pos_Y.get_value()*4))
+        self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*(4/200.)), 450 - int(self.altitude_scale_pos_Y.get_value()*(4/200.)))
 
     #Vel callbacks
     def ground_scale_vel_moved(self, event):

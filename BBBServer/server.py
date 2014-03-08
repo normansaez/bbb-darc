@@ -110,21 +110,15 @@ class Server_i (BBBServer__POA.Server):
                 pass
                 
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print "---------------------------------------------------"
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
-        print "-----------"
         LED_STATUS[name][1] = "ON"
         self.refresh_led_status(pin_pwm, pin_enable)
-        print "---------------------------------------------------"
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print "---------------------------------------------------"
         print "%s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
-        print "-----------"
         LED_STATUS[name][1] = "OFF"
         self.refresh_led_status(pin_pwm, pin_enable)
-        print "---------------------------------------------------"
         return "ok"
 
     def motor_move(self, name, pin_dir, pin_step, pin_sleep, pin_opto1, pin_opto2, simulated, direction, velocity, steps, vr_init, vr_end, cur_pos):

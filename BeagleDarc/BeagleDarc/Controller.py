@@ -43,40 +43,96 @@ class Controller:
             sys.exit(1)
         
         # Narrow the object to an BBBServer::Server
-        self.cli_obj = obj._narrow(BBBServer.Server)
+        self.client = obj._narrow(BBBServer.Server)
         
-        if (self.cli_obj is None):
+        if (self.client is None):
             print "Object reference is not an BBBServer::Server"
             sys.exit(1)
 
     #star methods
     def star_on(self, star_id):
         star = Star(star_id)
-        self.cli_obj.led_on(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
+        self.client.led_on(star.pin_led,
+                star.pin_pwm,
+                star.pin_enable,
+                star.name,
+                star.simulated,
+                star.exp_time,
+                star.brightness)
 
     def star_off(self, star_id):
         star = Star(star_id)
-        self.cli_obj.led_off(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
+        self.client.led_off(star.pin_led, 
+                star.pin_pwm, 
+                star.pin_enable, 
+                star.name, 
+                star.simulated, 
+                star.exp_time, 
+                star.brightness)
 
 
     #layer methods
     def layer_move(self, layer_id):
         layer = Layer(layer_id)
-        self.cli_obj.motor_move(layer.name, layer.pin_dir, layer.pin_step, layer.pin_sleep, layer.pin_opto1, layer.pin_opto2, layer.simulated, layer.direction, layer.velocity, layer.steps, layer.vr_init, layer.vr_end, layer.cur_pos)
+        self.client.motor_move(layer.name, 
+                layer.pin_dir, 
+                layer.pin_step, 
+                layer.pin_sleep, 
+                layer.pin_opto1, 
+                layer.pin_opto2, 
+                layer.simulated, 
+                layer.direction, 
+                layer.velocity, 
+                layer.steps, 
+                layer.vr_init, 
+                layer.vr_end, 
+                layer.cur_pos)
 
     def layer_move_skip_sensor(self, layer_id):
         layer = Layer(layer_id)
-        self.cli_obj.motor_move_skip_sensor(layer.name, layer.pin_dir, layer.pin_step, layer.pin_sleep, layer.pin_opto1, layer.pin_opto2, layer.simulated, layer.direction, layer.velocity, layer.steps, layer.vr_init, layer.vr_end, layer.cur_pos)
+        self.client.motor_move_skip_sensor(layer.name, 
+                layer.pin_dir, 
+                layer.pin_step, 
+                layer.pin_sleep, 
+                layer.pin_opto1, 
+                layer.pin_opto2, 
+                layer.simulated, 
+                layer.direction, 
+                layer.velocity, 
+                layer.steps, 
+                layer.vr_init, 
+                layer.vr_end, 
+                layer.cur_pos)
 
     def get_stars_status(self):
         led_status = {}
-        key_list = self.cli_obj.get_stars_status_keys()
+        key_list = self.client.get_stars_status_keys()
         for i in key_list:
-            status = self.cli_obj.get_stars_status_value(i)
+            status = self.client.get_stars_status_value(i)
             star_id = status[2]
             sts = status[1]
             led_status[int(star_id)] = sts
         return led_status
+
+    def set_position(self, layer_id, cmd_pos, vel):
+        '''
+        '''
+        layer = Layer(layer_id)
+        steps = cmd_pos - layer.cur_pos
+        if steps > 0:
+            layer.direction = 'END_POSITION'
+        else:
+            layer.direction = 'INIT_POSITION'
+            steps = abs(steps)
+        layer.steps = steps
+        layer.cur_pos = cmd_pos
+
+        
+        
+    def get_position(self, layer_id, pos, vel):
+        '''
+        '''
+        layer = Layer(layer_id)
 
 if __name__ == '__main__':
     c = Controller()
