@@ -314,8 +314,11 @@ class Layers:
         print "alt_y_vel  = %1.1f" %  self.alt_y_vel 
         
         self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
-        self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
+        self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
         self.controller.set_position('horizontal_altitude_layer', int(self.alt_x_pos), int(self.alt_x_vel))
+        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+        self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
+        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
 if __name__ == '__main__':
     app = Layers()
     gtk.main()
