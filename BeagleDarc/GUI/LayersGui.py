@@ -264,7 +264,10 @@ class Layers:
         self.ground_pos = self.controller.get_motor_cur_pos('ground_layer')
         self.alt_x_pos =  self.controller.get_motor_cur_pos('horizontal_altitude_layer')
         self.alt_y_pos =  self.controller.get_motor_cur_pos('vertical_altitude_layer')
-
+        print self.ground_pos
+        print self.alt_x_pos
+        print self.alt_y_pos
+        print "------------"
         self.ground_vel = 0.0
         self.alt_x_vel = 0.0
         self.alt_y_vel = 0.0
