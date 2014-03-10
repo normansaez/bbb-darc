@@ -4,8 +4,8 @@ import sys, os
 import BBBServer, BBBServer__POA
 from omniORB import CORBA, PortableServer
 import CosNaming
-#import Adafruit_BBIO.GPIO as GPIO
-#import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.GPIO as GPIO
+import Adafruit_BBIO.PWM as PWM
 import getpass
 from time import sleep
 from server_dic import LED_STATUS
@@ -65,17 +65,17 @@ class Server_i (BBBServer__POA.Server):
             self.turn_off_gpio(key)
 
     def turn_on_gpio(self, pin):
-#       GPIO.setup(pin, GPIO.OUT)
-#        GPIO.output(pin,GPIO.HIGH)
-#        print sys._getframe().f_code.co_name,
-#        print(' '+pin)
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin,GPIO.HIGH)
+        print sys._getframe().f_code.co_name,
+        print(' '+pin)
         pass
 
     def turn_off_gpio(self, pin):
-#        GPIO.setup(pin, GPIO.OUT)
-#        GPIO.output(pin,GPIO.LOW)
-#        print sys._getframe().f_code.co_name,
-#        print(' '+pin)
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin,GPIO.LOW)
+        print sys._getframe().f_code.co_name,
+        print(' '+pin)
         pass
 
     def refresh_led_status(self, pin_pwm, pin_enable):
@@ -178,7 +178,7 @@ class Server_i (BBBServer__POA.Server):
 
 if __name__ == '__main__':
     #XXX: replace != by == 
-    if getpass.getuser() != 'root':
+    if getpass.getuser() == 'root':
         # Initialise the ORB and find the root POA
         orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
         poa = orb.resolve_initial_references("RootPOA")
