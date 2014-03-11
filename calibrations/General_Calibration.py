@@ -8,11 +8,11 @@ from BeagleDarc.Controller import Controller
 #Darc Controller instance
 c = darc.Control("ShackHartmann")
 #Beagle Controller instance
-bbbc = Controller.__init__()
+bbbc = Controller()
 
 #Parameters
-niter = float(100)
-finalniter = float(1000)
+niter = float(5)
+finalniter = float(10)
 nsubaps = 416                                               # number of subaps
 nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
