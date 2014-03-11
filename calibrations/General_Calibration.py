@@ -8,7 +8,7 @@ from BeagleDarc.Controller import Controller
 #Darc Controller instance
 c = darc.Control("ShackHartmann")
 #Beagle Controller instance
-bbbc = Controller.__init__()
+bbbc = Controller()
 
 #Parameters
 niter = float(5)
