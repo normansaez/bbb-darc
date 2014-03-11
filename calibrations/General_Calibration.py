@@ -37,6 +37,8 @@ for star_id in range(1,nstars+1):
     print '\nCalibrating star:%3.0f ' %star_id
     #2-3 bgImage & fwShutter iteration
     shutter = maxShutter*0.3
+    print 'shutter: ',
+    print shutter
     c.Set('bgImage',None)
     c.Set('fwShutter',int(shutter))
     bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
@@ -50,7 +52,14 @@ for star_id in range(1,nstars+1):
         # The while condition is set so that the maximum value found in the image
         # is around 60% of the saturation value
         shutter = shutter*(SHsat*float(0.6))/auxImageMax
+        if(shutter>maxShutter):
+            # Protection
+            shutter = maxShutter
         c.Set('bgImage',None)
+        print 'auxImageMax: ',
+        print auxImageMax
+        print "shutter: ",
+        print shutter
         c.Set('fwShutter',int(shutter))
         bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
         c.Set('bgImage',bgImage)
@@ -58,6 +67,9 @@ for star_id in range(1,nstars+1):
         auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
         bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
+        if(shutter>=maxShutter):
+            # Escape while
+            auxImageMax = SHsat*0.6
     
     c.Set('bgImage',None)
     bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/float(finalniter)
