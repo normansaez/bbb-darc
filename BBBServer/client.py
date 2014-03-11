@@ -8,7 +8,8 @@ import CosNaming, BBBServer
 orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
 
 # Obtain a reference to the root naming context
-obj         = orb.resolve_initial_references("NameService")
+#obj         = orb.resolve_initial_references("NameService")
+obj         = orb.string_to_object("corbaloc:iiop:10.42.0.97/NameService")
 rootContext = obj._narrow(CosNaming.NamingContext)
 
 if rootContext is None:
@@ -42,6 +43,6 @@ velocity = 0
 steps = 1000
 cur_pos = 1
 cmd_pos = 3
-print eo.motor_move(name, direction, velocity, steps, cur_pos, cmd_pos)
-print eo.motor_move_skip_sensor(name, direction, velocity, steps, cur_pos, cmd_pos)
+#print eo.motor_move(name, direction, velocity, steps, cur_pos, cmd_pos)
+#print eo.motor_move_skip_sensor(name, direction, velocity, steps, cur_pos, cmd_pos)
 
