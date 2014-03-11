@@ -11,8 +11,8 @@ c = darc.Control("ShackHartmann")
 bbbc = Controller.__init__()
 
 #Parameters
-niter = float(100)
-finalniter = float(1000)
+niter = float(5)
+finalniter = float(10)
 nsubaps = 416                                               # number of subaps
 nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
@@ -72,8 +72,8 @@ for star_id in range(1,nstars+1):
     c.Set('subapLocation',subapLocation)
     c.Set("refCentroids",None)
     cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/finalniter
-    subapLocation[:,0:1] -= round(cent[::2].mean())
-    subapLocation[:,4:5] -= round(cent[1::2].mean())
+    subapLocation[:,4:5] -= round(cent[::2].mean())
+    subapLocation[:,0:1] -= round(cent[1::2].mean())
     FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')    
 
     #5- Ref Cent
