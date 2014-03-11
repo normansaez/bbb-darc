@@ -6,7 +6,7 @@ import pylab
 from BeagleDarc.Controller import Controller
 
 #Darc Controller instance
-c = darc.Control("ShackHartmann")
+c = darc.Control("SH")
 #Beagle Controller instance
 bbbc = Controller()
 
@@ -18,7 +18,7 @@ nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
                                                             # the range [0:4095] it is taken as the modulus of tShutter/4095
 SHsat = float(65532)                                        # SH saturation value
-cameraName = 'ShackHartmann'
+cameraName = 'SH'
 shutter = maxShutter
 
 #Auxiliary arrays & variables                               

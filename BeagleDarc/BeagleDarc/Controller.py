@@ -136,4 +136,4 @@ if __name__ == '__main__':
     #print c.layer_move('ground_layer')
     #print c.layer_move_skip_sensor('ground_layer')
     import darc
-    c = darc.Control('ShackHartmann')
+    c = darc.Control('SH')

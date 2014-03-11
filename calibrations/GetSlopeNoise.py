@@ -4,12 +4,12 @@ import darc
 import numpy
 import pylab
 
-c=darc.Control("ShackHartmann")
+c=darc.Control("SH")
 niter = 5000
 nsubaps = 416                                            
 c.Set('useBrightest',-85)
                                           
-cameraName = 'ShackHartmann'
+cameraName = 'SH'
 frames = numpy.zeros([niter,nsubaps])
 
 cent = c.GetStreamBlock(cameraName+'rtcCentBuf',niter)   # niter frames - as a dict

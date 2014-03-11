@@ -2,7 +2,7 @@
 import FITS
 import darc
 
-c=darc.Control("ShackHartmann")
+c=darc.Control("SH")
 bg = c.Get("bgImage")
 
 niter = 1000

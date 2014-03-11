@@ -3,7 +3,7 @@ import FITS
 import darc
 import numpy
 
-c=darc.Control("ShackHartmann")
+c=darc.Control("SH")
 #cent = c.Get("refCentroids")
 c.Set("refCentroids",None)
 niter = 1000
