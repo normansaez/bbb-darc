@@ -4,7 +4,7 @@ import darc
 import numpy
 import pylab
 
-c=darc.Control("ShackHartmann")
+c=darc.Control("SH")
 # funcion de prender led que setee bg, refs, subaps y todo
 # con el shutter correcto. Si todo ya esta seteado y la GUI ya prendio el led,
 # entonces no-problemo
@@ -14,7 +14,7 @@ nsubaps = 416                                               # number of subaps
 nBrightest = 100                                            # range of values
                                                             # to test
 noise = numpy.zeros(nBrightest)
-cameraName = 'ShackHartmann'
+cameraName = 'SH'
 frames = numpy.zeros([niter,nsubaps])
 for i in range(0,nBrightest):
     print '\nRecording with useBrightest:%3.0f ' %i

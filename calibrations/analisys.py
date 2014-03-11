@@ -1,7 +1,7 @@
 import FITS
-FITS.Read('ShackHartmannrtcCentBuf_140114_124359_led1.fits')
-cent = FITS.Read('ShackHartmannrtcCentBuf_140114_124359_led1.fits')
-cent = FITS.Read('ShackHartmannrtcCentBuf_140114_124359_led1.fits')[1]
+FITS.Read('SHrtcCentBuf_140114_124359_led1.fits')
+cent = FITS.Read('SHrtcCentBuf_140114_124359_led1.fits')
+cent = FITS.Read('SHrtcCentBuf_140114_124359_led1.fits')[1]
 cent.shape
 import tel
 subapFlag=tel.Pupil(16,16/2.,1,16).subflag.astype("i").ravel()
@@ -95,7 +95,7 @@ x -= x.sum()/1000.
 pylab.plot(y)
 pylab.plot(x)
 pylab.show()
-calpix = FITS.Read('ShackHartmannrtcCalPxlBuf_140114_124359_led1.fits')[1]
+calpix = FITS.Read('SHrtcCalPxlBuf_140114_124359_led1.fits')[1]
 calpix.shape
 calpix.shape=(1000,1920,1080)
 pylab.imshow(calpix[500])
