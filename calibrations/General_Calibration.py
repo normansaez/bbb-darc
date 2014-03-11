@@ -11,9 +11,9 @@ c = darc.Control("ShackHartmann")
 bbbc = Controller()
 
 #Parameters
-niter = float(5)
-finalniter = float(10)
-nsubaps = 416                                               # number of subaps
+niter = int(5)
+finalniter = int(10)
+nsubaps = 416                                               # number of active subaps
 nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
                                                             # the range [0:4095] it is taken as the modulus of tShutter/4095
@@ -39,10 +39,10 @@ for star_id in range(1,nstars+1):
     shutter = maxShutter*0.3
     c.Set('bgImage',None)
     c.Set('fwShutter',int(shutter))
-    bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/niter
+    bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
     c.Set('bgImage',bgImage)
     bbbc.star_on(star_id)
-    auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/niter
+    auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
     bbbc.star_off(star_id)
     auxImageMax = numpy.amax(auxImage)
 
@@ -52,15 +52,15 @@ for star_id in range(1,nstars+1):
         shutter = shutter*(SHsat*float(0.6))/auxImageMax
         c.Set('bgImage',None)
         c.Set('fwShutter',int(shutter))
-        bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/niter
+        bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
         c.Set('bgImage',bgImage)
         bbbc.star_on(star_id)
-        auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/niter
+        auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
         bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
     
     c.Set('bgImage',None)
-    bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/finalniter
+    bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/float(finalniter)
     c.Set('bgImage',bgImage)
 
     #Saving values found
@@ -71,13 +71,13 @@ for star_id in range(1,nstars+1):
     subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
     c.Set('subapLocation',subapLocation)
     c.Set("refCentroids",None)
-    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/finalniter
+    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
     subapLocation[:,0:1] -= round(cent[::2].mean())
     subapLocation[:,4:5] -= round(cent[1::2].mean())
     FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')    
 
     #5- Ref Cent
     c.Set('subapLocation',subapLocation)
-    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/finalniter
+    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
     FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))
     bbbc.star_off(star_id)
