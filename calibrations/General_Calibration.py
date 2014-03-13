@@ -1,3 +1,12 @@
+"""
+Recalibration of useBrightes, backgrounds, shutter times, subaps locations
+and reference centroids.
+
+Author: Nicolas S. Dubost
+        nsdubost@uc.cl
+Last update: March 13, 2014
+"""
+
 #!/usr/bin/env python
 import FITS
 import darc
@@ -80,16 +89,20 @@ for star_id in range(1,nstars+1):
 
     #4- Subaps
     bbbc.star_on(star_id)
-    subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
-    c.Set('subapLocation',subapLocation)
-    c.Set("refCentroids",None)
-    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
-    subapLocation[:,0:1] -= round(cent[::2].mean())
-    subapLocation[:,4:5] -= round(cent[1::2].mean())
-    FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')    
+    try:
+        subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
+        c.Set('subapLocation',subapLocation)
+        c.Set("refCentroids",None)
+        cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
+        subapLocation[:,0:1] -= round(cent[::2].mean())
+        subapLocation[:,4:5] -= round(cent[1::2].mean())
+        FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')    
 
     #5- Ref Cent
-    c.Set('subapLocation',subapLocation)
-    cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
-    FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))
-    bbbc.star_off(star_id)
+        c.Set('subapLocation',subapLocation)
+        cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
+        FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))
+        bbbc.star_off(star_id)
+    except Exception:
+        print 'No subaps for led_%d'%(star_id)
+        
