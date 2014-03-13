@@ -13,7 +13,7 @@ bbbc = Controller()
 #Parameters
 niter = float(5)
 finalniter = float(10)
-nsubaps = 416                                               # number of subaps
+nsubaps = 416                                               # number of active subaps
 nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
                                                             # the range [0:4095] it is taken as the modulus of tShutter/4095
