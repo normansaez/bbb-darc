@@ -91,12 +91,12 @@ for star_id in range(1,nstars+1):
         c.Set('subapLocation',subapLocation)
         c.Set("refCentroids",None)
         centroids = c.GetStreamBlock(cameraName+'rtcCentBuf',finalniter)
-        print 'Adquirió el StreamBlock'
+        print 'Adquirio el StreamBlock'
         centroids = centroids[centroids.keys()[0]]
         print 'Extrajo la lista del diccionario'
         for j in range(0,finalniter):
             cent[j,:] = centroids[j][0]
-        print 'Reconstruyó la matriz'
+        print 'Reconstruyo la matriz'
         cent = numpy.square(cent)
         print 'Todo al cuadrado'
         cent = numpy.sqrt(cent[:,::2]+cent[:,1::2])
