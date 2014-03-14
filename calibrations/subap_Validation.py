@@ -20,8 +20,8 @@ c = darc.Control("SH")
 bbbc = Controller()
 
 #Parameters
-niter = int(5)
-finalniter = int(10)
+niter = int(100)
+finalniter = int(200)
 nsubaps = 416                                               # number of active subaps
 nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
@@ -84,25 +84,22 @@ for star_id in range(1,nstars+1):
     bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/float(finalniter)
     c.Set('bgImage',bgImage)
 
-    #Saving values found
-    FITS.Write(bgImage,'/home/dani/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
-
     #4- Subaps
     bbbc.star_on(star_id)
     try:
         subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
         c.Set('subapLocation',subapLocation)
         c.Set("refCentroids",None)
-        cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
-        subapLocation[:,0:1] -= round(cent[::2].mean())
-        subapLocation[:,4:5] -= round(cent[1::2].mean())
-        FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')    
+        cent = c.GetStreamBlock(cameraName+'rtcCentBuf',niter)
+        cent = cent[cent.keys()[0]]
+        cent = numpy.square(cent)
+        cent = numpy.sqrt(cent[:,::2]+cent[:,1::2])
+        cent = numpy.var(oli,0)
+        pylab.plot(cent)
+        pylab.show()
+        oli = raw_input('Press any key to conitnue to the next star:_ ') 
 
-    #5- Ref Cent
-        c.Set('subapLocation',subapLocation)
-        cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
-        FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))
-        bbbc.star_off(star_id)
     except Exception:
         print 'No subaps for led_%d'%(star_id)
+    bbbc.star_off(star_id)
         
