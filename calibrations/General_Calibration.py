@@ -4,7 +4,7 @@ and reference centroids.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: March 13, 2014
+Last update: March 14, 2014
 """
 
 #!/usr/bin/env python
@@ -102,7 +102,7 @@ for star_id in range(1,nstars+1):
         c.Set('subapLocation',subapLocation)
         cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
         FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))
-        bbbc.star_off(star_id)
     except Exception:
         print 'No subaps for led_%d'%(star_id)
+    bbbc.star_off(star_id)
         
