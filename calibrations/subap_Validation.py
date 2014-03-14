@@ -20,8 +20,8 @@ c = darc.Control("SH")
 bbbc = Controller()
 
 #Parameters
-niter = int(100)
-finalniter = int(200)
+niter = int(10)
+finalniter = int(100)
 nsubaps = 416                                               # number of active subaps
 nstars = 53                                                 # number of stars
 maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
@@ -31,7 +31,7 @@ cameraName = 'SH'
 shutter = maxShutter
 
 #Auxiliary arrays & variables                               
-cent = numpy.zeros([niter,nsubaps])
+cent = numpy.zeros([finalniter,nsubaps])
 centx = 0.0
 centy = 0.0
 bgImage = c.SumData("rtcPxlBuf",1,"f")[0]
@@ -81,7 +81,7 @@ for star_id in range(1,nstars+1):
             auxImageMax = SHsat*0.6
     
     c.Set('bgImage',None)
-    bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/float(finalniter)
+    bgImage = c.SumData('rtcPxlBuf',niter*2,'f')[0]/float(niter*2)
     c.Set('bgImage',bgImage)
 
     #4- Subaps
@@ -90,8 +90,10 @@ for star_id in range(1,nstars+1):
         subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
         c.Set('subapLocation',subapLocation)
         c.Set("refCentroids",None)
-        cent = c.GetStreamBlock(cameraName+'rtcCentBuf',niter)
-        cent = cent[cent.keys()[0]]
+        centroids = c.GetStreamBlock(cameraName+'rtcCentBuf',finalniter)
+        centroids = centroids[centroids.keys()[0]]
+        for j in range(0,finalniter):
+            cent[j,:] = centroids[j][0]
         cent = numpy.square(cent)
         cent = numpy.sqrt(cent[:,::2]+cent[:,1::2])
         cent = numpy.var(oli,0)
