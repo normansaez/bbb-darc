@@ -20,7 +20,7 @@ c = darc.Control("SH")
 bbbc = Controller()
 
 #Parameters
-niter = int(10)
+niter = int(5)
 finalniter = int(100)
 nsubaps = 416                                               # number of active subaps
 nstars = 53                                                 # number of stars
@@ -91,15 +91,24 @@ for star_id in range(1,nstars+1):
         c.Set('subapLocation',subapLocation)
         c.Set("refCentroids",None)
         centroids = c.GetStreamBlock(cameraName+'rtcCentBuf',finalniter)
+        print 'Adquirió el StreamBlock'
         centroids = centroids[centroids.keys()[0]]
+        print 'Extrajo la lista del diccionario'
         for j in range(0,finalniter):
             cent[j,:] = centroids[j][0]
+        print 'Reconstruyó la matriz'
         cent = numpy.square(cent)
+        print 'Todo al cuadrado'
         cent = numpy.sqrt(cent[:,::2]+cent[:,1::2])
+        print 'Sumo y saco raiz'
         cent = numpy.var(oli,0)
+        print 'Varianza hecha'
         pylab.plot(cent)
+        print 'Primer comando de plot'
         pylab.show()
-        oli = raw_input('Press any key to conitnue to the next star:_ ') 
+        print 'Segundo comando de plot'
+        oli = raw_input('Press any key to conitnue to the next star:_ ')
+        print 'Pidio un raw_input'
 
     except Exception:
         print 'No subaps for led_%d'%(star_id)
