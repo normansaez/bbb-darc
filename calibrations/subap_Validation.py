@@ -101,7 +101,7 @@ for star_id in range(1,nstars+1):
         print 'Todo al cuadrado'
         cent = numpy.sqrt(cent[:,::2]+cent[:,1::2])
         print 'Sumo y saco raiz'
-        cent = numpy.var(oli,0)
+        cent = numpy.var(cent,0)
         print 'Varianza hecha'
         pylab.plot(cent)
         print 'Primer comando de plot'
