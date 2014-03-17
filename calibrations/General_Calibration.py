@@ -85,23 +85,23 @@ for star_id in range(1,nstars+1):
     c.Set('bgImage',bgImage)
 
     #Saving values found
-    FITS.Write(bgImage,'/home/dani/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
+    FITS.Write(bgImage,'/home/dani/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file?
 
     #4- Subaps
     bbbc.star_on(star_id)
     try:
-        subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
+        subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
         c.Set('subapLocation',subapLocation)
         c.Set("refCentroids",None)
         cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
         subapLocation[:,0:1] -= round(cent[::2].mean())
         subapLocation[:,4:5] -= round(cent[1::2].mean())
-        FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')    
+        FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
 
     #5- Ref Cent
         c.Set('subapLocation',subapLocation)
         cent = c.SumData("rtcCentBuf",finalniter,"f")[0]/float(finalniter)
-        FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))
+        FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))  # From config file?
     except Exception:
         print 'No subaps for led_%d'%(star_id)
     bbbc.star_off(star_id)
