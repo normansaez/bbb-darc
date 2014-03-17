@@ -85,7 +85,7 @@ for star_id in range(1,nstars+1):
     c.Set('bgImage',bgImage)
 
     #Saving values found
-    FITS.Write(bgImage,'/home/dani/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file?
+    FITS.Write(bgImage,'/home/dani/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
 
     #4- Subaps
     bbbc.star_on(star_id)
