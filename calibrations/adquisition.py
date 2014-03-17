@@ -16,6 +16,7 @@ import FITS
 
 from optparse import OptionParser
 from subprocess import Popen, PIPE
+#from ALMA import Norman
 
 class Adquisition:
     def __init__(self):
@@ -32,16 +33,23 @@ def take_img_from_darc(self, iteration, prefix):
     a image_prefix-YEAR-MONTH-DAY-T-HOUR-MIN-SEC.fits as image name.  The
     path to be store the file as well as image_prefix can be modified in
     configuration file
+
+    This should also take slopes (which will be used as training data)
     '''
     try:
         logging.debug('About to take image with darc ...')
         stream = self.darc_instance.GetStream(self.camera_name+'rtcPxlBuf')
+        slopes = self.darc_instance.SumData('rtcCentBuf',niter,'f')/float(niter)
         img_ite = 's%s_'% str(iteration).zfill(3)
         img_wfs = 'w%s_'% str(prefix).zfill(3)
-        image_name = img_ite + img_wfs +'T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
+        img_stream = 'Image' # to take from config file?
+        slp_stream = 'Slopes' # idem
+        image_name = self.camera_name + img_stream + img_ite + img_wfs +'T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime())) # To check
+        slope_name = self.camera_name + slp_stream + img_ite + img_wfs +'T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         if os.path.exists(self.image_path+self.dir_name) is False:
             os.mkdir(self.image_path+self.dir_name)
-        path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
+        img_path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
+        slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
         logging.info('Image taken : %s' % path)
         logging.debug(stream)
         #print "stream info:"
@@ -50,19 +58,20 @@ def take_img_from_darc(self, iteration, prefix):
         #print type(stream[0])
         #print "####################"
         #print type(stream[1])
-        data = stream[0].reshape(self.pxly, self.pxlx)
+        data = stream[0].reshape(self.pxly, self.pxlx) # A sacar del archio de config (no se como)
         #print data.shape
         #print "data info:"
         #print type(data)
         #print data
         #print data.shape
-        data = data/4
+        data = data/4                                  # No entiendo esto
         #print "--------------"
         #print data
         #print type(data)
         data = data.view('h')
         logging.debug('About to save image to disk , name: %s' % path)
-        FITS.Write(data, path, writeMode='a')
+        FITS.Write(data, img_path, writeMode='a')
+        FITS.Write(slopes, slp_path, writeMode='a')
         logging.info('Image saved : %s' % path)
     except Exception, ex:
         exc_type, exc_obj, exc_tb = sys.exc_info()
