@@ -39,6 +39,7 @@ auxImage = bgImage
 auxImageMax = numpy.amax(auxImage)
 
 #1- Setting useBrightest, as found with ~/bbb-darc/calibrations/SetuseBrightest.py
+# It should be loading this value from a configuration value.
 c.Set('useBrightest',-85)
 
 #Main loop. Calibrates for each star
