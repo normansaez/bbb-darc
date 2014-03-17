@@ -71,7 +71,7 @@ def take_img_from_darc(self, iteration, prefix):
         data = data.view('h')
         logging.debug('About to save image to disk , name: %s' % path)
         FITS.Write(data, img_path, writeMode='a')
-        FITS.Write(slopes, slp_path, writeMode='a')
+        FITS.Write(slopes, slp_path, writeMode='a')    # Aquí guarda los slopes. Pero en la misma carpeta
         logging.info('Image saved : %s' % path)
     except Exception, ex:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -97,18 +97,18 @@ def take_data(self):
         cur_pos_1 = 0
         cur_pos_2 = 0
         step = 5000
-        self.take_img_from_darc('dark', 'dark')
+        self.take_img_from_darc('dark', 'dark') # (iteration,prefix)? de verdad no entiendo
         #mover motores:
         self.setup('motor_ground_layer')
         self.motor_to_init('motor_ground_layer')
         self.set_direccion(CHANGEDIR[self.direccion])
-        cur_pos_1, cmd_pos = self.move_in_valid_range(cur_pos_1, step)
+        cur_pos_1, cmd_pos = self.move_in_valid_range(cur_pos_1, step) # esto existe?
 
         for iteration in range(0, num):
             self.setup('led_lgs1')
             # led 1 on
             self.set_led_on()
-            time.sleep(self.exposicion*MILI2SEC)
+            time.sleep(self.exposicion*MILI2SEC)   # no es necesario
 
             #take img with darc
             self.take_img_from_darc(iteration, self.image_prefix)
