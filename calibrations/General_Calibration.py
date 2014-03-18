@@ -95,12 +95,21 @@ class General_Calibration:
         slopes = numpy.zeros([hardniter,nsubaps])
         runningnoise = numpy.zeros(subniter)
         
+        print 'Stream Block Acquisition'
         cent = c.GetStreamBlock(cameraName+'rtcCentBuf',hardniter)   # hardniter frames - as a dict
+        print 'Extracting data'
         cent = cent[cent.keys()[0]]
         for j in range(0,hardniter):
             slopes[j,:] = cent[j][0]
 
-        
+        print 'Reducing data'
+        for n in numpy.arange(1,subniter+1):
+            runningnoise[n-1] = running_var(slopes,0,n)
+
+        place = runningnoise <= 1##No listo
+            
+        except:
+            print 'Number of iterations not found'
 
     def running_var(self,data,axis,n):
         '''
