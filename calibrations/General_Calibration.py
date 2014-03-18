@@ -12,6 +12,7 @@ import FITS
 import darc
 import numpy
 import pylab
+import random
 from BeagleDarc.Controller import Controller
 
 class General_Calibration:
@@ -89,16 +90,55 @@ class General_Calibration:
         iterations to use when grabbing slopes. The result is as small
         as possible given a wanted variance under 1 pxl. 
         '''
-        harniter = 1000
+        harniter = 100000
         subniter = 40
         slopes = numpy.zeros([hardniter,nsubaps])
-        noise = numpy.zeros(subniter)
+        runningnoise = numpy.zeros(subniter)
         
         cent = c.GetStreamBlock(cameraName+'rtcCentBuf',hardniter)   # hardniter frames - as a dict
         cent = cent[cent.keys()[0]]
         for j in range(0,hardniter):
             slopes[j,:] = cent[j][0]
+
         
+
+    def running_var(self,data,axis,n):
+        '''
+        Shuffles data and calculates the mean along the specified axis.
+        The mean is calculated for sets of n samples. The variance is 
+        calculated upon the resulting set of mean numbers. If data is
+        2-dimensional the output is the maximum resulting value.
+       
+        INPUT
+        data[numpy array]            Array of up to 2 dimensions
+        axis[int]
+        n[int]        
+
+        OUTPUT
+        var[numpy float]
+        '''
+        # First we shuffle in the axis direction
+        if(axis==1):
+            data = numpy.transpose(data)
+       
+        shape = numpy.shape(data)
+        if(numpy.shape(shape)[0]==1):
+            data = data.reshape((numpy.shape(data)[0],1))
+            
+        elif(numpy.shape(shape)[0]>2):
+            raise DimError('data has mor than 2 dimensions')
+
+        large = int(numpy.shape(data)[0]/n)
+        data = data[0:large,:]
+        shape = numpy.shape(data)
+        means = numpy.zeros((large,shape[1]))
+            
+        for i in numpy.arange(0,shape[1]):
+            numpy.random.shuffle(data[:,i])
+            for j in numpy.arange(0,large):
+                means[j,i] = numpy.mean(data[j*n:(j+1)*n,i])
+        return numpy.amax(numpy.var(means,0))
+            
 
     def bgImage_fwShutter_calibration(self,star_id):
         '''
