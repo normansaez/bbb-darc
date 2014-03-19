@@ -75,21 +75,25 @@ class Controller:
     #layer methods
     def layer_move(self, layer_id):
         layer = Layer(layer_id)
-        return self.client.motor_move(layer.name, 
+        steps = self.client.motor_move(layer.name, 
                 layer.direction, 
                 layer.velocity, 
                 layer.steps, 
                 layer.cur_pos,
                 layer.cmd_pos)
+        layer.cur_pos = cur_pos + steps
+        return steps
 
     def layer_move_skip_sensor(self, layer_id):
         layer = Layer(layer_id)
-        return self.client.motor_move_skip_sensor(layer.name, 
+        steps = self.client.motor_move_skip_sensor(layer.name, 
                 layer.direction, 
                 layer.velocity, 
                 layer.steps, 
                 layer.cur_pos,
                 layer.cmd_pos)
+        layer.cur_pos = cur_pos + steps
+        return steps
 
     def get_stars_status(self):
         led_status = {}

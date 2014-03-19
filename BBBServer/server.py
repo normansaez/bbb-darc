@@ -67,16 +67,14 @@ class Server_i (BBBServer__POA.Server):
     def turn_on_gpio(self, pin):
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin,GPIO.HIGH)
-        print sys._getframe().f_code.co_name,
-        print(' '+pin)
-        pass
+#        print sys._getframe().f_code.co_name,
+#        print(' '+pin)
 
     def turn_off_gpio(self, pin):
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin,GPIO.LOW)
-        print sys._getframe().f_code.co_name,
-        print(' '+pin)
-        pass
+#        print sys._getframe().f_code.co_name,
+#        print(' '+pin)
 
     def refresh_led_status(self, pin_pwm, pin_enable):
         '''
@@ -121,6 +119,12 @@ class Server_i (BBBServer__POA.Server):
         return "ok"
 
     def motor_move(self, name, direction, velocity, steps, cur_pos, cmd_pos):
+        print name
+        print direction
+        print velocity
+        print steps
+        print cur_pos
+        print cmd_pos
         motor = Layer(name)
         motor.steps = steps
         motor.direction = direction
@@ -137,10 +141,17 @@ class Server_i (BBBServer__POA.Server):
 
         motor.cur_pos = cur_pos
         motor.cmd_pos = cmd_pos
+        print "\n\n"
         return steps
     
 
     def motor_move_skip_sensor(self, name, direction, velocity, steps, cur_pos, cmd_pos):
+        print name
+        print direction
+        print velocity
+        print steps
+        print cur_pos
+        print cmd_pos
         motor = Layer(name)
         motor.steps = steps
         motor.direction = direction
@@ -157,6 +168,7 @@ class Server_i (BBBServer__POA.Server):
 
         motor.cur_pos = cur_pos
         motor.cmd_pos = cmd_pos
+        print "\n\n"
         return steps
     
     def get_stars_status_keys(self):
