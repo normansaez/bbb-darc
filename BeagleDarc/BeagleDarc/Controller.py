@@ -81,7 +81,7 @@ class Controller:
                 layer.steps, 
                 layer.cur_pos,
                 layer.cmd_pos)
-        layer.cur_pos = cur_pos + steps
+        layer.cur_pos = layer.cur_pos + steps
         return steps
 
     def layer_move_skip_sensor(self, layer_id):
@@ -92,7 +92,7 @@ class Controller:
                 layer.steps, 
                 layer.cur_pos,
                 layer.cmd_pos)
-        layer.cur_pos = cur_pos + steps
+        layer.cur_pos = layer.cur_pos + steps
         return steps
 
     def get_stars_status(self):
