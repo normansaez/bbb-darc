@@ -18,6 +18,7 @@ from optparse import OptionParser
 from subprocess import Popen, PIPE
 
 from BeagleDarc.Controller import Controller
+from BeagleDarc.Model import Layer
 
 class Acquisition:
     def __init__(self):
@@ -54,33 +55,35 @@ class Acquisition:
         FITS.Write(slope_stream, slp_path, writeMode='a')
         logging.info('Image saved : %s' % slp_path)
     
-    def take_data(self):
+    def take_data(self, star_list, cmd_list):
             '''
             This method does:
-            0. take image (dark)
-            1. turn on led 1
-            2. take image
-            3. turn on led 2
-            4. take image
-            5. turn on led 3
-            6. take image
-            7. move a motor
-            
             After that,  start all over again,  given a number of times in num
             variable
             '''
-            self.take_img_from_darc(0, 'slope')
-            for star_id in range(1,4+1):
-                # led 1 on
-                self.bbbc.star_on(star_id) 
-    
+            #motor move
+            motor = Layer('ground_layer')
+            motor.cmd_pos = cmd_list[0]
+            self.bbbc.layer_move('ground_layer')
+
+            #motor move
+            motor = Layer('horizontal_altitude_layer')
+            motor.cmd_pos = cmd_list[1]
+            self.bbbc.layer_move('horizontal_altitude_layer')
+
+            #motor move
+            motor = Layer('vertical_altitude_layer')
+            motor.cmd_pos = cmd_list[2]
+            self.bbbc.layer_move('vertical_altitude_layer')
+
+            # led on
+            for star in star_list:
+                self.bbbc.star_on(star) 
                 #take img with darc
-                self.take_img_from_darc(star_id, 'slopes')
+                self.take_img_from_darc(star, 'slopes')
                 #led off
-                self.bbbc.star_off(star_id) 
+                self.bbbc.star_off(star) 
     
-                #motor move
-                self.bbbc.layer_move('ground_layer')
 
 if __name__ == '__main__':
     usage = '''
@@ -99,4 +102,6 @@ if __name__ == '__main__':
 
     a = Acquisition()
 #    a.take_img_from_darc(1,'slope')
-    a.take_data()
+    star_list = [1,2,3,4]
+    cmd_list = [ 1000, 1000, 1000]
+    a.take_data(star_list, cmd_list)
