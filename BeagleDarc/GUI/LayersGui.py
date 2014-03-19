@@ -257,30 +257,36 @@ class Layers:
         self.button_ok.connect("clicked", self.execute_now)
         self.fix.put(self.button_ok, 650, 750)
 
+        # EMERGENCY Button:
+        self.button_emergency = gtk.Button("EMERGENCY")
+        self.button_emergency.show()
+        self.button_emergency.connect("clicked", self.abort)
+        self.fix.put(self.button_emergency, 100, 750)
+
         ##Creating controller
-        self.controller = Controller()
+#        self.controller = Controller()
         
         ## cmd pos/vel
-        self.ground_pos = self.controller.get_motor_cur_pos('ground_layer')
-        self.alt_x_pos =  self.controller.get_motor_cur_pos('horizontal_altitude_layer')
-        self.alt_y_pos =  self.controller.get_motor_cur_pos('vertical_altitude_layer')
-        print self.ground_pos
-        print self.alt_x_pos
-        print self.alt_y_pos
-        print "------------"
-        self.ground_vel = 0.0
-        self.alt_x_vel = 0.0
-        self.alt_y_vel = 0.0
-        # moving according
-        self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
-        self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
-        self.fix.move(self.img_ground_cmd, 100+int(self.ground_pos*(3/200.)), 500)
-        self.controller.set_position('horizontal_altitude_layer', int(self.alt_x_pos), int(self.alt_x_vel))
-        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
-        self.fix.move(self.img_altitude_cmd, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
-        self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
-        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
-        self.fix.move(self.img_altitude_cmd, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+#        self.ground_pos = self.controller.get_motor_cur_pos('ground_layer')
+#        self.alt_x_pos =  self.controller.get_motor_cur_pos('horizontal_altitude_layer')
+#        self.alt_y_pos =  self.controller.get_motor_cur_pos('vertical_altitude_layer')
+#        print self.ground_pos
+#        print self.alt_x_pos
+#        print self.alt_y_pos
+#        print "------------"
+#        self.ground_vel = 0.0
+#        self.alt_x_vel = 0.0
+#        self.alt_y_vel = 0.0
+#        # moving according
+#        self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
+#        self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
+#        self.fix.move(self.img_ground_cmd, 100+int(self.ground_pos*(3/200.)), 500)
+#        self.controller.set_position('horizontal_altitude_layer', int(self.alt_x_pos), int(self.alt_x_vel))
+#        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+#        self.fix.move(self.img_altitude_cmd, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+#        self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
+#        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+#        self.fix.move(self.img_altitude_cmd, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
 
     #Pos callbacks
     def ground_scale_pos_moved(self, event):
@@ -332,6 +338,13 @@ class Layers:
         self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
         self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
         self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+
+    def abort(self, event):
+        print "ABORT!"
+
 if __name__ == '__main__':
+    print "go"
     app = Layers()
+    print "go go"
     gtk.main()
+    print "go go go"
