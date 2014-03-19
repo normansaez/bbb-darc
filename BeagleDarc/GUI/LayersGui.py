@@ -8,6 +8,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import pango 
+import signal
 
 from star_coord import star_coord
 from BeagleDarc.Controller import Controller
@@ -331,17 +332,20 @@ class Layers:
         print "ground_vel = %1.1f" %  self.ground_vel
         print "alt_x_vel  = %1.1f" %  self.alt_x_vel 
         print "alt_y_vel  = %1.1f" %  self.alt_y_vel 
-        
-        self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
-        self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
-        self.controller.set_position('horizontal_altitude_layer', int(self.alt_x_pos), int(self.alt_x_vel))
-        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
-        self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
-        self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+        try:
+            self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
+            self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
+            self.controller.set_position('horizontal_altitude_layer', int(self.alt_x_pos), int(self.alt_x_vel))
+            self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+            self.controller.set_position('vertical_altitude_layer', int(self.alt_y_pos), int(self.alt_y_vel))
+            self.fix.move(self.img_altitude_cur, 100+int(self.alt_x_pos*(4/200.)), 450 - int(self.alt_y_pos*(4/200.)))
+        except:
+            signal.signal(signal.SIGINT, abort)
+            print "quiiiittt"
 
     def abort(self, event):
         print "ABORT!"
-
+        
 if __name__ == '__main__':
     print "go"
     app = Layers()
