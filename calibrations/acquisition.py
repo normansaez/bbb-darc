@@ -17,6 +17,8 @@ import FITS
 from optparse import OptionParser
 from subprocess import Popen, PIPE
 
+from BeagleDarc.Controller import Controller
+
 class Acquisition:
     def __init__(self):
         #Darc Controller instance
@@ -34,14 +36,14 @@ class Acquisition:
     def take_img_from_darc(self, iteration, prefix):
         '''
         Using darc, take a FITS image and save it into the disk. By default use
-        a image_prefix-YEAR-MONTH-DAY-T-HOUR-MIN-SEC.fits as image name.  The
-        path to be store the file as well as image_prefix can be modified in
-        configuration file
+        a <camera name>_<image prefix>_YEAR-MONTH-DAYTHOUR-MIN-SEC.fits as
+        image name.  The path to be store the file as well as image_prefix can
+        be modified in configuration file
     
         This should also take slopes (which will be used as training data)
         '''
         #Get slope_streams:
-        logging.debug('About to take image with darc ...')
+        logging.info('About to take image with darc ...')
         slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
         slope_name = self.camera_name + '_' + prefix + '_' +str(iteration).zfill(3) + '_T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         if os.path.exists(self.image_path+self.dir_name) is False:
@@ -67,63 +69,19 @@ class Acquisition:
             After that,  start all over again,  given a number of times in num
             variable
             '''
-            cur_pos_1 = 0
-            cur_pos_2 = 0
-            step = 5000
-            self.take_img_from_darc('dark', 'dark') # (iteration,prefix)? de verdad no entiendo
-            #mover motores:
-            self.setup('motor_ground_layer')
-            self.motor_to_init('motor_ground_layer')
-            self.set_direccion(CHANGEDIR[self.direccion])
-            cur_pos_1, cmd_pos = self.move_in_valid_range(cur_pos_1, step) # esto existe?
-    
-            for iteration in range(0, num):
-                self.setup('led_lgs1')
+            self.take_img_from_darc(0, 'slope')
+            for star_id in range(1,4+1):
                 # led 1 on
-                self.set_led_on()
-                time.sleep(self.exposicion*MILI2SEC)   # no es necesario
+                self.bbbc.star_on(star_id) 
     
                 #take img with darc
-                self.take_img_from_darc(iteration, self.image_prefix)
-    
+                self.take_img_from_darc(star_id, 'slopes')
                 #led off
-                self.set_led_off()
+                self.bbbc.star_off(star_id) 
     
-                # led 2 on
-                self.setup('led_lgs2')
-                self.set_led_on()
-                time.sleep(self.exposicion*MILI2SEC)
-    
-                #take img with darc
-                self.take_img_from_darc(iteration, self.image_prefix)
-    
-                #led off
-                self.set_led_off()
-    
-                # led 3 on
-                self.setup('led_lgs3')
-                self.set_led_on()
-                time.sleep(self.exposicion*MILI2SEC)
-    
-                #take img with darc
-                self.take_img_from_darc(iteration, self.image_prefix)
-    
-                #led off
-                self.set_led_off()
-    
-                # sci led on
-                self.setup('led_sci')
-                self.set_led_on()
-                time.sleep(self.exposicion*MILI2SEC)
-    
-                #take img with darc
-                self.take_img_from_darc(iteration, self.image_prefix)
-    
-                #led off
-                self.set_led_off()
-    
-                #mover motores:
-                cur_pos_1, cmd_pos = self.move_in_valid_range(cur_pos_1, step)
+                #motor move
+                self.bbbc.layer_move('ground_layer')
+
 if __name__ == '__main__':
     usage = '''
             Type -h, --help for help.
