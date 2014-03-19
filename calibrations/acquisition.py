@@ -98,4 +98,5 @@ if __name__ == '__main__':
 
 
     a = Acquisition()
-    a.take_img_from_darc(1,'slope')
+#    a.take_img_from_darc(1,'slope')
+    a.take_data()
