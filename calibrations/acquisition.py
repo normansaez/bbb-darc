@@ -23,11 +23,13 @@ class Acquisition:
         self.camera_name = "SH"
         self.darc_instance = darc.Control(self.camera_name)
         #Beagle Controller instance
-        #self.bbbc = Controller()
+        self.bbbc = Controller()
         #self.logger = logging.getLogger(__name__)
 
         #
         self.niter = 100
+        self.image_path = '/home/dani/BeagleAcquisition/SH/'
+        self.dir_name = 'slopes'
 
     def take_img_from_darc(self, iteration, prefix):
         '''
@@ -38,30 +40,17 @@ class Acquisition:
     
         This should also take slopes (which will be used as training data)
         '''
-        #Get slopes:
+        #Get slope_streams:
         logging.debug('About to take image with darc ...')
-        slopes = self.darc_instance.SumData('rtcCentBuf',niter,'f')[0]/float(niter)
-        slope_name = self.camera_name + prefix +str(iteration).zfill(3) + 'T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        print slope_name
-        import sys
-        sys.exit(-1)
+        slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
+        slope_name = self.camera_name + '_' + prefix + '_' +str(iteration).zfill(3) + '_T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         if os.path.exists(self.image_path+self.dir_name) is False:
             os.mkdir(self.image_path+self.dir_name)
-        img_path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
         slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
-        logging.info('Image taken : %s' % path)
-        logging.debug(stream)
-        data = stream[0].reshape(self.pxly, self.pxlx) # A sacar del archio de config (no se como)
-        data = data/4                                  # No entiendo esto
-        data = data.view('h')
-        logging.debug('About to save image to disk , name: %s' % path)
-        FITS.Write(data, img_path, writeMode='a')
-        logging.info('Image saved : %s' % path)
-    #    except Exception, ex:
-    #        exc_type, exc_obj, exc_tb = sys.exc_info()
-    #        logging.error(ex)
-    #        logging.error("Check line number: %d" % exc_tb.tb_lineno)
-    #        logging.error("Is darc running??") 
+        logging.info('Image taken : %s' % slp_path)
+        logging.debug(slope_stream)
+        FITS.Write(slope_stream, slp_path, writeMode='a')
+        logging.info('Image saved : %s' % slp_path)
     
     def take_data(self):
             '''
