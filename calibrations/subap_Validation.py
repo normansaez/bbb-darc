@@ -87,7 +87,7 @@ for star_id in range(1,nstars+1):
     #4- Subaps
     bbbc.star_on(star_id)
     try:
-        subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
+        subapLocation = FITS.Read('/home/dani/BeagleAcquisition/SH/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1]
         c.Set('subapLocation',subapLocation)
         c.Set("refCentroids",None)
         centroids = c.GetStreamBlock(cameraName+'rtcCentBuf',finalniter)
