@@ -51,6 +51,9 @@ class Controller:
             sys.exit(1)
 
     #star methods
+    def flush_all_leds(self):
+        return self.client.flush_all_leds()
+
     def star_on(self, star_id):
         star = Star(star_id)
         self.client.led_on(star.pin_led,
