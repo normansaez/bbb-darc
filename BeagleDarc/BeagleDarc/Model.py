@@ -366,6 +366,10 @@ class Darc(object):
         self._pxlx = None 
         self._pxly = None 
         self._image_path = None
+        self._bg_path = None
+        self._subapLocation_path = None
+        self._rawdata_path = None
+        self._refcent_path = None
         self._image_path_dir = None
 
     @property
