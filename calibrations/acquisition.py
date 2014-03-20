@@ -61,20 +61,21 @@ class Acquisition:
             After that,  start all over again,  given a number of times in num
             variable
             '''
+            self.bbbc.flush_all_leds()
             #motor move
             motor = Layer('ground_layer')
             motor.cmd_pos = cmd_list[0]
-#            self.bbbc.layer_move('ground_layer')
+            self.bbbc.layer_move('ground_layer')
 
             #motor move
             motor = Layer('horizontal_altitude_layer')
             motor.cmd_pos = cmd_list[1]
-#            self.bbbc.layer_move('horizontal_altitude_layer')
+            self.bbbc.layer_move('horizontal_altitude_layer')
 
             #motor move
             motor = Layer('vertical_altitude_layer')
             motor.cmd_pos = cmd_list[2]
-#            self.bbbc.layer_move('vertical_altitude_layer')
+            self.bbbc.layer_move('vertical_altitude_layer')
 
             # led on
             for star in star_list:
@@ -103,5 +104,5 @@ if __name__ == '__main__':
     a = Acquisition()
 #    a.take_img_from_darc(1,'slope')
     star_list = [1,2,3,4]
-    cmd_list = [ 1000, 1000, 1000]
+    cmd_list = [ 0, 0, 0]
     a.take_data(star_list, cmd_list)
