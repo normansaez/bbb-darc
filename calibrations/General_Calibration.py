@@ -4,7 +4,7 @@ and reference centroids.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: March 14, 2014
+Last update: March 20, 2014
 """
 
 #!/usr/bin/env python
@@ -14,9 +14,11 @@ import numpy
 import pylab
 import random
 from BeagleDarc.Controller import Controller
+from BeagleDarc.Model import Darc
+from BeagleDarc.Model import Star
 
 class General_Calibration:
-    def __init__(self,cameraName):
+    def __init__(self):
         '''
         INPUT
         cameraName       [string]
@@ -25,17 +27,19 @@ class General_Calibration:
         c = darc.Control(cameraName)
         #Beagle Controller instance
         bbbc = Controller()
+        #Darc camera instance
+        SHCamera = Darc('darc')
 
         #Parameters
         niter = int(5)
         finalniter = int(10)
         slopeniter = int(10)
-        nsubaps = 416                                               # number of active subaps
-        nstars = 53                                                 # number of stars
-        maxShutter = float(4095)                                    # maximum shutter time. when shutter time is set outside
+        nsubaps = SHCamera.nsubaps*2                                # number of active subaps(208*2)
+        nstars = SHCamera.nstars                                    # number of stars
+        maxShutter = float(SHCamera.maxShutter)                     # maximum shutter time. when shutter time is set outside
                                                                     # the range [0:4095] it is taken as the modulus of tShutter/4095
-        SHsat = float(65532)                                        # SH saturation value
-        cameraName = 'SH'
+        SHsat = float(SHCamera.saturation)                          # SH saturation value
+        cameraName = SHCamera.camera
         shutter = maxShutter
 
         #Auxiliary arrays & variables                               
@@ -46,19 +50,17 @@ class General_Calibration:
         #auxImage = bgImage
         #auxImageMax = numpy.amax(auxImage)
 
-    def Set_useBrightest(self,useBrightest):
+    def Set_useBrightest(self):
         '''
-        #1- Setting useBrightest, as found with ~/bbb-darc/calibrations/SetuseBrightest.py
-        # It should be loading this value from a configuration value.
-        INPUT
-        useBrightest[int]
+        #1- Setting useBrightest, loaded from the config. file.
         '''
-        c.Set('useBrightest',-useBrightest)
+        
+        c.Set('useBrightest',SHCamera.useBrightest)
         
     def find_useBrightest(self):
         bgImage_fwShutter_calibration(1)
         subap_calibration(1)
-        hardniter = 100
+        hardniter = 200
         nBrightest = 100                                    # range of values
                                                             # to test
         noise = numpy.zeros(nBrightest)
@@ -78,22 +80,42 @@ class General_Calibration:
 
         print noise.argmin(0)
         c.Set('useBrightest',-float(noise.argmin(0)))
+        SHCamera.useBrightest = -float(noise.argmin(0))
         pylab.plot(noise)
         pylab.show()
         
         bbbc.star_off(1)
         FITS.Write(noise.astype(numpy.float32),'noise_vs_useBrightest.fits')
 
-    def find_niter(self):
+    def find_slope_niter():
+        stream = 'rtcCentBuf'
+        for star_id in range(1,1+nstars):
+            star = Star(star_id)
+            
+        
+    def find_bg_niter():
+
+    def find_niter(self,stream, threshold):
         '''
         Finds and store (with Norman's help) a reasonable number of
-        iterations to use when grabbing slopes. The result is as small
-        as possible given a wanted variance under 1 pxl. 
+        iterations to use when grabbing slopes or backgrounds. 
+        The result is as small as possible given a wanted variance 
+        under 1 pxl for slopes.
+
+        INPUT
+        stream[str]            Name of the darc stream for which you
+                               want to find the correct number of iterations
+        
+        threshold[float]       Threshold under which you want the noise
+                               of your system to be (variance).
         '''
-        harniter = 100000
-        subniter = 40
+        harniter = 10000
+        subniter = 200
+        threshold = float(threshold)
         slopes = numpy.zeros([hardniter,nsubaps])
         runningnoise = numpy.zeros(subniter)
+        found = False
+        index_found = 0
         
         print 'Stream Block Acquisition'
         cent = c.GetStreamBlock(cameraName+'rtcCentBuf',hardniter)   # hardniter frames - as a dict
@@ -101,14 +123,17 @@ class General_Calibration:
         cent = cent[cent.keys()[0]]
         for j in range(0,hardniter):
             slopes[j,:] = cent[j][0]
-
+        
         print 'Reducing data'
         for n in numpy.arange(1,subniter+1):
             runningnoise[n-1] = running_var(slopes,0,n)
-
-        place = runningnoise <= 1##No listo
+            if(runningnoise<=threshold & not(found)):
+                found = True
+                index_found = n
             
-        except:
+        if(found):
+            return index_found
+        else:
             print 'Number of iterations not found'
 
     def running_var(self,data,axis,n):
@@ -135,7 +160,7 @@ class General_Calibration:
             data = data.reshape((numpy.shape(data)[0],1))
             
         elif(numpy.shape(shape)[0]>2):
-            raise DimError('data has mor than 2 dimensions')
+            raise DimError('data has more than 2 dimensions')
 
         large = int(numpy.shape(data)[0]/n)
         data = data[0:large,:]
@@ -197,7 +222,7 @@ class General_Calibration:
         c.Set('bgImage',bgImage)
         
         #Saving values found
-        FITS.Write(bgImage,'/home/dani/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
+        FITS.Write(bgImage,'/home/dani/BeagleAcquisition/SH/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
     
     def subap_calibration(self,star_id):
         '''
@@ -210,18 +235,18 @@ class General_Calibration:
         #4- Subaps
         bbbc.star_on(star_id)
         try:
-            subapLocation = FITS.Read('/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
+            subapLocation = FITS.Read('/home/dani/BeagleAcquisition/SH/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
             c.Set('subapLocation',subapLocation)
             c.Set("refCentroids",None)
             cent = c.SumData("rtcCentBuf",slopeniter,"f")[0]/float(slopeniter)
             subapLocation[:,0:1] -= round(cent[::2].mean())
             subapLocation[:,4:5] -= round(cent[1::2].mean())
-            FITS.Write(subapLocation,'/home/dani/subapLocation/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
+            FITS.Write(subapLocation,'/home/dani/BeagleAcquisition/SH/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
 
             #5- Ref Cent
             c.Set('subapLocation',subapLocation)
             cent = c.SumData("rtcCentBuf",slope,"f")[0]/float(slopeniter)
-            FITS.Write(cent.astype(numpy.float32),'/home/dani/RefCent/SH_RefCent_led_%d.fits'%(star_id))  # From config file?
+            FITS.Write(cent.astype(numpy.float32),'/home/dani/BeagleAcquisition/SH/RefCent/SH_RefCent_led_%d.fits'%(star_id))  # From config file?
         except Exception:
             print 'No subaps for led_%d'%(star_id)
         bbbc.star_off(star_id)

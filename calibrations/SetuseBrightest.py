@@ -3,7 +3,7 @@ Finds the useBrightest parameter producing the lowest slope noise
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: March 17, 2014
+Last update: March 18, 2014
 '''
 
 #!/usr/bin/env python
@@ -19,7 +19,6 @@ c = darc.Control("SH")
 #Beagle Controller instance
 bbbc = Controller()
 
-bgImage
 # funcion de prender led que setee bg, refs, subaps y todo
 # con el shutter correcto. Si todo ya esta seteado y la GUI ya prendio el led,
 # entonces no-problemo
