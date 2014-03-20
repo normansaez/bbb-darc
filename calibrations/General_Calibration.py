@@ -92,6 +92,7 @@ class General_Calibration:
         for star_id in range(1,1+nstars):
             star = Star(star_id)
             
+            
         
     def find_bg_niter():
 
