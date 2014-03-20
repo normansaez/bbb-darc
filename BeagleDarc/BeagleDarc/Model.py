@@ -288,6 +288,16 @@ class Star(object):
         self.bd.write(self._config_name, 'image_prefix', value)
         self._image_prefix = value
 
+    @property
+    def slope_iter(self):
+        self._slope_iter = self.bd.config.get(self._config_name, 'slope_iter')
+        return self._slope_iter
+
+    @slope_iter.setter
+    def slope_iter(self, value):
+        self.bd.write(self._config_name, 'slope_iter', value)
+        self._slope_iter = value
+
 class BeagleDarcServerM(object):
     def __init__(self, config_name):
         self.bd = BD()
@@ -399,14 +409,44 @@ class Darc(object):
         self._image_path = value
 
     @property
-    def slope_iter(self):
-        self._slope_iter = self.bd.config.get(self._config_name, 'slope_iter')
-        return self._slope_iter
+    def bg_path(self):
+        self._bg_path = self.bd.config.get(self._config_name, 'bg_path')
+        return self._bg_path
 
-    @slope_iter.setter
-    def slope_iter(self, value):
-        self.bd.write(self._config_name, 'slope_iter', value)
-        self._slope_iter = value
+    @bg_path.setter
+    def bg_path(self, value):
+        self.bd.write(self._config_name, 'bg_path', value)
+        self._bg_path = value
+
+    @property
+    def subapLocation_path(self):
+        self._subapLocation_path = self.bd.config.get(self._config_name, 'subpaLocation_path')
+        return self._subapLocation_path
+
+    @subapLocation_path.setter
+    def subapLocation_path(self, value):
+        self.bd.write(self._config_name, 'subapLocation_path', value)
+        self._subapLocation_path = value
+
+    @property
+    def rawdata_path(self):
+        self._rawdata_path = self.bd.config.get(self._config_name, 'rawdata_path')
+        return self._rawdata_path
+
+    @raw_data_path.setter
+    def rawdata_path(self, value):
+        self.bd.write(self._config_name, 'rawdata_path', value)
+        self._rawdata_path = value
+
+    @property
+    def refcent_path(self):
+        self._refcent_path = self.bd.config.get(self._config_name, 'refcent_path')
+        return self._refcent_path
+
+    @refcent_path.setter
+    def refcent_path(self, value):
+        self.bd.write(self._config_name, 'refcent_path', value)
+        self._refcent_path = value
 
     @property
     def image_path_dir(self):
