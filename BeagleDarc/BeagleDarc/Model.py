@@ -277,6 +277,16 @@ class Star(object):
     def brightness(self, value):
         self.bd.write(self._config_name, 'brightness', value)
         self._brightness = value
+
+    @property
+    def slope_iter(self):
+        self._slope_iter = self.bd.config.getint(self._config_name, 'slope_iter')
+        return self._slope_iter
+
+    @slope_iter.setter
+    def slope_iter(self, value):
+        self.bd.write(self._config_name, 'slope_iter', value)
+        self._slope_iter = value
         
     @property
     def image_prefix(self):
@@ -287,16 +297,6 @@ class Star(object):
     def image_prefix(self, value):
         self.bd.write(self._config_name, 'image_prefix', value)
         self._image_prefix = value
-
-    @property
-    def slope_iter(self):
-        self._slope_iter = self.bd.config.get(self._config_name, 'slope_iter')
-        return self._slope_iter
-
-    @slope_iter.setter
-    def slope_iter(self, value):
-        self.bd.write(self._config_name, 'slope_iter', value)
-        self._slope_iter = value
 
 class BeagleDarcServerM(object):
     def __init__(self, config_name):
