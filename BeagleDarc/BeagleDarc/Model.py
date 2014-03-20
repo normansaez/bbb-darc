@@ -206,6 +206,7 @@ class Star(object):
         self._exp_time = None
         self._brightness = None
         self._slope_iter = None
+        self._valid = None
         self._image_prefix = None
 
     def setup(self,camera):
@@ -292,6 +293,16 @@ class Star(object):
         self.bd.write(self._config_name, 'brightness', value)
         self._brightness = value
 
+    @property
+    def valid(self):
+        self._valid = self.bd.config.getint(self._config_name, 'valid')
+        return self._valid
+
+    @valid.setter
+    def valid(self, value):
+        self.bd.write(self._config_name, 'valid', value)
+        self._valid = value
+        
     @property
     def slope_iter(self):
         self._slope_iter = self.bd.config.getint(self._config_name, 'slope_iter')
