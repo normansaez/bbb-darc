@@ -433,7 +433,7 @@ class Darc(object):
         self._rawdata_path = self.bd.config.get(self._config_name, 'rawdata_path')
         return self._rawdata_path
 
-    @raw_data_path.setter
+    @rawdata_path.setter
     def rawdata_path(self, value):
         self.bd.write(self._config_name, 'rawdata_path', value)
         self._rawdata_path = value
