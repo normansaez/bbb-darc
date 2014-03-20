@@ -49,6 +49,7 @@ Server._d_led_on = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_st
 Server._d_led_off = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_boolean, omniORB.tcInternal.tv_float, omniORB.tcInternal.tv_long), ((omniORB.tcInternal.tv_string,0), ), None)
 Server._d_motor_move = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_long, ), None)
 Server._d_motor_move_skip_sensor = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_long, ), None)
+Server._d_flush_all_leds = ((), (omniORB.tcInternal.tv_long, ), None)
 Server._d_get_motor_cur_pos = (((omniORB.tcInternal.tv_string,0), ), (omniORB.tcInternal.tv_long, ), None)
 Server._d_get_motor_cmd_pos = (((omniORB.tcInternal.tv_string,0), ), (omniORB.tcInternal.tv_long, ), None)
 Server._d_get_stars_status_keys = ((), (omniORB.typeMapping["IDL:BBBServer/list:1.0"], ), None)
@@ -73,6 +74,9 @@ class _objref_Server (CORBA.Object):
     def motor_move_skip_sensor(self, *args):
         return _omnipy.invoke(self, "motor_move_skip_sensor", _0_BBBServer.Server._d_motor_move_skip_sensor, args)
 
+    def flush_all_leds(self, *args):
+        return _omnipy.invoke(self, "flush_all_leds", _0_BBBServer.Server._d_flush_all_leds, args)
+
     def get_motor_cur_pos(self, *args):
         return _omnipy.invoke(self, "get_motor_cur_pos", _0_BBBServer.Server._d_get_motor_cur_pos, args)
 
@@ -85,7 +89,7 @@ class _objref_Server (CORBA.Object):
     def get_stars_status_value(self, *args):
         return _omnipy.invoke(self, "get_stars_status_value", _0_BBBServer.Server._d_get_stars_status_value, args)
 
-    __methods__ = ["led_on", "led_off", "motor_move", "motor_move_skip_sensor", "get_motor_cur_pos", "get_motor_cmd_pos", "get_stars_status_keys", "get_stars_status_value"] + CORBA.Object.__methods__
+    __methods__ = ["led_on", "led_off", "motor_move", "motor_move_skip_sensor", "flush_all_leds", "get_motor_cur_pos", "get_motor_cmd_pos", "get_stars_status_keys", "get_stars_status_value"] + CORBA.Object.__methods__
 
 omniORB.registerObjref(Server._NP_RepositoryId, _objref_Server)
 _0_BBBServer._objref_Server = _objref_Server
@@ -97,7 +101,7 @@ class Server (PortableServer.Servant):
     _NP_RepositoryId = _0_BBBServer.Server._NP_RepositoryId
 
 
-    _omni_op_d = {"led_on": _0_BBBServer.Server._d_led_on, "led_off": _0_BBBServer.Server._d_led_off, "motor_move": _0_BBBServer.Server._d_motor_move, "motor_move_skip_sensor": _0_BBBServer.Server._d_motor_move_skip_sensor, "get_motor_cur_pos": _0_BBBServer.Server._d_get_motor_cur_pos, "get_motor_cmd_pos": _0_BBBServer.Server._d_get_motor_cmd_pos, "get_stars_status_keys": _0_BBBServer.Server._d_get_stars_status_keys, "get_stars_status_value": _0_BBBServer.Server._d_get_stars_status_value}
+    _omni_op_d = {"led_on": _0_BBBServer.Server._d_led_on, "led_off": _0_BBBServer.Server._d_led_off, "motor_move": _0_BBBServer.Server._d_motor_move, "motor_move_skip_sensor": _0_BBBServer.Server._d_motor_move_skip_sensor, "flush_all_leds": _0_BBBServer.Server._d_flush_all_leds, "get_motor_cur_pos": _0_BBBServer.Server._d_get_motor_cur_pos, "get_motor_cmd_pos": _0_BBBServer.Server._d_get_motor_cmd_pos, "get_stars_status_keys": _0_BBBServer.Server._d_get_stars_status_keys, "get_stars_status_value": _0_BBBServer.Server._d_get_stars_status_value}
 
 Server._omni_skeleton = Server
 _0_BBBServer__POA.Server = Server

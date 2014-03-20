@@ -32,7 +32,7 @@ class Server_i (BBBServer__POA.Server):
                 self.led_off(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
             except Exception, e:
                 print e
-
+        return 0
     def turn_off_all_leds(self):    
         #0- PWM to LOW
         self.disable_all_pwm()

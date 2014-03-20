@@ -64,17 +64,17 @@ class Acquisition:
             #motor move
             motor = Layer('ground_layer')
             motor.cmd_pos = cmd_list[0]
-            self.bbbc.layer_move('ground_layer')
+#            self.bbbc.layer_move('ground_layer')
 
             #motor move
             motor = Layer('horizontal_altitude_layer')
             motor.cmd_pos = cmd_list[1]
-            self.bbbc.layer_move('horizontal_altitude_layer')
+#            self.bbbc.layer_move('horizontal_altitude_layer')
 
             #motor move
             motor = Layer('vertical_altitude_layer')
             motor.cmd_pos = cmd_list[2]
-            self.bbbc.layer_move('vertical_altitude_layer')
+#            self.bbbc.layer_move('vertical_altitude_layer')
 
             # led on
             for star in star_list:

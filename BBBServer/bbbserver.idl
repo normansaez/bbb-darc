@@ -32,6 +32,7 @@ module BBBServer {
                 in long cur_pos,
                 in long cmd_pos);
 
+        long flush_all_leds();
         long get_motor_cur_pos(in string name); 
         long get_motor_cmd_pos(in string name); 
 
