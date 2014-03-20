@@ -208,6 +208,20 @@ class Star(object):
         self._slope_iter = None
         self._image_prefix = None
 
+    def setup(self,camera):
+        '''
+        setup get as parameter a darcModel instance
+        from BeagleDarc.Model import Star
+        from BeagleDarc.Model import Darc
+
+        s = Star(1)
+        camera = Darc()
+        s.setup(camera)
+        '''
+        import darc
+        c = darc.Control(camera.camera)
+        
+
     @property
     def pin_led(self):
         self._pin_led = self.bd.config.get(self._config_name, 'pin_led')
@@ -370,6 +384,8 @@ class Darc(object):
         self._subapLocation_path = None
         self._rawdata_path = None
         self._refcent_path = None
+        self._useBrightest = None
+        self._bg_iter = None
         self._image_path_dir = None
 
     @property
@@ -451,6 +467,66 @@ class Darc(object):
     def refcent_path(self, value):
         self.bd.write(self._config_name, 'refcent_path', value)
         self._refcent_path = value
+
+    @property
+    def useBrightest(self):
+        self._useBrightest = self.bd.config.get(self._config_name, 'useBrightest')
+        return self._useBrightest
+
+    @useBrightest.setter
+    def useBrightest(self, value):
+        self.bd.write(self._config_name, 'useBrightest', value)
+        self._useBrightest = value
+
+    @property
+    def bg_iter(self):
+        self._bg_iter = self.bd.config.get(self._config_name, 'bg_iter')
+        return self._bg_iter
+
+    @bg_iter.setter
+    def bg_iter(self, value):
+        self.bd.write(self._config_name, 'bg_iter', value)
+        self._bg_iter = value
+        
+    @property
+    def maxShutter(self):
+        self._maxShutter = self.bd.config.get(self._config_name, 'maxShutter')
+        return self._maxShutter
+
+    @maxShutter.setter
+    def maxShutter(self, value):
+        self.bd.write(self._config_name, 'maxShutter', value)
+        self._maxShutter = value
+
+    @property
+    def nstars(self):
+        self._nstars = self.bd.config.get(self._config_name, 'nstars')
+        return self._nstars
+
+    @nstars.setter
+    def nstars(self, value):
+        self.bd.write(self._config_name, 'nstars', value)
+        self._nstars = value
+
+    @property
+    def nsubaps(self):
+        self._nsubaps = self.bd.config.get(self._config_name, 'nsubaps')
+        return self._nsubaps
+
+    @nsubaps.setter
+    def nsubaps(self, value):
+        self.bd.write(self._config_name, 'nsubaps', value)
+        self._nsubaps = value
+
+    @property
+    def saturation(self):
+        self._saturation = self.bd.config.get(self._config_name, 'saturation')
+        return self._saturation
+
+    @saturation.setter
+    def saturation(self, value):
+        self.bd.write(self._config_name, 'saturation', value)
+        self._saturation = value
 
     @property
     def image_path_dir(self):
