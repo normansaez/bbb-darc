@@ -205,6 +205,7 @@ class Star(object):
         self._simulated = None
         self._exp_time = None
         self._brightness = None
+        self._slope_iter = None
         self._image_prefix = None
 
     @property
@@ -396,6 +397,16 @@ class Darc(object):
     def image_path(self, value):
         self.bd.write(self._config_name, 'image_path', value)
         self._image_path = value
+
+    @property
+    def slope_iter(self):
+        self._slope_iter = self.bd.config.get(self._config_name, 'slope_iter')
+        return self._slope_iter
+
+    @slope_iter.setter
+    def slope_iter(self, value):
+        self.bd.write(self._config_name, 'slope_iter', value)
+        self._slope_iter = value
 
     @property
     def image_path_dir(self):

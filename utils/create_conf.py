@@ -82,6 +82,7 @@ with open('mapping.csv', 'rb') as csvfile:
                 filehandler_cfg.write("simulated = False\n")
                 filehandler_cfg.write("exp_time = 15000.0\n")
                 filehandler_cfg.write("brightness = 94\n")
+                filehandler_cfg.write("slope_iter = 100\n")
                 filehandler_cfg.write("image_prefix = %s\n" % row[0])
                 filehandler_cfg.write("\n")
                 
