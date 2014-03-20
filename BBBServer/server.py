@@ -13,6 +13,7 @@ from server_dic import LE_DICT
 from server_dic import PWM_LIST
 from server_dic import DBUS_LIST
 from BeagleDarc.Model import Layer
+from BeagleDarc.Model import Star
 
 MOTORS = ['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
 
@@ -21,6 +22,16 @@ class Server_i (BBBServer__POA.Server):
     def __init__(self):
         self.turn_off_all_leds()
         self.turn_off_all_motors()
+        self.flush_all_leds()
+
+    def flush_all_leds(self):
+        for i in range(1,54+1):
+            try:
+                star = Star(i)
+                self.led_on(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
+                self.led_off(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
+            except Exception, e:
+                print e
 
     def turn_off_all_leds(self):    
         #0- PWM to LOW
