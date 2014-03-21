@@ -199,6 +199,7 @@ class Star(object):
         self.bd = BD()
         self._config_name = "led_%d" % star
         self._pin_led = None
+        self._star = star
         self._pin_pwm = None
         self._pin_enable = None
         self._name = None
@@ -220,8 +221,27 @@ class Star(object):
         s.setup(camera)
         '''
         import darc
+        import FITS
+        import os
+        import re
         c = darc.Control(camera.camera)
-        
+        if(self.valid):
+            localsubap = FITS.Read(camera.subaplocation_path+'SH_subapLocation_led_%d.fits'%(self._star))[1]
+            localrefcent = FITS.Read(camera.refcent_path+'SH_RefCent_led_%d.fits'%(self._star))[1]
+
+            files = os.listdir(camera.bg_path)
+            file_name = [s for s in files if 'led_%d'%(self._star) in s][0]
+            localshutter = int(re.findall('\d+',re.findall('shutter_\d+',file_name)[0])[0])
+            localbg = FITS.Read(camera.bg_path + file_name)[1]
+
+            c.Set('bgImage',localbg)
+            c.Set('subapLocation',localsubap)
+            c.Set('refCentroids',localrefcent)
+            c.Set('fwShutter',localshutter)
+            return True
+        else:
+            print 'Cannot set star (led_%d)'%(self._star)
+            return False
 
     @property
     def pin_led(self):
