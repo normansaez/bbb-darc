@@ -132,5 +132,6 @@ export SLOTS=/sys/devices/bone_capemgr.9/slots
 export PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins
 export PINMUX=/sys/kernel/debug/pinctrl/44e10800.pinmux/pinmux-pins
 export PINGROUPS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pingroups
+export PYTHONPATH=$PYTHONPATH:.:/home/$USER/bbb-darc/BBBServer:/home/$USER/bbb-darc/BeagleDarc/
 ############## ADITIONAL ###################################
 
