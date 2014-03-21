@@ -200,7 +200,6 @@ class Server_i (BBBServer__POA.Server):
         return motor.cmd_pos
 
 if __name__ == '__main__':
-    #XXX: replace != by == 
     if getpass.getuser() == 'root':
         # Initialise the ORB and find the root POA
         orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
