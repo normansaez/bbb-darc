@@ -66,4 +66,25 @@ Example:
 Package to install:
 -------------------
 * sudo apt-get update
-* sudo apt-get install vim python-omniorb omniidl omniidl-python tree omniorb omniorb-nameserver build-essential ntpdate python-dev bison flex  
+* sudo apt-get install vim python-omniorb omniidl omniidl-python tree omniorb omniorb-nameserver build-essential ntpdate python-dev bison flex screen
+
+*Possible errors*
+Traceback (most recent call last):
+      File "/home/ubuntu/bbb-darc/BBBServer/server.py", line 212, in <module>
+          rootContext = obj._narrow(CosNaming.NamingContext)
+        File "/usr/lib/python2.7/dist-packages/omniORB/CORBA.py", line 798, in _narrow
+          return _omnipy.narrow(self, repoId, 1)
+      omniORB.CORBA.TRANSIENT: CORBA.TRANSIENT(omniORB.TRANSIENT_ConnectFailed, CORBA.COMPLETED_NO)
+
+*Check*
+cat /var/log/omniorb-nameserver.log
+
+if you see something like:
+Error: parse error in log file '/var/lib/omniorb/omninames-arm.log' at line 1.
+
+It is possible that /var/lib/omniorb/omninames-arm.log is empty.
+*Useful*:
+   1. cp /var/lib/omniorb/omninames-arm.bak /var/lib/omniorb/omninames-arm.log
+   2. reboot machine
+   3. check    InitRef = NameService=corbaname::host in /etc/omniORB.cfg
+
