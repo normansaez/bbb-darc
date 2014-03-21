@@ -29,7 +29,7 @@ le_set_dbus13 = Set([])
 
 #Creating configuration:
 filehandler_cfg.write("[beagledarc_server]\n")
-filehandler_cfg.write("host = 192.168.7.2\n")
+filehandler_cfg.write("host = 10.42.0.97\n")
 filehandler_cfg.write("user = root\n")
 filehandler_cfg.write("password = \n")
 filehandler_cfg.write("port = \n")

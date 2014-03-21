@@ -25,7 +25,7 @@ class Server_i (BBBServer__POA.Server):
         self.flush_all_leds()
 
     def flush_all_leds(self):
-        for i in range(1,54+1):
+        for i in range(1,53+1):
             try:
                 star = Star(i)
                 self.led_on(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
@@ -130,39 +130,15 @@ class Server_i (BBBServer__POA.Server):
         return "ok"
 
     def motor_move(self, name, direction, velocity, steps, cur_pos, cmd_pos):
-        print name
-        print direction
-        print velocity
-        print steps
-        print cur_pos
-        print cmd_pos
-        motor = Layer(name)
-        motor.steps = steps
-        motor.direction = direction
-        motor.velocity = velocity
-
-        self.turn_on_gpio(motor.pin_dir)
-        self.turn_on_gpio(motor.pin_sleep)
-        for s in range(0, steps):
-            self.turn_off_gpio(motor.pin_step)
-            self.turn_on_gpio(motor.pin_step)
-        self.turn_off_gpio(motor.pin_sleep)
-        print sys._getframe().f_code.co_name,
-        print ": %s -> %1.2f" % (name, steps)
-
-        motor.cur_pos = cur_pos
-        motor.cmd_pos = cmd_pos
-        print "\n\n"
-        return steps
-    
+        return self.motor_move_skip_sensor(name, direction, velocity, steps, cur_pos, cmd_pos) 
 
     def motor_move_skip_sensor(self, name, direction, velocity, steps, cur_pos, cmd_pos):
-        print name
-        print direction
-        print velocity
-        print steps
-        print cur_pos
-        print cmd_pos
+        print "name      %s" % name
+        print "direction %s" % direction
+        print "velocity  %d" % velocity
+        print "steps     %d" % steps
+        print "cur_pos   %d" % cur_pos
+        print "cmd_pos   %d" % cmd_pos
         motor = Layer(name)
         motor.steps = steps
         motor.direction = direction
@@ -177,10 +153,10 @@ class Server_i (BBBServer__POA.Server):
         print sys._getframe().f_code.co_name,
         print ": %s -> %1.2f" % (name, steps)
 
-        motor.cur_pos = cur_pos
+        motor.cur_pos = cmd_pos
         motor.cmd_pos = cmd_pos
         print "\n\n"
-        return steps
+        return motor.cur_pos
     
     def get_stars_status_keys(self):
         key_list = []
@@ -200,7 +176,6 @@ class Server_i (BBBServer__POA.Server):
         return motor.cmd_pos
 
 if __name__ == '__main__':
-    #XXX: replace != by == 
     if getpass.getuser() == 'root':
         # Initialise the ORB and find the root POA
         orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)

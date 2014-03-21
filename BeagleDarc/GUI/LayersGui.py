@@ -271,9 +271,9 @@ class Layers:
         self.ground_pos = self.controller.get_motor_cur_pos('ground_layer')
         self.alt_x_pos =  self.controller.get_motor_cur_pos('horizontal_altitude_layer')
         self.alt_y_pos =  self.controller.get_motor_cur_pos('vertical_altitude_layer')
-        print self.ground_pos
-        print self.alt_x_pos
-        print self.alt_y_pos
+        print "server->ground_pos %.0f" % self.ground_pos
+        print "server->alt_x_pos  %.0f" % self.alt_x_pos
+        print "server->alt_y_pos  %.0f" % self.alt_y_pos
         print "------------"
         self.ground_vel = 0.0
         self.alt_x_vel = 0.0
@@ -288,47 +288,32 @@ class Layers:
 
     #Pos callbacks
     def ground_scale_pos_moved(self, event):
-        print "ground_scale_moved"
         self.ground_pos = self.ground_scale_pos.get_value()
-        print self.ground_pos
         self.fix.move(self.img_ground_cmd, 100+int(self.ground_scale_pos.get_value()*(3/200.)), 500)
 
     def altitude_scale_pos_X_moved(self, event):
-        print "altitude_scale_X_moved"
         self.alt_x_pos = self.altitude_scale_pos_X.get_value()
-        print self.alt_x_pos
         self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*(4/200.)), 450 - int(self.altitude_scale_pos_Y.get_value()*(4/200.)))
 
     def altitude_scale_pos_Y_moved(self, event):
-        print "altitude_scale_Y_moved"
         self.alt_y_pos = self.altitude_scale_pos_Y.get_value()
-        print self.alt_y_pos
         self.fix.move(self.img_altitude_cmd, 100+int(self.altitude_scale_pos_X.get_value()*(4/200.)), 450 - int(self.altitude_scale_pos_Y.get_value()*(4/200.)))
 
     #Vel callbacks
     def ground_scale_vel_moved(self, event):
-        print "ground_scale_moved"
         self.ground_vel = self.ground_scale_vel.get_value()
-        print self.ground_vel
 
     def altitude_scale_vel_X_moved(self, event):
-        print "altitude_scale_X_moved"
         self.alt_x_vel = self.altitude_scale_vel_X.get_value()
-        print self.alt_x_vel
 
     def altitude_scale_vel_Y_moved(self, event):
-        print "altitude_scale_Y_moved"
         self.alt_y_vel = self.altitude_scale_vel_Y.get_value()
-        print self.alt_y_vel
 
     def execute_now(self, event):        
-        print "pressed"
-        print "ground_pos = %1.1f" %  self.ground_pos
-        print "alt_x_pos  = %1.1f" %  self.alt_x_pos 
-        print "alt_y_pos  = %1.1f" %  self.alt_y_pos 
-        print "ground_vel = %1.1f" %  self.ground_vel
-        print "alt_x_vel  = %1.1f" %  self.alt_x_vel 
-        print "alt_y_vel  = %1.1f" %  self.alt_y_vel 
+        print "CMD"
+        print "client->ground_pos = %1.0f" %  self.ground_pos
+        print "client->alt_x_pos  = %1.0f" %  self.alt_x_pos 
+        print "client->alt_y_pos  = %1.0f" %  self.alt_y_pos 
 #        try:
         self.controller.set_position('ground_layer', int(self.ground_pos), int(self.ground_vel))
         self.fix.move(self.img_ground_cur, 100+int(self.ground_pos*(3/200.)), 500)
@@ -344,8 +329,5 @@ class Layers:
         print "ABORT!"
         
 if __name__ == '__main__':
-    print "go"
     app = Layers()
-    print "go go"
     gtk.main()
-    print "go go go"

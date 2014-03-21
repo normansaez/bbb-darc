@@ -114,7 +114,7 @@ class Controller:
         layer = Layer(layer_id)
         layer.cmd_pos = cmd_pos
         layer.velocity = vel
-
+        layer.cur_pos = self.client.get_motor_cur_pos(layer.name)
         steps = cmd_pos - layer.cur_pos
         if steps > 0:
             layer.direction = 'END_POSITION'
