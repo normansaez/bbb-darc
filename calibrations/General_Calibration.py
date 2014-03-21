@@ -89,12 +89,29 @@ class General_Calibration:
 
     def find_slope_niter():
         stream = 'rtcCentBuf'
+        threshold = 1.0
         for star_id in range(1,1+nstars):
             star = Star(star_id)
-            
-            
-        
+            ok = star.setup(SHCamera)
+            if(ok):
+                slope_niter = find_niter(stream,threshold)
+                if(slope_niter[0] != -1):
+                    star.slope_iter = slope_niter[0]
+                    FITS.Write(slope_niter[1],SHCamera.rawdata_path + 'SH_slopes_noscreen_led_%d.fits'%(star_id),writeMode='a')
+                else:
+                    print 'Relax threshold'
+                             
     def find_bg_niter():
+        stream = 'rtcPxlBuf'
+        threshold = 10
+        c.Set('fwShutter',SHCamera.maxshutter)
+        bg_niter = find_niter(stream,threshold)
+        if(bg_iter[0] != -1):
+            SHCamera.bg_niter = bg_niter[0]
+            FITS.Write(bg_niter[1],SHCamera.rawdata_path + 'SH_bgImage_shutter_%d.fits'%(int(SHCamera.maxshutter)),writeMode='a')
+        else:
+            print 'Relax threshold'
+        
 
     def find_niter(self,stream, threshold):
         '''
@@ -133,8 +150,9 @@ class General_Calibration:
                 index_found = n
             
         if(found):
-            return index_found
+            return [index_found, slopes]
         else:
+            return -1
             print 'Number of iterations not found'
 
     def running_var(self,data,axis,n):
@@ -258,9 +276,9 @@ class General_Calibration:
         subap locations and reference centroids for all stars
         '''
         #Main loop. Calibrates for each star
+        Set_useBrightest()
         for star_id in range(1,nstars+1):
             print '\nCalibrating star:%3.0f ' %star_id
-            Set_useBrightest(85)
             bgImage_fwShutter_calibration(star_id)
             subap_calibration(star_id)
             

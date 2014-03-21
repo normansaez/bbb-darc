@@ -19,6 +19,8 @@ from subprocess import Popen, PIPE
 
 from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Layer
+from BeagleDarc.Model import Star
+from BeagleDarc.Model import Darc
 
 class Acquisition:
     def __init__(self):
@@ -28,6 +30,8 @@ class Acquisition:
         #Beagle Controller instance
         self.bbbc = Controller()
         #self.logger = logging.getLogger(__name__)
+        #Camera instance
+        self.SHCamera = Darc('darc')
 
         #
         self.niter = 100
@@ -55,7 +59,7 @@ class Acquisition:
         FITS.Write(slope_stream, slp_path, writeMode='a')
         logging.info('Image saved : %s' % slp_path)
     
-    def take_data(self, star_list, cmd_list):
+    def take_data(self, star_list, cmd_list, camera):
             '''
             This method does:
             After that,  start all over again,  given a number of times in num
@@ -79,7 +83,8 @@ class Acquisition:
 
             # led on
             for star in star_list:
-                self.bbbc.star_on(star) 
+                self.bbbc.star_on(star)
+                star.setup(self.SHCamera)
                 #take img with darc
                 self.take_img_from_darc(star, 'slopes')
                 #led off
@@ -103,6 +108,9 @@ if __name__ == '__main__':
 
     a = Acquisition()
 #    a.take_img_from_darc(1,'slope')
-    star_list = [1,2,3,4]
+    star_number_list = [1,2,3,4]
+    star_list = []
+    for star in star_number_list:
+        star_list.append(Star(star))
     cmd_list = [ 0, 0, 0]
     a.take_data(star_list, cmd_list)
