@@ -211,12 +211,12 @@ class Star(object):
 
     def setup(self,camera):
         '''
-        setup get as parameter a darcModel instance
+        For each star, setup defaul parameters (bg, subap , among others)
         from BeagleDarc.Model import Star
-        from BeagleDarc.Model import Darc
+        from BeagleDarc.Model import Camera
 
         s = Star(1)
-        camera = Darc()
+        camera = Camera('camera')
         s.setup(camera)
         '''
         import darc
@@ -383,7 +383,7 @@ class BeagleDarcServerM(object):
         self.bd.write(self._config_name, 'ior', value)
         self._ior = value
 
-class Darc(object):
+class Camera(object):
     def __init__(self, config_name):
         self.bd = BD()
         self._config_name = config_name
@@ -392,10 +392,11 @@ class Darc(object):
         self._pxly = None 
         self._image_path = None
         self._bg_path = None
-        self._subapLocation_path = None
+        self._subap_location_path = None
         self._rawdata_path = None
         self._refcent_path = None
         self._useBrightest = None
+        self._maxShutter = None
         self._bg_iter = None
         self._image_path_dir = None
 
@@ -450,14 +451,14 @@ class Darc(object):
         self._bg_path = value
 
     @property
-    def subapLocation_path(self):
-        self._subapLocation_path = self.bd.config.get(self._config_name, 'subpaLocation_path')
-        return self._subapLocation_path
+    def subap_location_path(self):
+        self._subap_location_path = self.bd.config.get(self._config_name, 'subap_location_path')
+        return self._subap_location_path
 
-    @subapLocation_path.setter
-    def subapLocation_path(self, value):
-        self.bd.write(self._config_name, 'subapLocation_path', value)
-        self._subapLocation_path = value
+    @subap_location_path.setter
+    def subap_location_path(self, value):
+        self.bd.write(self._config_name, 'subap_location_path', value)
+        self._subap_location_path = value
 
     @property
     def rawdata_path(self):

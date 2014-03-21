@@ -14,7 +14,7 @@ import numpy
 import pylab
 import random
 from BeagleDarc.Controller import Controller
-from BeagleDarc.Model import Darc
+from BeagleDarc.Model import Camera
 from BeagleDarc.Model import Star
 
 class General_Calibration:
@@ -28,7 +28,7 @@ class General_Calibration:
         #Beagle Controller instance
         bbbc = Controller()
         #Darc camera instance
-        SHCamera = Darc('darc')
+        SHCamera = Camera('camera')
 
         #Parameters
         niter = int(5)
