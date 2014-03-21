@@ -20,7 +20,7 @@ from subprocess import Popen, PIPE
 from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Layer
 from BeagleDarc.Model import Star
-from BeagleDarc.Model import Darc
+from BeagleDarc.Model import Camera
 
 class Acquisition:
     def __init__(self):
@@ -84,7 +84,8 @@ class Acquisition:
             # led on
             for star in star_list:
                 self.bbbc.star_on(star)
-                star.setup(self.SHCamera)
+                s = Star(star)
+                s.setup(self.SHCamera)
                 #take img with darc
                 self.take_img_from_darc(star, 'slopes')
                 #led off
@@ -108,9 +109,6 @@ if __name__ == '__main__':
 
     a = Acquisition()
 #    a.take_img_from_darc(1,'slope')
-    star_number_list = [1,2,3,4]
-    star_list = []
-    for star in star_number_list:
-        star_list.append(Star(star))
+    star_list = [1,2,3,4]
     cmd_list = [ 0, 0, 0]
     a.take_data(star_list, cmd_list)
