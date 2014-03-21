@@ -1,6 +1,0 @@
-#!/bin/bash
-#python /home/dani/bbb-darc/BeagleDarc/GUI/BeagleDarcGui.py &
-python /home/dani/bbb-darc/BeagleDarc/GUI/LayerData.py &
-python /home/dani/bbb-darc/BeagleDarc/GUI/LayersGui.py &
-python /home/dani/bbb-darc/BeagleDarc/GUI/StarData.py &
-python /home/dani/bbb-darc/BeagleDarc/GUI/StarsGui.py &
