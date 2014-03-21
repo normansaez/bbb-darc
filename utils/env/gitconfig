@@ -7,3 +7,6 @@
 	editor = vim
 [diff]
 	external = /home/nsaez/bbb-darc/utils/diff.py
+[push]
+	default = simple
+
