@@ -415,7 +415,7 @@ class Camera(object):
         self._subap_location_path = None
         self._rawdata_path = None
         self._refcent_path = None
-        self._useBrightest = None
+        self._usebrightest = None
         self._maxshutter = None
         self._bg_iter = None
         self._image_path_dir = None

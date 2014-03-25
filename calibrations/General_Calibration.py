@@ -34,17 +34,17 @@ class General_Calibration:
         self.niter = int(5)
         self.finalniter = int(10)
         self.slopeniter = int(10)
-        self.nsubaps = int(SHCamera.nsubaps)                             # number of active subaps(208*2)
+        self.nsubaps = int(self.SHCamera.nsubaps)                             # number of active subaps(208*2)
         self.nsubaps *= 2
-        self.nstars = SHCamera.nstars                                    # number of stars
-        self.maxShutter = float(SHCamera.maxshutter)                     # maximum shutter time. when shutter time is set outside
+        self.nstars = self.SHCamera.nstars                                    # number of stars
+        self.maxShutter = float(self.SHCamera.maxshutter)                     # maximum shutter time. when shutter time is set outside
                                                                     # the range [0:4095] it is taken as the modulus of tShutter/4095
-        self.SHsat = float(SHCamera.saturation)                          # SH saturation value
-        self.cameraName = SHCamera.camera
-        self.shutter = maxShutter
+        self.SHsat = float(self.SHCamera.saturation)                          # SH saturation value
+        self.cameraName = self.SHCamera.camera
+        self.shutter = self.maxShutter
 
         #Auxiliary arrays & variables
-        self.cent = numpy.zeros((niter,nsubaps))
+        self.cent = numpy.zeros((self.niter,self.nsubaps))
         self.centx = 0.0
         self.centy = 0.0
         #bgImage = c.SumData("rtcPxlBuf",1,"f")[0]
@@ -59,9 +59,9 @@ class General_Calibration:
         self.c.Set('useBrightest',float(self.SHCamera.usebrightest))
         
     def find_useBrightest(self):
-        bgImage_fwShutter_calibration(1)
-        subap_calibration(1)
-        hardniter = 200
+        self.bgImage_fwShutter_calibration(1)
+        self.subap_calibration(1)
+        hardniter = 100
         nBrightest = 100                                    # range of values
                                                             # to test
         noise = numpy.zeros(nBrightest)
@@ -80,13 +80,13 @@ class General_Calibration:
             noise[i] = ((centx2+centy2).sum(0)/float(hardniter)).sum(0)/float(self.nsubaps)       #
 
         print noise.argmin(0)
-        self.c.Set('useBrightest',-float(noise.argmin(0)))
-        self.SHCamera.usebrightest = -float(noise.argmin(0))
+        #self.c.Set('useBrightest',-float(noise.argmin(0)))
+        #self.SHCamera.usebrightest = -float(noise.argmin(0))
         pylab.plot(noise)
         pylab.show()
         
         self.bbbc.star_off(1)
-        FITS.Write(noise.astype(numpy.float32),'noise_vs_useBrightest.fits')
+        #FITS.Write(noise.astype(numpy.float32),'noise_vs_useBrightest.fits')
 
     def find_slope_niter():
         stream = 'rtcCentBuf'
@@ -207,10 +207,10 @@ class General_Calibration:
         print shutter
         self.c.Set('bgImage',None)
         self.c.Set('fwShutter',int(shutter))
-        bgImage = self.c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
+        bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
-        auxImage = self.c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
+        auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
 
@@ -221,7 +221,7 @@ class General_Calibration:
             if(shutter>self.maxShutter):
                 # Protection
                 shutter = self.maxShutter
-                c.Set('bgImage',None)
+                self.c.Set('bgImage',None)
                 print 'auxImageMax: ',
                 print auxImageMax
                 print "shutter: ",
@@ -230,16 +230,16 @@ class General_Calibration:
                 bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
                 self.c.Set('bgImage',bgImage)
                 self.bbbc.star_on(star_id)
-                auxImage = c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+                auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
                 self.bbbc.star_off(star_id)
                 auxImageMax = numpy.amax(auxImage)
-                if(shutter>=maxShutter):
+                if(shutter>=self.maxShutter):
                     # Escaping while
                     auxImageMax = self.SHsat*0.6
     
-        c.Set('bgImage',None)
-        bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/float(finalniter)
-        c.Set('bgImage',bgImage)
+        self.c.Set('bgImage',None)
+        bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        self.c.Set('bgImage',bgImage)
         
         #Saving values found
         FITS.Write(bgImage,'/home/dani/BeagleAcquisition/SH/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
@@ -253,23 +253,24 @@ class General_Calibration:
         star_id[int]
         '''
         #4- Subaps
-        bbbc.star_on(star_id)
-        try:
+        self.bbbc.star_on(star_id)
+        s = Star(star_id)
+        if(s.valid):
             subapLocation = FITS.Read('/home/dani/BeagleAcquisition/SH/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
-            c.Set('subapLocation',subapLocation)
-            c.Set("refCentroids",None)
-            cent = c.SumData("rtcCentBuf",slopeniter,"f")[0]/float(slopeniter)
+            self.c.Set('subapLocation',subapLocation)
+            self.c.Set("refCentroids",None)
+            cent = self.c.SumData("rtcCentBuf",slopeniter,"f")[0]/float(slopeniter)
             subapLocation[:,0:1] -= round(cent[::2].mean())
             subapLocation[:,4:5] -= round(cent[1::2].mean())
             FITS.Write(subapLocation,'/home/dani/BeagleAcquisition/SH/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
 
             #5- Ref Cent
-            c.Set('subapLocation',subapLocation)
-            cent = c.SumData("rtcCentBuf",slope,"f")[0]/float(slopeniter)
+            self.c.Set('subapLocation',subapLocation)
+            cent = self.c.SumData("rtcCentBuf",slope,"f")[0]/float(slopeniter)
             FITS.Write(cent.astype(numpy.float32),'/home/dani/BeagleAcquisition/SH/RefCent/SH_RefCent_led_%d.fits'%(star_id))  # From config file?
-        except Exception:
+        else:
             print 'No subaps for led_%d'%(star_id)
-        bbbc.star_off(star_id)
+        self.bbbc.star_off(star_id)
 
     def routine_calibration(self):
         '''
