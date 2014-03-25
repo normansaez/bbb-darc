@@ -416,7 +416,7 @@ class Camera(object):
         self._rawdata_path = None
         self._refcent_path = None
         self._useBrightest = None
-        self._maxShutter = None
+        self._maxshutter = None
         self._bg_iter = None
         self._image_path_dir = None
 
@@ -501,14 +501,14 @@ class Camera(object):
         self._refcent_path = value
 
     @property
-    def useBrightest(self):
-        self._useBrightest = self.bd.config.get(self._config_name, 'useBrightest')
-        return self._useBrightest
+    def usebrightest(self):
+        self._usebrightest = self.bd.config.get(self._config_name, 'usebrightest')
+        return self._usebrightest
 
-    @useBrightest.setter
-    def useBrightest(self, value):
-        self.bd.write(self._config_name, 'useBrightest', value)
-        self._useBrightest = value
+    @usebrightest.setter
+    def usebrightest(self, value):
+        self.bd.write(self._config_name, 'usebrightest', value)
+        self._usebrightest = value
 
     @property
     def bg_iter(self):
@@ -521,14 +521,14 @@ class Camera(object):
         self._bg_iter = value
         
     @property
-    def maxShutter(self):
-        self._maxShutter = self.bd.config.get(self._config_name, 'maxShutter')
-        return self._maxShutter
+    def maxshutter(self):
+        self._maxshutter = self.bd.config.get(self._config_name, 'maxshutter')
+        return self._maxshutter
 
-    @maxShutter.setter
-    def maxShutter(self, value):
-        self.bd.write(self._config_name, 'maxShutter', value)
-        self._maxShutter = value
+    @maxshutter.setter
+    def maxshutter(self, value):
+        self.bd.write(self._config_name, 'maxshutter', value)
+        self._maxshutter = value
 
     @property
     def nstars(self):

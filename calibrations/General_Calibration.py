@@ -18,7 +18,7 @@ from BeagleDarc.Model import Camera
 from BeagleDarc.Model import Star
 
 class General_Calibration:
-    def __init__(self):
+    def __init__(self,cameraName):
         '''
         INPUT
         cameraName       [string]
@@ -36,7 +36,7 @@ class General_Calibration:
         slopeniter = int(10)
         nsubaps = SHCamera.nsubaps*2                                # number of active subaps(208*2)
         nstars = SHCamera.nstars                                    # number of stars
-        maxShutter = float(SHCamera.maxShutter)                     # maximum shutter time. when shutter time is set outside
+        maxShutter = float(SHCamera.max_shutter)                    # maximum shutter time. when shutter time is set outside
                                                                     # the range [0:4095] it is taken as the modulus of tShutter/4095
         SHsat = float(SHCamera.saturation)                          # SH saturation value
         cameraName = SHCamera.camera
@@ -55,7 +55,7 @@ class General_Calibration:
         #1- Setting useBrightest, loaded from the config. file.
         '''
         
-        c.Set('useBrightest',SHCamera.useBrightest)
+        c.Set('useBrightest',SHCamera.usebrightest)
         
     def find_useBrightest(self):
         bgImage_fwShutter_calibration(1)
@@ -80,7 +80,7 @@ class General_Calibration:
 
         print noise.argmin(0)
         c.Set('useBrightest',-float(noise.argmin(0)))
-        SHCamera.useBrightest = -float(noise.argmin(0))
+        SHCamera.usebrightest = -float(noise.argmin(0))
         pylab.plot(noise)
         pylab.show()
         
@@ -145,7 +145,7 @@ class General_Calibration:
         print 'Reducing data'
         for n in numpy.arange(1,subniter+1):
             runningnoise[n-1] = running_var(slopes,0,n)
-            if(runningnoise<=threshold & not(found)):
+            if(runningnoise<=threshold and not(found)):
                 found = True
                 index_found = n
             
