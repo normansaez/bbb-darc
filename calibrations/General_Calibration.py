@@ -24,28 +24,29 @@ class General_Calibration:
         cameraName       [string]
         '''
         #Darc Controller instance
-        c = darc.Control(cameraName)
+        self.c = darc.Control(cameraName)
         #Beagle Controller instance
-        bbbc = Controller()
+        self.bbbc = Controller()
         #Darc camera instance
-        SHCamera = Camera('camera')
+        self.SHCamera = Camera('camera')
 
         #Parameters
-        niter = int(5)
-        finalniter = int(10)
-        slopeniter = int(10)
-        nsubaps = SHCamera.nsubaps*2                                # number of active subaps(208*2)
-        nstars = SHCamera.nstars                                    # number of stars
-        maxShutter = float(SHCamera.max_shutter)                    # maximum shutter time. when shutter time is set outside
+        self.niter = int(5)
+        self.finalniter = int(10)
+        self.slopeniter = int(10)
+        self.nsubaps = int(SHCamera.nsubaps)                             # number of active subaps(208*2)
+        self.nsubaps *= 2
+        self.nstars = SHCamera.nstars                                    # number of stars
+        self.maxShutter = float(SHCamera.maxshutter)                     # maximum shutter time. when shutter time is set outside
                                                                     # the range [0:4095] it is taken as the modulus of tShutter/4095
-        SHsat = float(SHCamera.saturation)                          # SH saturation value
-        cameraName = SHCamera.camera
-        shutter = maxShutter
+        self.SHsat = float(SHCamera.saturation)                          # SH saturation value
+        self.cameraName = SHCamera.camera
+        self.shutter = maxShutter
 
-        #Auxiliary arrays & variables                               
-        cent = numpy.zeros([niter,nsubaps])
-        centx = 0.0
-        centy = 0.0
+        #Auxiliary arrays & variables
+        self.cent = numpy.zeros((niter,nsubaps))
+        self.centx = 0.0
+        self.centy = 0.0
         #bgImage = c.SumData("rtcPxlBuf",1,"f")[0]
         #auxImage = bgImage
         #auxImageMax = numpy.amax(auxImage)
@@ -55,7 +56,7 @@ class General_Calibration:
         #1- Setting useBrightest, loaded from the config. file.
         '''
         
-        c.Set('useBrightest',SHCamera.usebrightest)
+        self.c.Set('useBrightest',float(self.SHCamera.usebrightest))
         
     def find_useBrightest(self):
         bgImage_fwShutter_calibration(1)
@@ -65,8 +66,8 @@ class General_Calibration:
                                                             # to test
         noise = numpy.zeros(nBrightest)
         cameraName = 'SH'
-        frames = numpy.zeros([hardniter,nsubaps])
-        bbbc.star_on(1)
+        frames = numpy.zeros([hardniter,self.nsubaps])
+        self.bbbc.star_on(1)
         for i in range(0,nBrightest):
             print '\nRecording with useBrightest:%3.0f ' %i
             c.Set('useBrightest',-i)
@@ -76,15 +77,15 @@ class General_Calibration:
                 frames[j,:] = cent[j][0]
             centx2 = numpy.square(frames[:,::2])
             centy2 = numpy.square(frames[:,1::2])
-            noise[i] = ((centx2+centy2).sum(0)/float(hardniter)).sum(0)/float(nsubaps)       #
+            noise[i] = ((centx2+centy2).sum(0)/float(hardniter)).sum(0)/float(self.nsubaps)       #
 
         print noise.argmin(0)
-        c.Set('useBrightest',-float(noise.argmin(0)))
-        SHCamera.usebrightest = -float(noise.argmin(0))
+        self.c.Set('useBrightest',-float(noise.argmin(0)))
+        self.SHCamera.usebrightest = -float(noise.argmin(0))
         pylab.plot(noise)
         pylab.show()
         
-        bbbc.star_off(1)
+        self.bbbc.star_off(1)
         FITS.Write(noise.astype(numpy.float32),'noise_vs_useBrightest.fits')
 
     def find_slope_niter():
@@ -92,23 +93,23 @@ class General_Calibration:
         threshold = 1.0
         for star_id in range(1,1+nstars):
             star = Star(star_id)
-            ok = star.setup(SHCamera)
+            ok = star.setup(self.SHCamera)
             if(ok):
                 slope_niter = find_niter(stream,threshold)
                 if(slope_niter[0] != -1):
                     star.slope_iter = slope_niter[0]
-                    FITS.Write(slope_niter[1],SHCamera.rawdata_path + 'SH_slopes_noscreen_led_%d.fits'%(star_id),writeMode='a')
+                    FITS.Write(slope_niter[1],self.SHCamera.rawdata_path + 'SH_slopes_noscreen_led_%d.fits'%(star_id),writeMode='a')
                 else:
                     print 'Relax threshold'
                              
     def find_bg_niter():
         stream = 'rtcPxlBuf'
         threshold = 10
-        c.Set('fwShutter',SHCamera.maxshutter)
+        c.Set('fwShutter',self.SHCamera.maxshutter)
         bg_niter = find_niter(stream,threshold)
         if(bg_iter[0] != -1):
-            SHCamera.bg_niter = bg_niter[0]
-            FITS.Write(bg_niter[1],SHCamera.rawdata_path + 'SH_bgImage_shutter_%d.fits'%(int(SHCamera.maxshutter)),writeMode='a')
+            self.SHCamera.bg_niter = bg_niter[0]
+            FITS.Write(bg_niter[1],self.SHCamera.rawdata_path + 'SH_bgImage_shutter_%d.fits'%(int(self.SHCamera.maxshutter)),writeMode='a')
         else:
             print 'Relax threshold'
         
@@ -136,7 +137,7 @@ class General_Calibration:
         index_found = 0
         
         print 'Stream Block Acquisition'
-        cent = c.GetStreamBlock(cameraName+'rtcCentBuf',hardniter)   # hardniter frames - as a dict
+        cent = self.c.GetStreamBlock(cameraName+stream,hardniter)   # hardniter frames - as a dict
         print 'Extracting data'
         cent = cent[cent.keys()[0]]
         for j in range(0,hardniter):
@@ -201,40 +202,40 @@ class General_Calibration:
         star_id[int]
         '''
         #2-3 bgImage & fwShutter iteration
-        shutter = maxShutter*0.3
+        shutter = self.maxShutter*0.3
         print 'shutter: ',
         print shutter
-        c.Set('bgImage',None)
-        c.Set('fwShutter',int(shutter))
-        bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
-        c.Set('bgImage',bgImage)
-        bbbc.star_on(star_id)
-        auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
-        bbbc.star_off(star_id)
+        self.c.Set('bgImage',None)
+        self.c.Set('fwShutter',int(shutter))
+        bgImage = self.c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
+        self.c.Set('bgImage',bgImage)
+        self.bbbc.star_on(star_id)
+        auxImage = self.c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
+        self.bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
 
-        while(numpy.absolute(auxImageMax/SHsat-0.6)>0.05):
+        while(numpy.absolute(auxImageMax/self.SHsat-0.6)>0.05):
             # The while condition is set so that the maximum value found in the image
             # is around 60% of the saturation value
-            shutter = shutter*(SHsat*float(0.6))/auxImageMax
-            if(shutter>maxShutter):
+            shutter = shutter*(self.SHsat*float(0.6))/auxImageMax
+            if(shutter>self.maxShutter):
                 # Protection
-                shutter = maxShutter
+                shutter = self.maxShutter
                 c.Set('bgImage',None)
                 print 'auxImageMax: ',
                 print auxImageMax
                 print "shutter: ",
                 print shutter
-                c.Set('fwShutter',int(shutter))
-                bgImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
-                c.Set('bgImage',bgImage)
-                bbbc.star_on(star_id)
-                auxImage = c.SumData('rtcPxlBuf',niter,'f')[0]/float(niter)
-                bbbc.star_off(star_id)
+                self.c.Set('fwShutter',int(shutter))
+                bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+                self.c.Set('bgImage',bgImage)
+                self.bbbc.star_on(star_id)
+                auxImage = c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+                self.bbbc.star_off(star_id)
                 auxImageMax = numpy.amax(auxImage)
                 if(shutter>=maxShutter):
-                    # Escape while
-                    auxImageMax = SHsat*0.6
+                    # Escaping while
+                    auxImageMax = self.SHsat*0.6
     
         c.Set('bgImage',None)
         bgImage = c.SumData('rtcPxlBuf',finalniter,'f')[0]/float(finalniter)
