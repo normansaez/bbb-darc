@@ -204,11 +204,9 @@ class General_Calibration:
         '''
         #2-3 bgImage & fwShutter iteration
         shutter = self.maxShutter*0.3
-        print 'shutter: ',
-        print shutter
         self.c.Set('bgImage',None)
         self.c.Set('fwShutter',int(shutter))
-        bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        bgImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
         auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
@@ -218,26 +216,30 @@ class General_Calibration:
         while(numpy.absolute(auxImageMax/self.SHsat-0.6)>0.05):
             # The while condition is set so that the maximum value found in the image
             # is around 60% of the saturation value
+            print "\nshutter: ",
+            print shutter
+            print 'auxImageMax: ',
+            print str(100*auxImageMax/self.SHsat)+'%'
             shutter = shutter*(self.SHsat*float(0.6))/auxImageMax
-            if(shutter>self.maxShutter):
+            if(shutter>=self.maxShutter):
                 # Protection
                 shutter = self.maxShutter
-                self.c.Set('bgImage',None)
-                print 'auxImageMax: ',
-                print auxImageMax
-                print "shutter: ",
-                print shutter
+                auxImageMax = self.SHsat*0.6
                 self.c.Set('fwShutter',int(shutter))
-                bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+            else:
+                self.c.Set('bgImage',None)
+                self.c.Set('fwShutter',int(shutter))
+                bgImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
                 self.c.Set('bgImage',bgImage)
                 self.bbbc.star_on(star_id)
                 auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
                 self.bbbc.star_off(star_id)
                 auxImageMax = numpy.amax(auxImage)
-                if(shutter>=self.maxShutter):
-                    # Escaping while
-                    auxImageMax = self.SHsat*0.6
-    
+        
+        print "Final shutter: ",
+        print shutter
+        print 'Final auxImageMax: ',
+        print str(100*auxImageMax/self.SHsat)+'%'
         self.c.Set('bgImage',None)
         bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
         self.c.Set('bgImage',bgImage)
