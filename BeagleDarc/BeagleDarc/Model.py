@@ -315,7 +315,7 @@ class Star(object):
 
     @property
     def valid(self):
-        self._valid = self.bd.config.getint(self._config_name, 'valid')
+        self._valid = self.bd.config.getboolean(self._config_name, 'valid')
         return self._valid
 
     @valid.setter
@@ -432,7 +432,7 @@ class Camera(object):
 
     @property
     def pxlx(self):
-        self._pxlx = self.bd.config.get(self._config_name, 'pxlx')
+        self._pxlx = self.bd.config.getint(self._config_name, 'pxlx')
         return self._pxlx
 
     @pxlx.setter
@@ -442,7 +442,7 @@ class Camera(object):
 
     @property
     def pxly(self):
-        self._pxly = self.bd.config.get(self._config_name, 'pxly')
+        self._pxly = self.bd.config.getint(self._config_name, 'pxly')
         return self._pxly
 
     @pxly.setter
@@ -502,7 +502,7 @@ class Camera(object):
 
     @property
     def usebrightest(self):
-        self._usebrightest = self.bd.config.get(self._config_name, 'usebrightest')
+        self._usebrightest = self.bd.config.getint(self._config_name, 'usebrightest')
         return self._usebrightest
 
     @usebrightest.setter
@@ -512,7 +512,7 @@ class Camera(object):
 
     @property
     def bg_iter(self):
-        self._bg_iter = self.bd.config.get(self._config_name, 'bg_iter')
+        self._bg_iter = self.bd.config.getint(self._config_name, 'bg_iter')
         return self._bg_iter
 
     @bg_iter.setter
@@ -522,7 +522,7 @@ class Camera(object):
         
     @property
     def maxshutter(self):
-        self._maxshutter = self.bd.config.get(self._config_name, 'maxshutter')
+        self._maxshutter = self.bd.config.getfloat(self._config_name, 'maxshutter')
         return self._maxshutter
 
     @maxshutter.setter
@@ -532,7 +532,7 @@ class Camera(object):
 
     @property
     def nstars(self):
-        self._nstars = self.bd.config.get(self._config_name, 'nstars')
+        self._nstars = self.bd.config.getint(self._config_name, 'nstars')
         return self._nstars
 
     @nstars.setter
@@ -542,7 +542,7 @@ class Camera(object):
 
     @property
     def nsubaps(self):
-        self._nsubaps = self.bd.config.get(self._config_name, 'nsubaps')
+        self._nsubaps = self.bd.config.getint(self._config_name, 'nsubaps')
         return self._nsubaps
 
     @nsubaps.setter
@@ -552,7 +552,7 @@ class Camera(object):
 
     @property
     def saturation(self):
-        self._saturation = self.bd.config.get(self._config_name, 'saturation')
+        self._saturation = self.bd.config.getfloat(self._config_name, 'saturation')
         return self._saturation
 
     @saturation.setter
