@@ -471,14 +471,14 @@ class Camera(object):
         self._bg_path = value
 
     @property
-    def subap_location_path(self):
-        self._subap_location_path = self.bd.config.get(self._config_name, 'subap_location_path')
-        return self._subap_location_path
+    def subaplocation_path(self):
+        self._subaplocation_path = self.bd.config.get(self._config_name, 'subaplocation_path')
+        return self._subaplocation_path
 
-    @subap_location_path.setter
-    def subap_location_path(self, value):
-        self.bd.write(self._config_name, 'subap_location_path', value)
-        self._subap_location_path = value
+    @subaplocation_path.setter
+    def subaplocation_path(self, value):
+        self.bd.write(self._config_name, 'subaplocation_path', value)
+        self._subaplocation_path = value
 
     @property
     def rawdata_path(self):

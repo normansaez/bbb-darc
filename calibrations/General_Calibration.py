@@ -16,6 +16,7 @@ import random
 from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Camera
 from BeagleDarc.Model import Star
+import ConfigParser
 
 class General_Calibration:
     def __init__(self,cameraName):
@@ -70,8 +71,8 @@ class General_Calibration:
         self.bbbc.star_on(1)
         for i in range(0,nBrightest):
             print '\nRecording with useBrightest:%3.0f ' %i
-            c.Set('useBrightest',-i)
-            cent = c.GetStreamBlock(cameraName+'rtcCentBuf',hardniter)   # hardniter frames - as a dict
+            self.c.Set('useBrightest',-i)
+            cent = self.c.GetStreamBlock(cameraName+'rtcCentBuf',hardniter)   # hardniter frames - as a dict
             cent = cent[cent.keys()[0]]
             for j in range(0,hardniter):
                 frames[j,:] = cent[j][0]
@@ -80,8 +81,8 @@ class General_Calibration:
             noise[i] = ((centx2+centy2).sum(0)/float(hardniter)).sum(0)/float(self.nsubaps)       #
 
         print noise.argmin(0)
-        #self.c.Set('useBrightest',-float(noise.argmin(0)))
-        #self.SHCamera.usebrightest = -float(noise.argmin(0))
+        self.c.Set('useBrightest',-float(noise.argmin(0)))
+        self.SHCamera.usebrightest = -int(noise.argmin(0))
         pylab.plot(noise)
         pylab.show()
         
@@ -259,14 +260,14 @@ class General_Calibration:
             subapLocation = FITS.Read(self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
             self.c.Set('subapLocation',subapLocation)
             self.c.Set("refCentroids",None)
-            cent = self.c.SumData("rtcCentBuf",slopeniter,"f")[0]/float(slopeniter)
+            cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
             subapLocation[:,0:1] -= round(cent[::2].mean())
             subapLocation[:,4:5] -= round(cent[1::2].mean())
             FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
 
             #5- Ref Cent
             self.c.Set('subapLocation',subapLocation)
-            cent = self.c.SumData("rtcCentBuf",slope,"f")[0]/float(slopeniter)
+            cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
             FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id))  # From config file?
             self.c.Set('refCentroids',cent.astype(numpy.float32))
         else:
@@ -279,11 +280,26 @@ class General_Calibration:
         subap locations and reference centroids for all stars
         '''
         #Main loop. Calibrates for each star
-        Set_useBrightest()
-        for star_id in range(1,nstars+1):
+        #First we flush
+        self.flushAll()
+        self.Set_useBrightest()
+        for star_id in range(1,self.nstars+1):
             print '\nCalibrating star:%3.0f ' %star_id
-            bgImage_fwShutter_calibration(star_id)
-            subap_calibration(star_id)
+            self.bgImage_fwShutter_calibration(star_id)
+            self.subap_calibration(star_id)
+
+    def flushAll(self):
+        for s in range(1,self.nstars+1):
+            try:
+                ss = Star(s)
+                if(ss.valid):
+                    print "s->%d on" % s
+                    self.bbbc.star_on(s)
+                    print "s->%d off" % s
+                    self.bbbc.star_off(s)
+            except ConfigParser.NoSectionError:
+                pass
+
             
             
     
