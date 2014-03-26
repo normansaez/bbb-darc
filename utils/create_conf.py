@@ -40,7 +40,7 @@ filehandler_cfg.write("pxlx = 1920\n")
 filehandler_cfg.write("pxly = 1080\n")
 filehandler_cfg.write("image_path = /home/dani/nsaez/images/\n")
 filehandler_cfg.write("bg_path = /home/dani/BeagleAcquisition/SH/BG/\n")
-filehandler_cfg.write("subap_location_path = /home/dani/BeagleAcquisition/SH/subapLocation/\n")
+filehandler_cfg.write("subaplocation_path = /home/dani/BeagleAcquisition/SH/subapLocation/\n")
 filehandler_cfg.write("rawdata_path = /home/dani/BeagleAcquisition/SH/RawData/\n")
 filehandler_cfg.write("refcent_path = /home/dani/BeagleAcquisition/SH/RefCent/\n")
 filehandler_cfg.write("usebrightest = -85\n")
@@ -91,7 +91,7 @@ with open('mapping.csv', 'rb') as csvfile:
                 filehandler_cfg.write("simulated = False\n")
                 filehandler_cfg.write("exp_time = 15000.0\n")
                 filehandler_cfg.write("brightness = 94\n")
-                filehandler_cfg.write("slope_iter = 100\n")
+                filehandler_cfg.write("slope_iter = 10\n")
                 if row[5] == '1':
                     filehandler_cfg.write("valid = True\n")
                 else:

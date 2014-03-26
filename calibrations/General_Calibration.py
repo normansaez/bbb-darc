@@ -242,7 +242,7 @@ class General_Calibration:
         self.c.Set('bgImage',bgImage)
         
         #Saving values found
-        FITS.Write(bgImage,'/home/dani/BeagleAcquisition/SH/BG/SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
+        FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
     
     def subap_calibration(self,star_id):
         '''
@@ -256,18 +256,19 @@ class General_Calibration:
         self.bbbc.star_on(star_id)
         s = Star(star_id)
         if(s.valid):
-            subapLocation = FITS.Read('/home/dani/BeagleAcquisition/SH/subapLocation/SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
+            subapLocation = FITS.Read(self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id))[1] # From config file?
             self.c.Set('subapLocation',subapLocation)
             self.c.Set("refCentroids",None)
             cent = self.c.SumData("rtcCentBuf",slopeniter,"f")[0]/float(slopeniter)
             subapLocation[:,0:1] -= round(cent[::2].mean())
             subapLocation[:,4:5] -= round(cent[1::2].mean())
-            FITS.Write(subapLocation,'/home/dani/BeagleAcquisition/SH/SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
+            FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a') # From config file?
 
             #5- Ref Cent
             self.c.Set('subapLocation',subapLocation)
             cent = self.c.SumData("rtcCentBuf",slope,"f")[0]/float(slopeniter)
-            FITS.Write(cent.astype(numpy.float32),'/home/dani/BeagleAcquisition/SH/RefCent/SH_RefCent_led_%d.fits'%(star_id))  # From config file?
+            FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id))  # From config file?
+            self.c.Set('refCentroids',cent.astype(numpy.float32))
         else:
             print 'No subaps for led_%d'%(star_id)
         self.bbbc.star_off(star_id)
