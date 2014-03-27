@@ -21,6 +21,7 @@ from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Layer
 from BeagleDarc.Model import Star
 from BeagleDarc.Model import Camera
+from General_Calibration import General_Calibration
 
 class Acquisition:
     def __init__(self):
@@ -31,7 +32,7 @@ class Acquisition:
         self.bbbc = Controller()
         #self.logger = logging.getLogger(__name__)
         #Camera instance
-        self.SHCamera = Darc('darc')
+        self.SHCamera = Camera('camera')
 
         #
         self.niter = 10
@@ -73,17 +74,17 @@ class Acquisition:
             self.bbbc.flush_all_leds()
             #motor move
             motor = Layer('ground_layer')
-            motor.cmd_pos = cmd_list[0]
+            self.bbbc.set_position('ground_layer',cmd_list[0], 200)
             self.bbbc.layer_move('ground_layer')
 
             #motor move
             motor = Layer('horizontal_altitude_layer')
-            motor.cmd_pos = cmd_list[1]
+            self.bbbc.set_position('horizontal_altitude_layer',cmd_list[1], 200)
             self.bbbc.layer_move('horizontal_altitude_layer')
 
             #motor move
             motor = Layer('vertical_altitude_layer')
-            motor.cmd_pos = cmd_list[2]
+            self.bbbc.set_position('vertical_altitude_layer',cmd_list[2], 200)
             self.bbbc.layer_move('vertical_altitude_layer')
 
             slopes_frame = numpy.array([])
@@ -102,7 +103,7 @@ class Acquisition:
     def take_all_data(self,iterations,star_list,prefix):
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         cali = General_Calibration(self.SHCamera.camera)
-        cali.routine_calibration()
+        #cali.routine_calibration()
         all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
         Star_list = []
         cmd_list = [0,0,0]
@@ -111,12 +112,21 @@ class Acquisition:
         
         for i in range(0,iterations):
             motor = Layer('ground_layer')
-            cmd_list[0] = random.randint(0,motor.vr_end)
+
+            #cmd_list[0] = random.randint(0,motor.vr_end)
+            cmd_list[0] = random.randint(0,10)
+
             motor = Layer('horizontal_altitude_layer')
+
             cmd_list[1] = random.randint(0,motor.vr_end)
+            cmd_list[1] = random.randint(0,10)
+
             motor = Layer('vertical_altitude_layer')
+
             cmd_list[2] = random.randint(0,motor.vr_end)
-            all_data[i] = take_data(Star_list, cmd_list)
+            cmd_list[2] = random.randint(0,10)
+
+            all_data[i] = self.take_data(Star_list, cmd_list)
 
         slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
         if os.path.exists(self.image_path+self.dir_name) is False:
