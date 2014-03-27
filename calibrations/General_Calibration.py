@@ -291,16 +291,7 @@ class General_Calibration:
             self.subap_calibration(star_id)
 
     def flushAll(self):
-        for s in range(1,self.nstars+1):
-            try:
-                ss = Star(s)
-                if(ss.valid):
-                    print "s->%d on" % s
-                    self.bbbc.star_on(s)
-                    print "s->%d off" % s
-                    self.bbbc.star_off(s)
-            except ConfigParser.NoSectionError:
-                pass
+        self.bbbc.flush_all_leds()
 
             
             

@@ -34,11 +34,11 @@ class Acquisition:
         self.SHCamera = Darc('darc')
 
         #
-        self.niter = 100
-        self.image_path = '/home/dani/BeagleAcquisition/SH/'
+        self.niter = 10
+        self.image_path = self.SHCamera.image_path
         self.dir_name = 'slopes'
 
-    def take_img_from_darc(self, iteration, prefix):
+    def take_slp_from_darc(self):
         '''
         Using darc, take a FITS image and save it into the disk. By default use
         a <camera name>_<image prefix>_YEAR-MONTH-DAYTHOUR-MIN-SEC.fits as
@@ -50,20 +50,25 @@ class Acquisition:
         #Get slope_streams:
         logging.info('About to take image with darc ...')
         slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
-        slope_name = self.camera_name + '_' + prefix + '_' +str(iteration).zfill(3) + '_T' +str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        if os.path.exists(self.image_path+self.dir_name) is False:
-            os.mkdir(self.image_path+self.dir_name)
-        slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
+        
         logging.info('Image taken : %s' % slp_path)
         logging.debug(slope_stream)
-        FITS.Write(slope_stream, slp_path, writeMode='a')
-        logging.info('Image saved : %s' % slp_path)
+        return slope_stream
+        
     
-    def take_data(self, star_list, cmd_list, camera):
+    def take_data(self, star_list, cmd_list):
             '''
             This method does:
             After that,  start all over again,  given a number of times in num
             variable
+
+            star_list is a Star object list
+
+            from BeagleDarc.Model import Star
+            star_list = []
+            for i in range(1,n+1):
+                star_list.append(Star(i))
+            
             '''
             self.bbbc.flush_all_leds()
             #motor move
@@ -81,16 +86,44 @@ class Acquisition:
             motor.cmd_pos = cmd_list[2]
             self.bbbc.layer_move('vertical_altitude_layer')
 
+            slopes_frame = numpy.array([])
             # led on
             for star in star_list:
-                self.bbbc.star_on(star)
-                s = Star(star)
-                s.setup(self.SHCamera)
+                star.setup(self.SHCamera)
+                self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
-                self.take_img_from_darc(star, 'slopes')
+                numpy.append(slopes_frame,self.take_slp_from_darc())
                 #led off
-                self.bbbc.star_off(star) 
-    
+                self.bbbc.star_off(int(star.image_prefix))
+            
+            return slopes_frame
+ 
+
+    def take_all_data(self,iterations,star_list,prefix):
+        Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
+        cali = General_Calibration(self.SHCamera.camera)
+        cali.routine_calibration()
+        all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
+        Star_list = []
+        cmd_list = [0,0,0]
+        for s in star_list:
+            Star_list.append(Star(s))
+        
+        for i in range(0,iterations):
+            motor = Layer('ground_layer')
+            cmd_list[0] = random.randint(0,motor.vr_end)
+            motor = Layer('horizontal_altitude_layer')
+            cmd_list[1] = random.randint(0,motor.vr_end)
+            motor = Layer('vertical_altitude_layer')
+            cmd_list[2] = random.randint(0,motor.vr_end)
+            all_data[i] = take_data(Star_list, cmd_list)
+
+        slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
+        if os.path.exists(self.image_path+self.dir_name) is False:
+            os.mkdir(self.image_path+self.dir_name)
+        slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
+        FITS.Write(all_data, slp_path, writeMode='a')
+        logging.info('Data saved : %s' % slp_path)
 
 if __name__ == '__main__':
     usage = '''
@@ -108,7 +141,7 @@ if __name__ == '__main__':
 
 
     a = Acquisition()
-#    a.take_img_from_darc(1,'slope')
     star_list = [1,2,3,4]
-    cmd_list = [ 0, 0, 0]
-    a.take_data(star_list, cmd_list)
+    prefix = 'slopes'
+    iterations = 10
+    a.take_all_data(iterations,star_list,prefix)
