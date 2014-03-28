@@ -91,7 +91,8 @@ class Acquisition:
                 star.setup(self.SHCamera)
                 self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
-                numpy.append(slopes_frame,self.take_slp_from_darc())
+                slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc())
+                
                 #led off
                 self.bbbc.star_off(int(star.image_prefix))
             
@@ -101,7 +102,7 @@ class Acquisition:
     def take_all_data(self,iterations,star_list,prefix):
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         cali = General_Calibration(self.SHCamera.camera)
-        #cali.routine_calibration()
+        cali.routine_calibration()
         all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
         Star_list = []
         cmd_list = [0,0,0]
@@ -109,6 +110,7 @@ class Acquisition:
             Star_list.append(Star(s))
         
         for i in range(0,iterations):
+            print '\nTaking iteration #: %d' % (iterations+1)
             motor = Layer('ground_layer')
 
             #cmd_list[0] = random.randint(0,motor.vr_end)
@@ -124,13 +126,7 @@ class Acquisition:
             cmd_list[2] = random.randint(0,motor.vr_end)
             cmd_list[2] = random.randint(0,10)
             
-            print 'all_data.shape >>'
-            print all_data.shape
             oli = self.take_data(Star_list, cmd_list)
-            print 'oli.__class__ >>'
-            print oli.__class__
-            print 'oli.shape >>'
-            print oli.shape
             all_data[i,:] = oli
 
         slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
@@ -158,5 +154,5 @@ if __name__ == '__main__':
     a = Acquisition()
     star_list = [1,2,3,4]
     prefix = 'slopes'
-    iterations = 10
+    iterations = 5
     a.take_all_data(iterations,star_list,prefix)
