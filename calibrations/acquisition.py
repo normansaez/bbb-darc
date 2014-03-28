@@ -52,7 +52,6 @@ class Acquisition:
         logging.info('About to take image with darc ...')
         slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
         
-        logging.info('Image taken : %s' % slp_path)
         logging.debug(slope_stream)
         return slope_stream
         
@@ -71,7 +70,6 @@ class Acquisition:
                 star_list.append(Star(i))
             
             '''
-            self.bbbc.flush_all_leds()
             #motor move
             motor = Layer('ground_layer')
             self.bbbc.set_position('ground_layer',cmd_list[0], 200)
@@ -125,8 +123,15 @@ class Acquisition:
 
             cmd_list[2] = random.randint(0,motor.vr_end)
             cmd_list[2] = random.randint(0,10)
-
-            all_data[i] = self.take_data(Star_list, cmd_list)
+            
+            print 'all_data.shape >>'
+            print all_data.shape
+            oli = self.take_data(Star_list, cmd_list)
+            print 'oli.__class__ >>'
+            print oli.__class__
+            print 'oli.shape >>'
+            print oli.shape
+            all_data[i,:] = oli
 
         slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
         if os.path.exists(self.image_path+self.dir_name) is False:
