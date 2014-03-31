@@ -118,12 +118,12 @@ class Acquisition:
 
             motor = Layer('horizontal_altitude_layer')
 
-            cmd_list[1] = random.randint(0,motor.vr_end)
+            #cmd_list[1] = random.randint(0,motor.vr_end)
             cmd_list[1] = random.randint(0,10)
 
             motor = Layer('vertical_altitude_layer')
 
-            cmd_list[2] = random.randint(0,motor.vr_end)
+            #cmd_list[2] = random.randint(0,motor.vr_end)
             cmd_list[2] = random.randint(0,10)
             
             oli = self.take_data(Star_list, cmd_list)

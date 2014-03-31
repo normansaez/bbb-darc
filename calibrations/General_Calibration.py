@@ -264,8 +264,8 @@ class General_Calibration:
             self.c.Set('subapLocation',subapLocation)
             self.c.Set("refCentroids",None)
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
-            subapLocation[:,0:2] -= round(cent[::2].mean())
-            subapLocation[:,4:6] -= round(cent[1::2].mean())
+            subapLocation[:,0:2] += round(cent[::2].mean())
+            subapLocation[:,3:5] += round(cent[1::2].mean())
             print '\nX subap correction: ',
             print round(cent[::2].mean())
             print 'Y subap correction: ',
@@ -275,7 +275,7 @@ class General_Calibration:
             #5- Ref Cent
             self.c.Set('subapLocation',subapLocation)
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
-            FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id))
+            FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id),writeMode='a')
             self.c.Set('refCentroids',cent.astype(numpy.float32))
         else:
             print 'No subaps for led_%d'%(star_id)
