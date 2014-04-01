@@ -264,8 +264,8 @@ class General_Calibration:
             self.c.Set('subapLocation',subapLocation.astype(numpy.float32))
             self.c.Set("refCentroids",None)
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
-            subapLocation[:,0:2] += round(cent[::2].mean())
-            subapLocation[:,3:5] += round(cent[1::2].mean())
+            subapLocation[:,3:5] += round(cent[::2].mean())
+            subapLocation[:,0:2] += round(cent[1::2].mean())
             print '\nX subap correction: ',
             print round(cent[::2].mean())
             print 'Y subap correction: ',
