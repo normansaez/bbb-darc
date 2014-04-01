@@ -3,13 +3,20 @@
 
 static char py_move_motor_doc[] = "Moves motor";
 static PyObject * 
+
 py_move_motor(PyObject *self, PyObject *args){
     int steps;
-    int pin_step;
-    if ( !PyArg_ParseTuple(args,"ii:move_motor",&steps,&pin_step)) {
+    char *pin_step;
+    char *tmp;
+    PyObject *ret;
+
+    if ( !PyArg_ParseTuple(args,"is:move_motor",&steps,&pin_step)) {
         return NULL;
     }
-    return Py_BuildValue("i", move_motor(steps,pin_step));
+    tmp = (char *)malloc(strlen(pin_step)+1);
+    strcpy(tmp,pin_step);
+    ret =  Py_BuildValue("i", move_motor(steps,tmp));
+    return ret;
 }
 
 

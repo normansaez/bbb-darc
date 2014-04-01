@@ -5,7 +5,7 @@
 #include <sys/time.h>
 
 
-extern int move_motor(int steps, int pin_step);
+extern int move_motor(int steps, char *pin_step);
 extern void delay_us(int n_sleep);
 
 #define MAGIC 0x31337

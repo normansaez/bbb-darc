@@ -1,22 +1,30 @@
 #include "c_driver.h"
 
-int move_motor(int steps, int pin_step){
+int move_motor(int steps, char *pin_step){
     //Define names
     char *filename_dir;
     char *filename_val;
+    int gpio_num = 0;
     //define file handles
     FILE *fh_export, *fh_value, *fh_direction;
     int count=0;
 
-    printf("%d\n",pin_step);
+    if (strcmp(pin_step,"P8_13") == 0 )
+        gpio_num = 23;
+    if (strcmp(pin_step,"P9_02") == 0)
+        gpio_num = 33;
+    if (strcmp(pin_step,"P8_45") == 0)
+        gpio_num = 43;
+    if (gpio_num == 0)
+        return -1;
 
     // making path name
     filename_dir = malloc(strlen("/sys/class/gpio/gpioXXX/direction")+1);
-    sprintf(filename_dir, "/sys/class/gpio/gpio%d/direction", pin_step);
+    sprintf(filename_dir, "/sys/class/gpio/gpio%d/direction", gpio_num);
     printf("%s\n",filename_dir);
 
     filename_val = malloc(strlen("/sys/class/gpio/gpioXXX/value")+1);
-    sprintf(filename_val, "/sys/class/gpio/gpio%d/value", pin_step);
+    sprintf(filename_val, "/sys/class/gpio/gpio%d/value", gpio_num);
     printf("%s\n",filename_val);
 
     //define pin variables
@@ -25,7 +33,7 @@ int move_motor(int steps, int pin_step){
     fh_export = fopen("/sys/class/gpio/export", "w");
     if(fh_export == NULL) {printf("Unable to open export.\n");}
     //fseek(fh_export, 0, SEEK_SET);
-    //fprintf(fh_export, "%d", pin_step);
+    //fprintf(fh_export, "%d", gpio_num);
     //fflush(fh_export);
 
     fh_direction = fopen(filename_dir, "w");
