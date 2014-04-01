@@ -44,9 +44,8 @@ int move_motor(int steps, int pin_step){
     while(count < steps)
     {
         //delay_us(5000);
-        //delay_us(5);
+        delay_us(5);
         logic_status = logic_status?0:1;
-        //write to gpio23
         //fprintf(fh_value, "%d", logic_status);
         //fflush(fh_value);
         count += 1;
@@ -56,3 +55,27 @@ int move_motor(int steps, int pin_step){
     //fclose(fh_value);
     return count;
 }
+
+//******************************************************************
+void delay_us(int desired_delay_us)
+{
+    struct timeval tv_start; //start time hack
+    struct timeval tv_now; //current time hack
+    int elapsed_time_us;
+    gettimeofday(&tv_start, NULL);
+    elapsed_time_us = 0;
+    while(elapsed_time_us < desired_delay_us)
+    {
+        gettimeofday(&tv_now, NULL);
+        if(tv_now.tv_usec >= tv_start.tv_usec)
+            elapsed_time_us = tv_now.tv_usec - tv_start.tv_usec;
+        else
+            elapsed_time_us = (1000000 - tv_start.tv_usec) + tv_now.tv_usec;
+        //printf("start: %ld \n", tv_start.tv_usec);
+        //printf("now: %ld \n", tv_now.tv_usec);
+        //printf("desired: %d \n", desired_delay_ms);
+        //printf("elapsed: %d \n\n", elapsed_time_ms);
+    }
+}
+//******************************************************************
+
