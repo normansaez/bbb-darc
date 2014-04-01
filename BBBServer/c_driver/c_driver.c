@@ -1,13 +1,16 @@
 #include "c_driver.h"
 
-int move_motor(int steps, int pin_number){
+int move_motor(int steps, char *pin_step){
     //Define names
     char *filename_dir;
     char *filename_val;
+    int pin_number = 1;
     //define file handles
     FILE *fh_export, *fh_value, *fh_direction;
     int count=0;
     
+    printf("%s\n",pin_step);
+
     // making path name
     filename_dir = malloc(strlen("/sys/class/gpio/gpioXXX/direction")+1);
     sprintf(filename_dir, "/sys/class/gpio/gpio%d/direction", pin_number);
@@ -19,7 +22,7 @@ int move_motor(int steps, int pin_number){
 
     //define pin variables
     int logic_status = 1;
-    char* pin_direction = "out";
+    //char* pin_direction = "out";
     fh_export = fopen("/sys/class/gpio/export", "w");
     if(fh_export == NULL) {printf("Unable to open export.\n");}
     //fseek(fh_export, 0, SEEK_SET);

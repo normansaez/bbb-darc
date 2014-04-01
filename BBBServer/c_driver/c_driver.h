@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-extern int move_motor(int steps, int number);
+extern int move_motor(int steps, char *pin_step);
 
 #define MAGIC 0x31337
 
