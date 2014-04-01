@@ -3,18 +3,26 @@
 
 static char py_move_motor_doc[] = "Moves motor";
 static PyObject * 
+
 py_move_motor(PyObject *self, PyObject *args){
-    int steps,gpio;
-    if ( !PyArg_ParseTuple(args,"ii:move_motor",&steps,&gpio)) {
+    int steps;
+    char *pin_step;
+    char *tmp;
+    PyObject *ret;
+
+    if ( !PyArg_ParseTuple(args,"is:move_motor",&steps,&pin_step)) {
         return NULL;
     }
-    return Py_BuildValue("i", move_motor(steps,gpio));
+    tmp = (char *)malloc(strlen(pin_step)+1);
+    strcpy(tmp,pin_step);
+    ret =  Py_BuildValue("i", move_motor(steps,tmp));
+    return ret;
 }
 
 
 
 static PyMethodDef c_drivermethods[] = {
-    {"move_motor",py_move_motor, METH_VARARGS, py_move_motor_doc},
+    {"move_motor",py_move_motor, METH_VARARGS|METH_KEYWORDS,py_move_motor_doc},
     {NULL,NULL,0,NULL}
 };
 
