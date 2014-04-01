@@ -110,7 +110,7 @@ class Acquisition:
             Star_list.append(Star(s))
         
         for i in range(0,iterations):
-            print '\nTaking iteration #: %d' % (iterations+1)
+            print '\nTaking iteration #: %d' % (i+1)
             motor = Layer('ground_layer')
 
             #cmd_list[0] = random.randint(0,motor.vr_end)
@@ -133,7 +133,7 @@ class Acquisition:
         if os.path.exists(self.image_path+self.dir_name) is False:
             os.mkdir(self.image_path+self.dir_name)
         slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
-        FITS.Write(all_data, slp_path, writeMode='a')
+        FITS.Write(all_data.astype(numpy.float32), slp_path, writeMode='a')
         logging.info('Data saved : %s' % slp_path)
 
 if __name__ == '__main__':

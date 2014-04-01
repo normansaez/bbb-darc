@@ -212,7 +212,7 @@ class General_Calibration:
         auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
-        print '\n'
+        print ''
 
         while(numpy.absolute(auxImageMax/self.SHsat-0.6)>0.05):
             # The while condition is set so that the maximum value found in the image
@@ -261,7 +261,7 @@ class General_Calibration:
         s = Star(star_id)
         if(s.valid):
             subapLocation = FITS.Read(self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id))[1]
-            self.c.Set('subapLocation',subapLocation)
+            self.c.Set('subapLocation',subapLocation.astype(numpy.float32))
             self.c.Set("refCentroids",None)
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
             subapLocation[:,0:2] += round(cent[::2].mean())
@@ -270,10 +270,10 @@ class General_Calibration:
             print round(cent[::2].mean())
             print 'Y subap correction: ',
             print round(cent[1::2].mean())
-            FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
+            FITS.Write(subapLocation.astype(numpy.float32),self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
 
             #5- Ref Cent
-            self.c.Set('subapLocation',subapLocation)
+            self.c.Set('subapLocation',subapLocation.astype(numpy.float32))
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
             FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id),writeMode='a')
             self.c.Set('refCentroids',cent.astype(numpy.float32))
