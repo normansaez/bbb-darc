@@ -193,7 +193,28 @@ class General_Calibration:
             for j in numpy.arange(0,large):
                 means[j,i] = numpy.mean(data[j*n:(j+1)*n,i])
         return numpy.amax(numpy.var(means,0))
-            
+
+    def subaps_location(self):
+        #Parameters
+        allsubaps = self.SHCamera.allsubaps                    #Active+Inactive subaps
+        nstars = self.SHCamera.nstars
+        subapLocation = numpy.zeros((allsubaps,6))
+        subapLocation[:,2] += 1
+        subapLocation[:,5] += 1
+        Row = numpy.arange(-5,-5+numpy.sqrt(allsubaps))
+        Xwidth = self.SHCamera.Xwidth
+        Ywidth = self.SHCamera.Ywidth
+        Xgap = self.SHCamera.Xgap
+        Ygap = self.SHCamera.Ygap
+
+        for row in range(1,numpy.sqrt(allsubaps)+1):
+            subapLocation[16*(row-1):16*(row),0] = Ygap*(row-1)-round(Ywidth/2)
+            subapLocation[16*(row-1):16*(row),1] = subapLocation[16*(row-1):16*(row),0] + Ywidth
+            subapLocation[16*(row-1):16*(row),3] = Xgap*Row-round(Xwidth/2)
+            subapLocation[16*(row-1):16*(row),4] = subapLocation[16*(row-1):16*(row),3] + Xwidth
+
+        for i in range(32):
+            print subapLocation[i,:]
 
     def bgImage_fwShutter_calibration(self,star_id):
         '''

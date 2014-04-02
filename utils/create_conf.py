@@ -48,7 +48,12 @@ filehandler_cfg.write("bg_iter = 100\n")
 filehandler_cfg.write("maxshutter = 4095.0\n")
 filehandler_cfg.write("nstars = 53\n")
 filehandler_cfg.write("nsubaps = 208\n")
+filehandler_cfg.write("allsubaps = 256\n")
 filehandler_cfg.write("saturation = 65532.0\n")
+filehandler_cfg.write("Xwidth = 42\n")
+filehandler_cfg.write("Ywidth = 39\n")
+filehandler_cfg.write("Xgap = 37\n")
+filehandler_cfg.write("Ygap = 37\n")
 filehandler_cfg.write("\n")
 
 with open('mapping.csv', 'rb') as csvfile:

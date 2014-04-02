@@ -42,8 +42,8 @@ for row in range(1,16+1):
     subapLocation[16*(row-1):16*(row),3] = Xgap*Row-round(Xwidth/2)
     subapLocation[16*(row-1):16*(row),4] = subapLocation[16*(row-1):16*(row),3] + Xwidth
 
-#for i in range(32):
-#   print subapLocation[i,:]
+for i in range(32):
+   print subapLocation[i,:]
     
 
   

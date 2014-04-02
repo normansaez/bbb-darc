@@ -418,7 +418,13 @@ class Camera(object):
         self._usebrightest = None
         self._maxshutter = None
         self._bg_iter = None
+        self._allsubaps = None
+        self._saturation = None
         self._image_path_dir = None
+        self.Xwidth = None
+        self.Ywidth = None
+        self.Xgap = None
+        self.Ygap = None
 
     @property
     def camera(self):
@@ -551,6 +557,16 @@ class Camera(object):
         self._nsubaps = value
 
     @property
+    def allsubaps(self):
+        self._allsubaps= self.bd.config.getint(self._config_name, 'allsubaps')
+        return self._allsubaps
+
+    @allsubaps.setter
+    def allsubaps(self, value):
+        self.bd.write(self._config_name, 'allsubaps', value)
+        self._allsubaps = value
+
+    @property
     def saturation(self):
         self._saturation = self.bd.config.getfloat(self._config_name, 'saturation')
         return self._saturation
@@ -559,6 +575,46 @@ class Camera(object):
     def saturation(self, value):
         self.bd.write(self._config_name, 'saturation', value)
         self._saturation = value
+
+    @property
+    def Xwidth(self):
+        self._Xwidth = self.bd.config.getint(self._config_name, 'Xwidth')
+        return self._Xwidth
+
+    @Xwidth.setter
+    def Xwidth(self, value):
+        self.bd.write(self._config_name, 'Xwidth', value)
+        self._Xwidth = value
+
+    @property
+    def Ywidth(self):
+        self._Ywidth = self.bd.config.getint(self._config_name, 'Ywidth')
+        return self._Ywidth
+
+    @Ywidth.setter
+    def Ywidth(self, value):
+        self.bd.write(self._config_name, 'Ywidth', value)
+        self._Ywidth = value
+
+    @property
+    def Xgap(self):
+        self._Xwidth = self.bd.config.getint(self._config_name, 'Xgap')
+        return self._Xgap
+
+    @Xgap.setter
+    def Xgap(self, value):
+        self.bd.write(self._config_name, 'Xgap', value)
+        self._Xgap = value
+
+    @property
+    def Ygap(self):
+        self._Ygap= self.bd.config.getint(self._config_name, 'Ygap')
+        return self._Ygap
+
+    @Ygap.setter
+    def Ygap(self, value):
+        self.bd.write(self._config_name, 'Ygap', value)
+        self._Ygap = value
 
     @property
     def image_path_dir(self):
