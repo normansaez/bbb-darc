@@ -1,5 +1,10 @@
 #include "c_driver.h"
 
+void flush_all(){
+    for (int i=1;i<=53;i++)
+        printf("%i\n",i);
+}
+
 int move_motor(int steps, char *pin_step){
     //Define names
     char *filename_dir;

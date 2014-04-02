@@ -2,9 +2,9 @@
 #include "c_driver.h"
 
 static char py_move_motor_doc[] = "Moves motor";
-static PyObject * 
+static char py_flush_all_doc[] = "Flush all";
 
-py_move_motor(PyObject *self, PyObject *args){
+static PyObject *py_move_motor(PyObject *self, PyObject *args){
     int steps;
     char *pin_step;
     char *tmp;
@@ -19,10 +19,18 @@ py_move_motor(PyObject *self, PyObject *args){
     return ret;
 }
 
+static PyObject *py_flush_all(PyObject *self, PyObject *args){
+    if ( !PyArg_ParseTuple(args,"")) {
+        return NULL;
+    }
+    flush_all();
+    return Py_None;
+}
 
 
 static PyMethodDef c_drivermethods[] = {
-    {"move_motor",py_move_motor, METH_VARARGS|METH_KEYWORDS,py_move_motor_doc},
+    {"move_motor",py_move_motor, METH_VARARGS,py_move_motor_doc},
+    {"flush_all",py_flush_all, METH_VARARGS, py_flush_all_doc},
     {NULL,NULL,0,NULL}
 };
 
