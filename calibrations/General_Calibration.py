@@ -201,20 +201,28 @@ class General_Calibration:
         subapLocation = numpy.zeros((allsubaps,6))
         subapLocation[:,2] += 1
         subapLocation[:,5] += 1
-        Row = numpy.arange(-5,-5+numpy.sqrt(allsubaps))
+
         Xwidth = self.SHCamera.Xwidth
         Ywidth = self.SHCamera.Ywidth
         Xgap = self.SHCamera.Xgap
         Ygap = self.SHCamera.Ygap
 
+        # Checking for parity
+        if(numpy.sqrt(allsubaps)%2):
+            Row = numpy.arange(-numpy.ceil(numpy.sqrt(allsubaps)/2),round(numpy.sqrt(allsubaps)/2))*Xgap -round(Xwidth/2)
+        else:
+            Row = numpy.arange(-numpy.sqrt(allsubaps)/2,numpy.sqrt(allsubaps)/2)*Xgap + round(Xgap/2) - round(Xwidth/2)
+
         for row in range(1,numpy.sqrt(allsubaps)+1):
-            subapLocation[16*(row-1):16*(row),0] = Ygap*(row-1)-round(Ywidth/2)
+            subapLocation[16*(row-1):16*(row),0] = Ygap*(row-1)-round(Ygap/2)
             subapLocation[16*(row-1):16*(row),1] = subapLocation[16*(row-1):16*(row),0] + Ywidth
-            subapLocation[16*(row-1):16*(row),3] = Xgap*Row-round(Xwidth/2)
+            subapLocation[16*(row-1):16*(row),3] = Row
             subapLocation[16*(row-1):16*(row),4] = subapLocation[16*(row-1):16*(row),3] + Xwidth
 
         for i in range(32):
             print subapLocation[i,:]
+        
+        return subapLocation
 
     def bgImage_fwShutter_calibration(self,star_id):
         '''
@@ -234,19 +242,21 @@ class General_Calibration:
         self.bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
         print ''
+        relativemax = 0.7
+        threshold = 0.05
 
-        while(numpy.absolute(auxImageMax/self.SHsat-0.6)>0.05):
+        while(numpy.absolute(auxImageMax/self.SHsat-relativemax)>threshold):
             # The while condition is set so that the maximum value found in the image
             # is around 60% of the saturation value
             print "shutter: ",
             print shutter
             print 'auxImageMax: ',
             print str(100*auxImageMax/self.SHsat)+'%'
-            shutter = shutter*(self.SHsat*float(0.6))/auxImageMax
+            shutter = shutter*(self.SHsat*float(relativemax))/auxImageMax
             if(shutter>=self.maxShutter):
                 # Protection
                 shutter = self.maxShutter
-                auxImageMax = self.SHsat*0.6
+                auxImageMax = self.SHsat*relativemax
                 self.c.Set('fwShutter',int(shutter))
             else:
                 self.c.Set('bgImage',None)
