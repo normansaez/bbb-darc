@@ -415,16 +415,18 @@ class Camera(object):
         self._subap_location_path = None
         self._rawdata_path = None
         self._refcent_path = None
+        self._subapflag = None
         self._usebrightest = None
         self._maxshutter = None
         self._bg_iter = None
         self._allsubaps = None
         self._saturation = None
         self._image_path_dir = None
-        self.Xwidth = None
-        self.Ywidth = None
-        self.Xgap = None
-        self.Ygap = None
+        self._xwidth = None
+        self._ywidth = None
+        self._xgap = None
+        self._ygap = None
+        self._fwhm = None
 
     @property
     def camera(self):
@@ -577,44 +579,64 @@ class Camera(object):
         self._saturation = value
 
     @property
-    def Xwidth(self):
-        self._Xwidth = self.bd.config.getint(self._config_name, 'Xwidth')
-        return self._Xwidth
+    def xwidth(self):
+        self._xwidth = self.bd.config.getint(self._config_name, 'xwidth')
+        return self._xwidth
 
-    @Xwidth.setter
-    def Xwidth(self, value):
-        self.bd.write(self._config_name, 'Xwidth', value)
-        self._Xwidth = value
-
-    @property
-    def Ywidth(self):
-        self._Ywidth = self.bd.config.getint(self._config_name, 'Ywidth')
-        return self._Ywidth
-
-    @Ywidth.setter
-    def Ywidth(self, value):
-        self.bd.write(self._config_name, 'Ywidth', value)
-        self._Ywidth = value
+    @xwidth.setter
+    def xwidth(self, value):
+        self.bd.write(self._config_name, 'xwidth', value)
+        self._xwidth = value
 
     @property
-    def Xgap(self):
-        self._Xwidth = self.bd.config.getint(self._config_name, 'Xgap')
-        return self._Xgap
+    def ywidth(self):
+        self._ywidth = self.bd.config.getint(self._config_name, 'ywidth')
+        return self._ywidth
 
-    @Xgap.setter
-    def Xgap(self, value):
-        self.bd.write(self._config_name, 'Xgap', value)
-        self._Xgap = value
+    @ywidth.setter
+    def ywidth(self, value):
+        self.bd.write(self._config_name, 'ywidth', value)
+        self._ywidth = value
 
     @property
-    def Ygap(self):
-        self._Ygap= self.bd.config.getint(self._config_name, 'Ygap')
-        return self._Ygap
+    def xgap(self):
+        self._xgap = self.bd.config.getint(self._config_name, 'xgap')
+        return self._xgap
 
-    @Ygap.setter
-    def Ygap(self, value):
-        self.bd.write(self._config_name, 'Ygap', value)
-        self._Ygap = value
+    @xgap.setter
+    def xgap(self, value):
+        self.bd.write(self._config_name, 'xgap', value)
+        self._xgap = value
+
+    @property
+    def ygap(self):
+        self._ygap= self.bd.config.getint(self._config_name, 'ygap')
+        return self._ygap
+
+    @ygap.setter
+    def ygap(self, value):
+        self.bd.write(self._config_name, 'ygap', value)
+        self._ygap = value
+
+    @property
+    def fwhm(self):
+        self._fwhm= self.bd.config.getfloat(self._config_name, 'fwhm')
+        return self._fwhm
+
+    @fwhm.setter
+    def fwhm(self, value):
+        self.bd.write(self._config_name, 'fwhm', value)
+        self._fwhm = value
+
+    @property
+    def subapflag(self):
+        self._subapflag= self.bd.config.get(self._config_name, 'subapflag')
+        return self._subapflag
+
+    @subapflag.setter
+    def subapflag(self, value):
+        self.bd.write(self._config_name, 'subapflag', value)
+        self._subapflag = value
 
     @property
     def image_path_dir(self):

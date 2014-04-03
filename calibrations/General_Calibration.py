@@ -4,7 +4,7 @@ and reference centroids.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: March 20, 2014
+Last update: April the 3rd, 2014
 """
 
 #!/usr/bin/env python
@@ -194,36 +194,6 @@ class General_Calibration:
                 means[j,i] = numpy.mean(data[j*n:(j+1)*n,i])
         return numpy.amax(numpy.var(means,0))
 
-    def subaps_location(self):
-        #Parameters
-        allsubaps = self.SHCamera.allsubaps                    #Active+Inactive subaps
-        nstars = self.SHCamera.nstars
-        subapLocation = numpy.zeros((allsubaps,6))
-        subapLocation[:,2] += 1
-        subapLocation[:,5] += 1
-
-        Xwidth = self.SHCamera.Xwidth
-        Ywidth = self.SHCamera.Ywidth
-        Xgap = self.SHCamera.Xgap
-        Ygap = self.SHCamera.Ygap
-
-        # Checking for parity
-        if(numpy.sqrt(allsubaps)%2):
-            Row = numpy.arange(-numpy.ceil(numpy.sqrt(allsubaps)/2),round(numpy.sqrt(allsubaps)/2))*Xgap -round(Xwidth/2)
-        else:
-            Row = numpy.arange(-numpy.sqrt(allsubaps)/2,numpy.sqrt(allsubaps)/2)*Xgap + round(Xgap/2) - round(Xwidth/2)
-
-        for row in range(1,numpy.sqrt(allsubaps)+1):
-            subapLocation[16*(row-1):16*(row),0] = Ygap*(row-1)-round(Ygap/2)
-            subapLocation[16*(row-1):16*(row),1] = subapLocation[16*(row-1):16*(row),0] + Ywidth
-            subapLocation[16*(row-1):16*(row),3] = Row
-            subapLocation[16*(row-1):16*(row),4] = subapLocation[16*(row-1):16*(row),3] + Xwidth
-
-        for i in range(32):
-            print subapLocation[i,:]
-        
-        return subapLocation
-
     def bgImage_fwShutter_calibration(self,star_id):
         '''
         Determines, sets and save the bgImage for star_id. fwShutter is
@@ -277,7 +247,59 @@ class General_Calibration:
         self.c.Set('bgImage',bgImage)
         
         #Saving values found
-        FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a') #  From config file
+        FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
+
+    def subaps_location(self):
+        #Parameters
+        allsubaps = self.SHCamera.allsubaps                    #Active+Inactive subaps
+        side = int(numpy.sqrt(allsubaps))
+        nstars = self.SHCamera.nstars
+        subapLocation = numpy.zeros((allsubaps,6))
+        subapLocation[:,2] += 1
+        subapLocation[:,5] += 1
+
+        Xwidth = self.SHCamera.xwidth
+        Ywidth = self.SHCamera.ywidth
+        Xgap = self.SHCamera.xgap
+        Ygap = self.SHCamera.ygap
+
+        # Checking for parity
+        xRow = numpy.array([])
+        if(side%2):
+            xRow = numpy.arange(-numpy.ceil(float(side)/2),round(float(side)/2))*Xgap -round(Xwidth/2)
+        else:
+            xRow = numpy.arange(-float(side)/2,float(side)/2)*Xgap + round(Xgap/2) -round(Xwidth/2)
+
+        yRow = numpy.array([])
+        if(side%2):
+            yRow = numpy.arange(-numpy.ceil(float(side)/2),round(float(side)/2))*Ygap -round(Ywidth/2)
+        else:
+            yRow = numpy.arange(-float(side)/2,float(side)/2)*Ygap + round(Ygap/2) -round(Ywidth/2)
+
+        for row in range(1,int(side+1)):
+            subapLocation[side*(row-1):side*(row),0] = yRow[row-1]
+            subapLocation[side*(row-1):side*(row),1] = subapLocation[side*(row-1):side*(row),0] + Ywidth
+            subapLocation[side*(row-1):side*(row),3] = xRow
+            subapLocation[side*(row-1):side*(row),4] = subapLocation[side*(row-1):side*(row),3] + Xwidth
+
+        majorpattern = numpy.zeros((subapLocation[0,0]+subapLocation[-1,1]+1,subapLocation[0,3]+subapLocation[-1,4]+1))
+        minorpattern = numpy.zeros((Ywidth,Xwidth))
+        centx = float(Xwidth)/2 - 0.5
+        centy = float(Ywidth)/2 - 0.5
+        fwhm = self.SHCamera.fwhm
+        subapLocAux = subapLocation
+        subapLocAux[:,0:2] -= subapLocation[0,0]
+        subapLocAux[:,3:5] -= subapLocation[0,3]
+        
+        for y in range(0,Ywidth):
+            for x in range(0,Xwidth):
+                minorpattern[y,x] = numpy.exp(-(pow(x-centx,2)+pow(y-centy,2))/(2*pow(fwhm/2.35482,2)))
+        FITS.Write(minorpattern.astype(numpy.float32),'minorPattern.fits',writeMode='a')
+        
+        #for i in range(32):
+         #   print subapLocAux[i,:]
+        
+        return subapLocAux
     
     def subap_calibration(self,star_id):
         '''
