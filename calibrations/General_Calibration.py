@@ -249,7 +249,7 @@ class General_Calibration:
         #Saving values found
         FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
 
-    def subaps_location(self):
+    def subaps_location(self,star_id):
         #Parameters
         allsubaps = self.SHCamera.allsubaps                    #Active+Inactive subaps
         side = int(numpy.sqrt(allsubaps))
@@ -282,24 +282,36 @@ class General_Calibration:
             subapLocation[side*(row-1):side*(row),3] = xRow
             subapLocation[side*(row-1):side*(row),4] = subapLocation[side*(row-1):side*(row),3] + Xwidth
 
-        majorpattern = numpy.zeros((subapLocation[0,0]+subapLocation[-1,1]+1,subapLocation[0,3]+subapLocation[-1,4]+1))
-        minorpattern = numpy.zeros((Ywidth,Xwidth))
-        centx = float(Xwidth)/2 - 0.5
-        centy = float(Ywidth)/2 - 0.5
+        majorpattern = numpy.zeros((-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
+        minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
+        centx = float(Xwidth+1)/2 - 0.5
+        centy = float(Ywidth+1)/2 - 0.5
         fwhm = self.SHCamera.fwhm
         subapLocAux = subapLocation
         subapLocAux[:,0:2] -= subapLocation[0,0]
         subapLocAux[:,3:5] -= subapLocation[0,3]
+        subapflag = FITS.Read(self.SHCamera.subapflag)[1]
+        subapflag = subapflag.ravel()
         
         for y in range(0,Ywidth):
             for x in range(0,Xwidth):
                 minorpattern[y,x] = numpy.exp(-(pow(x-centx,2)+pow(y-centy,2))/(2*pow(fwhm/2.35482,2)))
-        FITS.Write(minorpattern.astype(numpy.float32),'minorPattern.fits',writeMode='a')
         
+        tracker = 0
+        print subapflag
+        for subap in subapLocAux:
+            if(int(subapflag[tracker])):
+                majorpattern[subap[0]:subap[1]+1,subap[3]:subap[4]+1] += minorpattern
+            tracker += 1
+        
+        self.bbbc.star_on(star_id)
+        image = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+
+        FITS.Write(majorpattern.astype(numpy.float32),'/home/dani/majorPattern.fits',writeMode='a')
         #for i in range(32):
          #   print subapLocAux[i,:]
         
-        return subapLocAux
+        return subapflag
     
     def subap_calibration(self,star_id):
         '''
