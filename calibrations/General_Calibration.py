@@ -47,6 +47,8 @@ class General_Calibration:
         self.SHsat = float(self.SHCamera.saturation)                          # SH saturation value
         self.cameraName = self.SHCamera.camera
         self.shutter = self.maxShutter
+        self.majorpattern = None
+        self.minorpattern = None
 
         #Auxiliary arrays & variables
         self.cent = numpy.zeros((self.niter,self.nsubaps))
@@ -291,44 +293,62 @@ class General_Calibration:
             subapLocation[side*(row-1):side*(row),3] = xRow
             subapLocation[side*(row-1):side*(row),4] = subapLocation[side*(row-1):side*(row),3] + Xwidth
 
-        majorpattern = numpy.zeros((-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
-        patternshape = majorpattern.shape
-        minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
-        centx = float(Xwidth+1)/2 - 0.5
-        centy = float(Ywidth+1)/2 - 0.5
-        fwhm = self.SHCamera.fwhm
-        subapLocAux = subapLocation
-        subapLocAux[:,0:2] -= subapLocation[0,0]
-        subapLocAux[:,3:5] -= subapLocation[0,3]
-        subapflag = FITS.Read(self.SHCamera.subapflag)[1]
-        subapflag = subapflag.ravel()
-        
-        for y in range(0,Ywidth):
-            for x in range(0,Xwidth):
-                minorpattern[y,x] = numpy.exp(-(pow(x-centx,2)+pow(y-centy,2))/(2*pow(fwhm/2.35482,2)))
-        
-        tracker = 0
-        for subap in subapLocAux:
-            if(int(subapflag[tracker])):
-                majorpattern[subap[0]:subap[1]+1,subap[3]:subap[4]+1] += minorpattern
-            tracker += 1
-        
+        if(self.majorPattern==None):
+            self.majorpattern = numpy.zeros((-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
+            minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
+            centx = float(Xwidth+1)/2 - 0.5
+            centy = float(Ywidth+1)/2 - 0.5
+            fwhm = self.SHCamera.fwhm
+            subapLocAux = subapLocation
+            subapLocAux[:,0:2] -= subapLocation[0,0]
+            subapLocAux[:,3:5] -= subapLocation[0,3]
+            subapflag = FITS.Read(self.SHCamera.subapflag)[1]
+            subapflag = subapflag.ravel()
+            
+            for y in range(0,Ywidth):
+                for x in range(0,Xwidth):
+                    minorpattern[y,x] = numpy.exp(-(pow(x-centx,2)+pow(y-centy,2))/(2*pow(fwhm/2.35482,2)))
+                    
+            tracker = 0
+            for subap in subapLocAux:
+                if(int(subapflag[tracker])):
+                    self.majorpattern[subap[0]:subap[1]+1,subap[3]:subap[4]+1] += minorpattern
+                    tracker += 1
+
+        patternshape = self.majorpattern.shape
         self.bbbc.star_on(star_id)
         s = Star(star_id)
         image = self.c.SumData("rtcPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
         image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
-        print 'Imagen dimensions: ',
-        print image.shape
         correlation = scipy.signal.fftconvolve(image,majorpattern,mode='same')
         argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)
         argmx = (argmx[0] - numpy.floor(patternshape[0]/2),argmx[1] - numpy.floor(patternshape[1]/2))
         subapLocation[:,0:2] += argmx[0]
         subapLocation[:,3:5] += argmx[1]
 
+
+        #Saving values found and removing previous values
+        files = os.listdir(self.SHCamera.subaplocation_path)
+        files = [s for s in files if 'led_%d.fits'%(star_id) in s]
+        if(files!=[]):
+            file_name = files[0]
+            os.remove(self.SHCamera.bg_path + file_name)
+        FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
+
         FITS.Write(image,self.SHCamera.subaplocation_path + 'image.fits',writeMode='a')
         FITS.Write(correlation,self.SHCamera.subaplocation_path + 'correlation.fits',writeMode='a')
-        FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
+
         self.bbbc.star_off(star_id)
+
+        subapflag = FITS.Read(self.SHCamera.subapflag)[1]
+        subapflag = subapflag.ravel()
+        v = subapflag.argmax()
+        print '1st subap centre for star %d: '%(star_id)
+        print ((subaLocation[v,3]+subaLocation[v,4])/2,(subaLocation[v,0]+subaLocation[v,1])/2)
+
+        #FITS.Write(image,self.SHCamera.subaplocation_path + 'image.fits',writeMode='a')
+        #FITS.Write(correlation,self.SHCamera.subaplocation_path + 'correlation.fits',writeMode='a')
+
         #FITS.Write(majorpattern.astype(numpy.float32),'/home/dani/majorPattern.fits',writeMode='a')
         #for i in range(32):
          #   print subapLocAux[i,:]
@@ -357,11 +377,27 @@ class General_Calibration:
             print round(cent[::2].mean())
             print 'Y subap correction: ',
             print round(cent[1::2].mean())
+
+            #Saving values found and removing previous values
+            files = os.listdir(self.SHCamera.subaplocation_path)
+            files = [s for s in files if 'led_%d.fits'%(star_id) in s]
+            if(files!=[]):
+                file_name = files[0]
+                os.remove(self.SHCamera.refcent_path + file_name)
+
             FITS.Write(subapLocation.astype(numpy.float32),self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
 
             #5- Ref Cent
             self.c.Set('subapLocation',subapLocation.astype(numpy.float32))
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+
+            #Saving values found and removing previous values
+            files = os.listdir(self.SHCamera.refcent_path)
+            files = [s for s in files if 'led_%d.fits'%(star_id) in s]
+            if(files!=[]):
+                file_name = files[0]
+                os.remove(self.SHCamera.refcent_path + file_name)
+
             FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id),writeMode='a')
             self.c.Set('refCentroids',cent.astype(numpy.float32))
         else:
@@ -382,10 +418,24 @@ class General_Calibration:
             self.bgImage_fwShutter_calibration(star_id)
             self.subap_calibration(star_id)
 
+    def first_calibration(self):
+        '''
+        Calibrates useBrightest, backgrounds, shutter times,
+        subap locations and reference centroids for all stars
+        '''
+        #Main loop. Calibrates for each star
+        #First we flush
+        self.flushAll()
+        self.Set_useBrightest()
+        for star_id in range(1,self.nstars+1):
+            print '\nCalibrating star:%3.0f ' %star_id
+            self.bgImage_fwShutter_calibration(star_id)
+            self.pupil_calibration(star_id)
+            self.subap_calibration(star_id)
+
     def flushAll(self):
         self.bbbc.flush_all_leds()
 
-            
             
 if __name__ == '__main__':
     from General_Calibration import General_Calibration
