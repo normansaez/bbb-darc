@@ -4,19 +4,23 @@ and reference centroids.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: April the 3rd, 2014
+Last update: April the 4rd, 2014
 """
 
 #!/usr/bin/env python
 import FITS
 import darc
 import numpy
+import os
+from numpy import unravel_index
 import pylab
 import random
 from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Camera
 from BeagleDarc.Model import Star
 import ConfigParser
+import scipy
+from scipy import signal
 
 class General_Calibration:
     def __init__(self,cameraName):
@@ -246,15 +250,20 @@ class General_Calibration:
         bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
         self.c.Set('bgImage',bgImage)
         
-        #Saving values found
+        #Saving values found and removing previous values
+        files = os.listdir(self.SHCamera.bg_path)
+        files = [s for s in files if 'led_%d_'%(star_id) in s]
+        if(files!=[]):
+            file_name = files[0]
+            os.remove(self.SHCamera.bg_path + file_name)
         FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
 
-    def subaps_location(self,star_id):
+    def pupil_location(self,star_id):
         #Parameters
-        allsubaps = self.SHCamera.allsubaps                    #Active+Inactive subaps
+        allsubaps = self.SHCamera.allsubaps                    # Active+Inactive subaps
         side = int(numpy.sqrt(allsubaps))
         nstars = self.SHCamera.nstars
-        subapLocation = numpy.zeros((allsubaps,6))
+        subapLocation = numpy.zeros((allsubaps,6))             # Centred on (0,0)
         subapLocation[:,2] += 1
         subapLocation[:,5] += 1
 
@@ -283,6 +292,7 @@ class General_Calibration:
             subapLocation[side*(row-1):side*(row),4] = subapLocation[side*(row-1):side*(row),3] + Xwidth
 
         majorpattern = numpy.zeros((-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
+        patternshape = majorpattern.shape
         minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
         centx = float(Xwidth+1)/2 - 0.5
         centy = float(Ywidth+1)/2 - 0.5
@@ -298,20 +308,32 @@ class General_Calibration:
                 minorpattern[y,x] = numpy.exp(-(pow(x-centx,2)+pow(y-centy,2))/(2*pow(fwhm/2.35482,2)))
         
         tracker = 0
-        print subapflag
         for subap in subapLocAux:
             if(int(subapflag[tracker])):
                 majorpattern[subap[0]:subap[1]+1,subap[3]:subap[4]+1] += minorpattern
             tracker += 1
         
         self.bbbc.star_on(star_id)
-        image = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        s = Star(star_id)
+        image = self.c.SumData("rtcPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
+        print 'Imagen dimensions: ',
+        print image.shape
+        correlation = scipy.signal.fftconvolve(image,majorpattern,mode='same')
+        argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)
+        argmx = (argmx[0] - numpy.floor(patternshape[0]/2),argmx[1] - numpy.floor(patternshape[1]/2))
+        subapLocation[:,0:2] += argmx[0]
+        subapLocation[:,3:5] += argmx[1]
 
-        FITS.Write(majorpattern.astype(numpy.float32),'/home/dani/majorPattern.fits',writeMode='a')
+        FITS.Write(image,self.SHCamera.subaplocation_path + 'image.fits',writeMode='a')
+        FITS.Write(correlation,self.SHCamera.subaplocation_path + 'correlation.fits',writeMode='a')
+        FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
+        self.bbbc.star_off(star_id)
+        #FITS.Write(majorpattern.astype(numpy.float32),'/home/dani/majorPattern.fits',writeMode='a')
         #for i in range(32):
          #   print subapLocAux[i,:]
         
-        return subapflag
+        return subapLocation
     
     def subap_calibration(self,star_id):
         '''
@@ -365,4 +387,8 @@ class General_Calibration:
 
             
             
-    
+if __name__ == '__main__':
+    from General_Calibration import General_Calibration
+    cali = General_Calibration('SH')
+    array = cali.subaps_location(1)
+    print array
