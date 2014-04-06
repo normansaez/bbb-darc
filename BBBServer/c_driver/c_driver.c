@@ -1,7 +1,8 @@
 #include "c_driver.h"
 
 void flush_all(){
-    for (int i=1;i<=53;i++)
+    int i=1;
+    for (i=1;i<=53;i++)
         printf("%i\n",i);
 }
 
