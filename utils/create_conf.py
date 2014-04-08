@@ -64,10 +64,10 @@ with open('mapping.csv', 'rb') as csvfile:
         if row[1].__contains__('m') and not row[1].__contains__('name'):
             if row[1] == 'm1':
                 filehandler_cfg.write("[vertical_altitude_layer]\n")
-                filehandler_cfg.write("name = ground_layer\n")
+                filehandler_cfg.write("name = vertical_altitude_layer\n")
             if row[1] == 'm2':
                 filehandler_cfg.write("[ground_layer]\n")
-                filehandler_cfg.write("name = vertical_altitude_layer\n")
+                filehandler_cfg.write("name = ground_layer\n")
             if row[1] == 'm3':
                 filehandler_cfg.write("[horizontal_altitude_layer]\n")
                 filehandler_cfg.write("name = horizontal_altitude_layer\n")

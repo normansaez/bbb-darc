@@ -169,5 +169,5 @@ if __name__ == '__main__':
     a = Acquisition()
     star_list = [1,2,3,4]
     prefix = 'slopes'
-    iterations = 5
+    iterations = 2
     a.take_all_data(iterations,star_list,prefix)
