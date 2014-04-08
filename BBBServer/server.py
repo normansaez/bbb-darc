@@ -146,8 +146,8 @@ class Server_i (BBBServer__POA.Server):
 
         self.turn_on_gpio(motor.pin_dir)
         self.turn_on_gpio(motor.pin_sleep)
-        import c_drive
-        c_drive.motor_move(steps, motor.pin_step)
+        import c_driver
+        c_driver.move_motor(steps, motor.pin_step)
         #for s in range(0, steps):
         #    self.turn_off_gpio(motor.pin_step)
         #    self.turn_on_gpio(motor.pin_step)
