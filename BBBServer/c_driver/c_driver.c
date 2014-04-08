@@ -15,12 +15,12 @@ int move_motor(int steps, char *pin_step){
     FILE *fh_export, *fh_value, *fh_direction;
     int count=0;
 
-    if (strcmp(pin_step,"P8_13") == 0 )
-        gpio_num = 23;
-    if (strcmp(pin_step,"P9_02") == 0)
-        gpio_num = 33;
-    if (strcmp(pin_step,"P8_45") == 0)
-        gpio_num = 43;
+    if (strcmp(pin_step,"P8_27") == 0 )
+        gpio_num = 86;
+    if (strcmp(pin_step,"P8_23") == 0)
+        gpio_num = 36;
+    if (strcmp(pin_step,"P9_25") == 0)
+        gpio_num = 117;
     if (gpio_num == 0)
         return -1;
 
