@@ -13,6 +13,7 @@ import ConfigParser
 import numpy
 import darc
 import FITS
+import matplotlib.pyplot as plt
 
 from optparse import OptionParser
 from subprocess import Popen, PIPE
@@ -111,17 +112,7 @@ class Acquisition:
         
         for i in range(0,iterations):
             print '\nTaking iteration #: %d' % (i+1)
-            motor = Layer('horizontal_altitude_layer')
-
-            #cmd_list[0] = random.randint(0,motor.vr_end)
-            cmd_list[0] = random.randint(0,10)
-
-            motor = Layer('vertical_altitude_layer')
-
-            #cmd_list[1] = random.randint(0,motor.vr_end)
-            cmd_list[1] = random.randint(0,10)
-            
-            oli = self.take_data(Star_list, cmd_list[i,:])
+            oli = self.take_data(Star_list, cmd_list[i])
             all_data[i,:] = oli
 
         slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
@@ -130,6 +121,39 @@ class Acquisition:
         slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
         FITS.Write(all_data.astype(numpy.float32), slp_path, writeMode='a')
         logging.info('Data saved : %s' % slp_path)
+
+    def cmdlist_gen(self,iterations):
+        # Motor 0: horizontal
+        motorh = Layer('horizontal_altitude_layer')
+        # Motor 1: vertical
+        motorv = Layer('vertical_altitude_layer')
+        cmd_temp = []
+        cmd_list = []
+        cur_pos = [0,0]
+        mindis = motorh.vr_end + motorv.vr_end
+        minarg = 0
+        cmdx = []
+        cmdy = []
+        
+        for cmd in range(0,iterations):
+            cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),random.randint(0,motorv.vr_end)]]
+
+        for it0 in range(0,iterations):
+            for it1 in range(0,len(cmd_temp)):
+                if(mindis > (abs(cmd_temp[it1][0]-cur_pos[0])*0.5 + (cmd_temp[it1][1]-cur_pos[1]))):
+                    mindis = abs(cmd_temp[it1][0]-cur_pos[0])*0.5 + (cmd_temp[it1][1]-cur_pos[1])
+                    minarg = it1
+            
+            cur_pos = cmd_temp.pop(minarg)
+            cmd_list = cmd_list + [[cur_pos]]
+            cmdx = cmdx + [cur_pos[0]]
+            cmdy = cmdy + [cur_pos[1]]
+            minarg = 0
+            mindis = motorh.vr_end + motorv.vr_end
+            
+        plt.plot(cmdx,cmdy,'k')
+        plt.show()
+        return cmd_list
 
 if __name__ == '__main__':
     usage = '''

@@ -20,6 +20,10 @@ In configurations.cfg,
 
 pupil_location errors
 ======================
+Can be corrected by adding some extra pupils to the
+left and down the majorPattern used to locate
+the pupil's position. This is due to a small optical
+misalignment which produces some extra subaps
 Star	Error [Xsubaps,Ysubaps]
 4	(-1,0)
 5	(-1,0)
