@@ -35,38 +35,39 @@ int move_motor(int steps, char *pin_step){
 
     //define pin variables
     int logic_status = 1;
-    //char* pin_direction = "out";
+    char* pin_direction = "out";
     fh_export = fopen("/sys/class/gpio/export", "w");
     if(fh_export == NULL) {printf("Unable to open export.\n");}
-    //fseek(fh_export, 0, SEEK_SET);
-    //fprintf(fh_export, "%d", gpio_num);
-    //fflush(fh_export);
+    fseek(fh_export, 0, SEEK_SET);
+    fprintf(fh_export, "%d", gpio_num);
+    fflush(fh_export);
 
     fh_direction = fopen(filename_dir, "w");
     if(fh_direction == NULL) {printf("Unable to open %s\n",filename_dir);}
-    //fseek(fh_direction, 0, SEEK_SET);
-    //fprintf(fh_direction, "%s", pin_direction);
-    //fflush(fh_direction);
+    fseek(fh_direction, 0, SEEK_SET);
+    fprintf(fh_direction, "%s", pin_direction);
+    fflush(fh_direction);
 
     fh_value = fopen(filename_val, "w");
     if(fh_value == NULL) {printf("Unable to open %s.\n",filename_val);}
-    //fseek(fh_value, 0, SEEK_SET);
-    //logic_status = 1;
-    //fprintf(fh_value, "%d", logic_status);
-    //fflush(fh_value);
+    fseek(fh_value, 0, SEEK_SET);
+    logic_status = 1;
+    fprintf(fh_value, "%d", logic_status);
+    fflush(fh_value);
 
     while(count < steps)
     {
-        //delay_us(5000);
-        delay_us(5);
+        delay_us(1000);
+//        delay_us(5);
         logic_status = logic_status?0:1;
-        //fprintf(fh_value, "%d", logic_status);
-        //fflush(fh_value);
+        //delay_us(5000);
+        fprintf(fh_value, "%d", logic_status);
+        fflush(fh_value);
         count += 1;
     }
-    //fclose(fh_export);
-    //fclose(fh_direction);
-    //fclose(fh_value);
+    fclose(fh_export);
+    fclose(fh_direction);
+    fclose(fh_value);
     return count;
 }
 
