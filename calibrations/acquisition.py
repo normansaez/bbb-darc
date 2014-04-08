@@ -21,7 +21,7 @@ from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Layer
 from BeagleDarc.Model import Star
 from BeagleDarc.Model import Camera
-from General_Calibration import General_Calibration
+from General_Calibration import Calibration
 
 class Acquisition:
     def __init__(self):
@@ -101,32 +101,27 @@ class Acquisition:
 
     def take_all_data(self,iterations,star_list,prefix):
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        cali = General_Calibration(self.SHCamera.camera)
+        cali = Calibration(self.SHCamera.camera)
         cali.routine_calibration()
         all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
         Star_list = []
-        cmd_list = [0,0,0]
+        cmd_list = cmdlist_gen(iterations)
         for s in star_list:
             Star_list.append(Star(s))
         
         for i in range(0,iterations):
             print '\nTaking iteration #: %d' % (i+1)
-            motor = Layer('ground_layer')
+            motor = Layer('horizontal_altitude_layer')
 
             #cmd_list[0] = random.randint(0,motor.vr_end)
             cmd_list[0] = random.randint(0,10)
 
-            motor = Layer('horizontal_altitude_layer')
+            motor = Layer('vertical_altitude_layer')
 
             #cmd_list[1] = random.randint(0,motor.vr_end)
             cmd_list[1] = random.randint(0,10)
-
-            motor = Layer('vertical_altitude_layer')
-
-            #cmd_list[2] = random.randint(0,motor.vr_end)
-            cmd_list[2] = random.randint(0,10)
             
-            oli = self.take_data(Star_list, cmd_list)
+            oli = self.take_data(Star_list, cmd_list[i,:])
             all_data[i,:] = oli
 
         slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time

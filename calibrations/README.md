@@ -1,6 +1,5 @@
 In configurations.cfg,
 ======================
-
 * camera:	camera's prefix to be given to darc.Control() and others
 * pxlx: camera's number of pixles in the x-axis
 * pxly: camera's number of pixles in the y-axis
@@ -17,4 +16,30 @@ In configurations.cfg,
 * ywidth: Width in pixels, in the Y-axis of a sub-aperture
 * xgap: Distance in pixels, in the X-axis between subaps
 * ygap: Distance in pixels, in the Y-axis between subaps
-* fwhm: Estimated FWHM of a central spot 
+* fwhm: Estimated FWHM of a central spot
+
+pupil_location errors
+======================
+Star	Error [Xsubaps,Ysubaps]
+4	(-1,0)
+5	(-1,0)
+6	(0,-2.5)
+10	(-1,0)
+1	(-1,0)
+12	(-1,0)
+13	(-1,0)
+14	(-1,0)
+18	(-1,0)
+19	(-1,0)
+20	(-1,0)
+21	(-1,-1)
+31	(-1,0)
+32	(-1,0)
+33	(-1,0)
+34	(-1,0)
+35	(-1,0)
+36	(-1,0)
+49	(-1,0)
+50	(-1,0)
+51	(-1,0)
+
