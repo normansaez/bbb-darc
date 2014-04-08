@@ -71,19 +71,15 @@ class Acquisition:
                 star_list.append(Star(i))
             
             '''
-            #motor move
-            motor = Layer('ground_layer')
-            self.bbbc.set_position('ground_layer',cmd_list[0], 200)
-            self.bbbc.layer_move('ground_layer')
-
+            print cmd_list
             #motor move
             motor = Layer('horizontal_altitude_layer')
-            self.bbbc.set_position('horizontal_altitude_layer',cmd_list[1], 200)
+            self.bbbc.set_position('horizontal_altitude_layer',cmd_list[0], 200)
             self.bbbc.layer_move('horizontal_altitude_layer')
 
             #motor move
             motor = Layer('vertical_altitude_layer')
-            self.bbbc.set_position('vertical_altitude_layer',cmd_list[2], 200)
+            self.bbbc.set_position('vertical_altitude_layer',cmd_list[1], 200)
             self.bbbc.layer_move('vertical_altitude_layer')
 
             slopes_frame = numpy.array([])
@@ -102,11 +98,11 @@ class Acquisition:
 
     def take_all_data(self,iterations,star_list,prefix):
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        cali = Calibration(self.SHCamera.camera)
-        cali.routine_calibration()
+        #cali = Calibration(self.SHCamera.camera)
+        #cali.routine_calibration()
         all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
         Star_list = []
-        cmd_list = cmdlist_gen(iterations)
+        cmd_list = self.cmdlist_gen(iterations)
         for s in star_list:
             Star_list.append(Star(s))
         
@@ -145,14 +141,14 @@ class Acquisition:
                     minarg = it1
             
             cur_pos = cmd_temp.pop(minarg)
-            cmd_list = cmd_list + [[cur_pos]]
+            cmd_list = cmd_list + [cur_pos]
             cmdx = cmdx + [cur_pos[0]]
             cmdy = cmdy + [cur_pos[1]]
             minarg = 0
             mindis = motorh.vr_end + motorv.vr_end
             
-        plt.plot(cmdx,cmdy,'k')
-        plt.show()
+        #plt.plot(cmdx,cmdy,'k')
+        #plt.show()
         return cmd_list
 
 if __name__ == '__main__':
