@@ -147,13 +147,13 @@ class Server_i (BBBServer__POA.Server):
         self.turn_on_gpio(motor.pin_dir)
         self.turn_on_gpio(motor.pin_sleep)
         import c_driver
-        c_driver.move_motor(steps, motor.pin_step)
+        s = c_driver.move_motor(steps, motor.pin_step)
         #for s in range(0, steps):
         #    self.turn_off_gpio(motor.pin_step)
         #    self.turn_on_gpio(motor.pin_step)
         self.turn_off_gpio(motor.pin_sleep)
         print sys._getframe().f_code.co_name,
-        print ": %s -> %1.2f" % (name, steps)
+        print ": %s -> %1.2f " % (name, s)
 
         motor.cur_pos = cmd_pos
         motor.cmd_pos = cmd_pos
