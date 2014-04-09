@@ -144,7 +144,10 @@ class Server_i (BBBServer__POA.Server):
         motor.direction = direction
         motor.velocity = velocity
 
-        self.turn_on_gpio(motor.pin_dir)
+        if('INIT_POSITION' in direction):
+            self.turn_on_gpio(motor.pin_dir)
+        else:
+            self.turn_off_gpio(motor.pin_dir)
         self.turn_on_gpio(motor.pin_sleep)
         import c_driver
         s = c_driver.move_motor(steps, motor.pin_step)

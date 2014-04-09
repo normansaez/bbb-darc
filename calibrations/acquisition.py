@@ -76,11 +76,9 @@ class Acquisition:
 
             #horizontal motor move
             self.bbbc.set_position('horizontal_altitude_layer',cmd_list[0], 200)
-            self.bbbc.layer_move('horizontal_altitude_layer')
 
             #vertical motor move
             self.bbbc.set_position('vertical_altitude_layer',cmd_list[1], 200)
-            self.bbbc.layer_move('vertical_altitude_layer')
 
             slopes_frame = numpy.array([])
             # led on
