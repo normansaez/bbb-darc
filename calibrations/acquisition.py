@@ -71,14 +71,14 @@ class Acquisition:
                 star_list.append(Star(i))
             
             '''
+            print 'Acquisition position: ',
             print cmd_list
-            #motor move
-            motor = Layer('horizontal_altitude_layer')
+
+            #horizontal motor move
             self.bbbc.set_position('horizontal_altitude_layer',cmd_list[0], 200)
             self.bbbc.layer_move('horizontal_altitude_layer')
 
-            #motor move
-            motor = Layer('vertical_altitude_layer')
+            #vertical motor move
             self.bbbc.set_position('vertical_altitude_layer',cmd_list[1], 200)
             self.bbbc.layer_move('vertical_altitude_layer')
 
