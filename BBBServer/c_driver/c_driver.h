@@ -7,7 +7,7 @@
 
 extern int move_motor(int steps, char *pin_step);
 extern void delay_us(int n_sleep);
-extern void  flush_all();
+extern void  flush_all(void);
 
 #define MAGIC 0x31337
 
