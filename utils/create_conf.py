@@ -78,7 +78,7 @@ with open('mapping.csv', 'rb') as csvfile:
             filehandler_cfg.write("pin_opto2 = %s\n" % row[6])
             filehandler_cfg.write("simulated = False\n")
             filehandler_cfg.write("direction = INIT_POSITION\n")
-            filehandler_cfg.write("posdir = %s\n" % row[7])
+            filehandler_cfg.write("pos_dir = %s\n" % row[7])
             filehandler_cfg.write("velocity = 57\n")
             filehandler_cfg.write("steps = 50000\n")
             filehandler_cfg.write("vr_init = 0\n")

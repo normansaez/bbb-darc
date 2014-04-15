@@ -151,6 +151,11 @@ class Server_i (BBBServer__POA.Server):
             dir_pin = motor.pos_dir
 
         if(dir_pin):
+            print 'pin on'
+        else:
+            print 'pin off'
+
+        if(dir_pin):
             self.turn_on_gpio(motor.pin_dir)
         else:
             self.turn_off_gpio(motor.pin_dir)
