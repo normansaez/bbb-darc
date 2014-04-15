@@ -36,6 +36,7 @@ class Layer(object):
         self._name = None
         self._simulated = None
         self._direction = None
+        self._pos_dir = None
         self._velocity = None
         self._steps = None
         self._vr_init = None
@@ -123,6 +124,16 @@ class Layer(object):
     def direction(self, value):
         self.bd.write(self._config_name, 'direction', value)
         self._direction = value
+
+    @property
+    def pos_dir(self):
+        self._pos_dir = self.bd.config.getint(self._config_name, 'pos_dir')
+        return self._pos_dir
+
+    @pos_dir.setter
+    def pos_dir(self, value):
+        self.bd.write(self._config_name, 'pos_dir', value)
+        self._pos_dir = value
 
     @property
     def velocity(self):

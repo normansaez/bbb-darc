@@ -150,7 +150,7 @@ id,name,D,PWM,LE,VALID,fsx,fsy,Comment
 100,LGS_C_24,NA,NA,NA,,,,
 150,LGS_C_25,P8_6,P8_13,P8_17,,,,
 ,,,,,,,,
-id,name,dir,step,sleep,opto1,,,opto2
-1,m1,P8_28,P8_27,P8_25,P8_41,,,P8_43
-2,m2,P8_26,P8_23,P8_21,P8_40,,,P8_39
-3,m3,P9_23,P9_25,P9_27,P8_30,,,P8_29
+id,name,dir,step,sleep,opto1,opto2,posdir,
+1,m1,P8_28,P8_27,P8_25,P8_41,P8_43,0,
+2,m2,P8_26,P8_23,P8_21,P8_40,P8_39,0,
+3,m3,P9_23,P9_25,P9_27,P8_30,P8_29,0,
