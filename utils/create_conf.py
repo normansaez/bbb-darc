@@ -82,7 +82,7 @@ with open('mapping.csv', 'rb') as csvfile:
             filehandler_cfg.write("velocity = 57\n")
             filehandler_cfg.write("steps = 50000\n")
             filehandler_cfg.write("vr_init = 0\n")
-            filehandler_cfg.write("vr_end = 21000\n")
+            filehandler_cfg.write("vr_end = %s\n" % row[8])
             filehandler_cfg.write("cmd_pos = 0\n")
             filehandler_cfg.write("cur_pos = 0\n")
             filehandler_cfg.write("image_prefix = %s\n" % row[1])
