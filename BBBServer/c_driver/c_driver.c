@@ -57,8 +57,8 @@ int move_motor(int steps, char *pin_step){
     fprintf(fh_value, "%d", logic_status);
     fflush(fh_value);
 
-    if(gpio_num == 117)
-        delay = 5000;
+//if(gpio_num == 117)
+//delay = 5000;
 
     while(count < (2*steps))
     {
