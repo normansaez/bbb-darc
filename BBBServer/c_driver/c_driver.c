@@ -35,9 +35,7 @@ int move_motor(int steps, char *pin_step){
 
     //define pin variables
     int logic_status = 1;
-    int delay = 10000;
-    int acceleration = 10;
-    int final_delay = 1000;
+    int delay = 1000;
     char* pin_direction = "out";
 
     fh_export = fopen("/sys/class/gpio/export", "w");
@@ -60,7 +58,7 @@ int move_motor(int steps, char *pin_step){
     fflush(fh_value);
 
     if(gpio_num == 117)
-        final_delay = 5000;
+        delay = 5000;
 
     while(count < (2*steps))
     {
@@ -68,8 +66,6 @@ int move_motor(int steps, char *pin_step){
         logic_status = logic_status?0:1;
         fprintf(fh_value, "%d", logic_status);
         fflush(fh_value);
-	if(delay > final_delay)
-	  delay -= acceleration;
         count += 1;
     }
     fclose(fh_export);
