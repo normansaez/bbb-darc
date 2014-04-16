@@ -74,6 +74,9 @@ class Acquisition:
             print 'Acquisition position: ',
             print cmd_list
 
+            #Turning on a star to prevent noise
+            self.bbbc.star_on(1)
+
             #horizontal motor move
             self.bbbc.set_position('horizontal_altitude_layer',cmd_list[0], 200)
 
@@ -82,6 +85,7 @@ class Acquisition:
 
             slopes_frame = numpy.array([])
             # led on
+            self.bbbc.star_off(1)
             for star in star_list:
                 star.setup(self.SHCamera)
                 self.bbbc.star_on(int(star.image_prefix))
@@ -96,8 +100,8 @@ class Acquisition:
 
     def take_all_data(self,iterations,star_list,prefix):
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        #cali = Calibration(self.SHCamera.camera)
-        #cali.routine_calibration()
+        cali = Calibration(self.SHCamera.camera)
+        cali.routine_calibration(star_list)
         all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
         Star_list = []
         cmd_list = self.cmdlist_gen(iterations)
@@ -165,7 +169,11 @@ if __name__ == '__main__':
 
 
     a = Acquisition()
-    star_list = [1,2,3,4]
+    star_list = [1,4,17,28]
     prefix = 'slopes'
-    iterations = 2
-    a.take_all_data(iterations,star_list,prefix)
+    #iterations = 1000
+    #numberoffits = 10
+    iterations = 1000
+    numberoffits = 10
+    for nof in range(1,numberoffits+1):
+        a.take_all_data(iterations,star_list,prefix)

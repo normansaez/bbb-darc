@@ -403,7 +403,7 @@ class Calibration:
             print 'No subaps for led_%d'%(star_id)
         self.bbbc.star_off(star_id)
 
-    def routine_calibration(self):
+    def routine_calibration(self,star_list):
         '''
         Calibrates useBrightest, backgrounds, shutter times,
         subap locations and reference centroids for all stars
@@ -412,14 +412,14 @@ class Calibration:
         #First we flush
         self.flushAll()
         self.Set_useBrightest()
-        for star_id in range(1,self.nstars+1):
+        for star_id in star_list:
             estrella = Star(star_id)
             if(estrella.valid):
                 print '\nCalibrating star:%3.0f ' %star_id
                 self.bgImage_fwShutter_calibration(star_id)
                 self.subap_calibration(star_id)
 
-    def first_calibration(self):
+    def first_calibration(self,star_list):
         '''
         Calibrates useBrightest, backgrounds, shutter times,
         subap locations and reference centroids for all stars
@@ -428,7 +428,7 @@ class Calibration:
         #First we flush
         self.flushAll()
         self.Set_useBrightest()
-        for star_id in range(1,self.nstars+1):
+        for star_id in star_list:
             estrella = Star(star_id)
             if(estrella.valid):
                 print '\nCalibrating star:%3.0f ' %star_id
