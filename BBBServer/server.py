@@ -132,6 +132,23 @@ class Server_i (BBBServer__POA.Server):
     def motor_move(self, name, direction, velocity, steps, cur_pos, cmd_pos):
         return self.motor_move_skip_sensor(name, direction, velocity, steps, cur_pos, cmd_pos) 
 
+    def set_to_zero(self, name, direction, velocity, steps, cur_pos, cmd_pos):
+        motor = Layer(name)
+        motor.steps = 0
+        motor.direction = direction
+        motor.velocity = velocity
+        dir_pin = 0
+        motor.cur_pos = 0
+        motor.cmd_pos = 0
+        print "SET ALL TO ZERO"
+        print "name      %s" % motor.name
+        print "direction %s" % motor.direction
+        print "velocity  %d" % motor.velocity
+        print "steps     %d" % motor.steps
+        print "cur_pos   %d" % motor.cur_pos
+        print "cmd_pos   %d" % motor.cmd_pos
+        return 0
+    
     def motor_move_skip_sensor(self, name, direction, velocity, steps, cur_pos, cmd_pos):
         print "name      %s" % name
         print "direction %s" % direction
@@ -163,9 +180,6 @@ class Server_i (BBBServer__POA.Server):
         self.turn_on_gpio(motor.pin_sleep)
         import c_driver
         s = c_driver.move_motor(steps, motor.pin_step)
-        #for s in range(0, steps):
-        #    self.turn_off_gpio(motor.pin_step)
-        #    self.turn_on_gpio(motor.pin_step)
         self.turn_off_gpio(motor.pin_sleep)
         print sys._getframe().f_code.co_name,
         print ": %s -> %1.2f " % (name, s)

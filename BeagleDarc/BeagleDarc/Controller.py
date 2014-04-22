@@ -98,6 +98,17 @@ class Controller:
         layer.cur_pos = layer.cur_pos + steps
         return steps
 
+    def set_to_zero(self, layer_id):
+        layer = Layer(layer_id)
+        steps = self.client.set_to_zero(layer.name, 
+                layer.direction, 
+                layer.velocity, 
+                layer.steps, 
+                layer.cur_pos,
+                layer.cmd_pos)
+        layer.cur_pos = steps
+        return steps
+
     def get_stars_status(self):
         led_status = {}
         key_list = self.client.get_stars_status_keys()
