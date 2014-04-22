@@ -77,16 +77,16 @@ class Server_i (BBBServer__POA.Server):
             self.turn_off_gpio(key)
 
     def turn_on_gpio(self, pin):
-#        GPIO.setup(pin, GPIO.OUT)
-#        GPIO.output(pin,GPIO.HIGH)
-        c_driver.handle_gpio(1, pin)
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin,GPIO.HIGH)
+#        c_driver.handle_gpio(1, pin)
 #        print sys._getframe().f_code.co_name,
 #        print(' '+pin)
 
     def turn_off_gpio(self, pin):
-#        GPIO.setup(pin, GPIO.OUT)
-#        GPIO.output(pin,GPIO.LOW)
-        c_driver.handle_gpio(0, pin)
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin,GPIO.LOW)
+#        c_driver.handle_gpio(0, pin)
 #        print sys._getframe().f_code.co_name,
 #        print(' '+pin)
 
