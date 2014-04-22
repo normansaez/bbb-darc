@@ -153,6 +153,10 @@ class Acquisition:
         #plt.show()
         return cmd_list
 
+    def first_calibration(self,star_list):
+        cali = Calibration(self.SHCamera.camera)
+        cali.first_calibration(star_list)
+
 if __name__ == '__main__':
     usage = '''
             Type -h, --help for help.
@@ -173,7 +177,8 @@ if __name__ == '__main__':
     prefix = 'slopes'
     #iterations = 1000
     #numberoffits = 10
-    iterations = 1000
-    numberoffits = 10
+    iterations = 500
+    numberoffits = 1
+    #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
         a.take_all_data(iterations,star_list,prefix)

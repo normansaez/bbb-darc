@@ -405,8 +405,8 @@ class Calibration:
 
     def routine_calibration(self,star_list):
         '''
-        Calibrates useBrightest, backgrounds, shutter times,
-        subap locations and reference centroids for all stars
+        Calibrates useBrightest, backgrounds and shutter times
+        for given stars
         '''
         #Main loop. Calibrates for each star
         #First we flush
@@ -417,12 +417,11 @@ class Calibration:
             if(estrella.valid):
                 print '\nCalibrating star:%3.0f ' %star_id
                 self.bgImage_fwShutter_calibration(star_id)
-                self.subap_calibration(star_id)
 
     def first_calibration(self,star_list):
         '''
         Calibrates useBrightest, backgrounds, shutter times,
-        subap locations and reference centroids for all stars
+        subap locations and reference centroids for given stars
         '''
         #Main loop. Calibrates for each star
         #First we flush
@@ -435,6 +434,7 @@ class Calibration:
                 self.bgImage_fwShutter_calibration(star_id)
                 self.pupil_location(star_id)
                 self.subap_calibration(star_id)
+        raw_input('First calibration concluded.\nSet phase screen and press enter to continue')
 
     def flushAll(self):
         self.bbbc.flush_all_leds()
