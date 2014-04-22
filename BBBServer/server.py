@@ -7,6 +7,7 @@ import CosNaming
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import getpass
+import c_driver
 from time import sleep
 from server_dic import LED_STATUS
 from server_dic import LE_DICT
@@ -76,14 +77,16 @@ class Server_i (BBBServer__POA.Server):
             self.turn_off_gpio(key)
 
     def turn_on_gpio(self, pin):
-        GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin,GPIO.HIGH)
+#        GPIO.setup(pin, GPIO.OUT)
+#        GPIO.output(pin,GPIO.HIGH)
+        c_driver.handle_gpio(1, pin)
 #        print sys._getframe().f_code.co_name,
 #        print(' '+pin)
 
     def turn_off_gpio(self, pin):
-        GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin,GPIO.LOW)
+#        GPIO.setup(pin, GPIO.OUT)
+#        GPIO.output(pin,GPIO.LOW)
+        c_driver.handle_gpio(0, pin)
 #        print sys._getframe().f_code.co_name,
 #        print(' '+pin)
 
@@ -178,7 +181,6 @@ class Server_i (BBBServer__POA.Server):
             self.turn_off_gpio(motor.pin_dir)
 
         self.turn_on_gpio(motor.pin_sleep)
-        import c_driver
         s = c_driver.move_motor(steps, motor.pin_step)
         self.turn_off_gpio(motor.pin_sleep)
         print sys._getframe().f_code.co_name,
