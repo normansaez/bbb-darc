@@ -149,9 +149,10 @@ class Controller:
 
 if __name__ == '__main__':
     c = Controller()
-    c.star_on(1)
-    c.star_off(1)
+    #c.star_on(1)
+    #c.star_off(1)
     #print c.layer_move('ground_layer')
     #print c.layer_move_skip_sensor('ground_layer')
+    c.set_position('ground_layer',-5,200)
     import darc
     c = darc.Control('SH')

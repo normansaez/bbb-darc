@@ -119,7 +119,7 @@ class Acquisition:
         slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
         FITS.Write(all_data.astype(numpy.float32), slp_path, writeMode='a')
         logging.info('Data saved : %s' % slp_path)
-
+        
     def cmdlist_gen(self,iterations):
         # Motor 0: horizontal
         motorh = Layer('horizontal_altitude_layer')
@@ -173,11 +173,11 @@ if __name__ == '__main__':
 
 
     a = Acquisition()
-    star_list = [1,4,17,28]
+    star_list = [1,18,21,24]
     prefix = 'slopes'
     #iterations = 1000
     #numberoffits = 10
-    iterations = 500
+    iterations = 510
     numberoffits = 1
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
