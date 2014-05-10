@@ -25,7 +25,7 @@ from BeagleDarc.Model import Camera
 from General_Calibration import Calibration
 
 class Acquisition:
-    def __init__(self):
+    def __init__(self,dir_name='slopes'):
         #Darc Controller instance
         self.camera_name = "SH"
         self.darc_instance = darc.Control(self.camera_name)
@@ -36,11 +36,12 @@ class Acquisition:
         self.SHCamera = Camera('camera')
 
         #
-        self.niter = 10
+        self.niter = 5
         self.image_path = self.SHCamera.image_path
-        self.dir_name = 'slopes'
+        self.dir_name = dir_name
+        self.cases = {'slopes':0,'images':1}
 
-    def take_slp_from_darc(self):
+    def take_slp_from_darc(self,acquire):
         '''
         Using darc, take a FITS image and save it into the disk. By default use
         a <camera name>_<image prefix>_YEAR-MONTH-DAYTHOUR-MIN-SEC.fits as
@@ -49,15 +50,23 @@ class Acquisition:
     
         This should also take slopes (which will be used as training data)
         '''
+        logging.info('About to take data with darc ...')
+        slope_stream = None
+
         #Get slope_streams:
-        logging.info('About to take image with darc ...')
-        slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
+        if(self.cases[acquire]==0):
+            slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
+        elif(self.cases[acquire]==1):
+            slope_stream = self.darc_instance.SumData('rtcPxlBuf', self.niter,'f')[0]/float(self.niter)
+        else:
+            print 'Can\'t acquire!'
+            return
         
         logging.debug(slope_stream)
         return slope_stream
         
     
-    def take_data(self, star_list, cmd_list):
+    def take_data(self, star_list, cmd_list,acquire):
             '''
             This method does:
             After that,  start all over again,  given a number of times in num
@@ -90,7 +99,7 @@ class Acquisition:
                 star.setup(self.SHCamera)
                 self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
-                slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc())
+                slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc(acquire))
                 
                 #led off
                 self.bbbc.star_off(int(star.image_prefix))
@@ -98,19 +107,27 @@ class Acquisition:
             return slopes_frame
  
 
-    def take_all_data(self,iterations,star_list,prefix):
+    def take_all_data(self,iterations,star_list,prefix,acquire='slopes',altitude=-1):
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         cali = Calibration(self.SHCamera.camera)
         cali.routine_calibration(star_list)
-        all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
+        all_data = None
+        cmd_list = None
+        if(self.cases[acquire]==0):
+            all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
+        elif(self.cases[acquire]==1):
+            all_data = numpy.zeros((iterations,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+        else:
+            print 'Can\'t acquire!'
+            return
         Star_list = []
-        cmd_list = self.cmdlist_gen(iterations)
+        cmd_list = self.cmdlist_gen(iterations,altitude)
         for s in star_list:
             Star_list.append(Star(s))
         
         for i in range(0,iterations):
             print '\nTaking iteration #: %d' % (i+1)
-            oli = self.take_data(Star_list, cmd_list[i])
+            oli = self.take_data(Star_list, cmd_list[i],acquire)
             all_data[i,:] = oli
 
         slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
@@ -120,7 +137,7 @@ class Acquisition:
         FITS.Write(all_data.astype(numpy.float32), slp_path, writeMode='a')
         logging.info('Data saved : %s' % slp_path)
         
-    def cmdlist_gen(self,iterations):
+    def cmdlist_gen(self,iterations,altitude=-1):
         # Motor 0: horizontal
         motorh = Layer('horizontal_altitude_layer')
         # Motor 1: vertical
@@ -134,7 +151,10 @@ class Acquisition:
         cmdy = []
         
         for cmd in range(0,iterations):
-            cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),random.randint(0,motorv.vr_end)]]
+            if(altitude>=0.0 and altitude<=1.0):
+                cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),int(altitude*motorv.vr_end)]]
+            else:
+                cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),random.randint(0,motorv.vr_end)]]
 
         for it0 in range(0,iterations):
             for it1 in range(0,len(cmd_temp)):
@@ -172,13 +192,24 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    a = Acquisition()
-    star_list = [1,18,21,24]
+    dir_name = 'slopes'
+    '''
+    acquire = 'slopes'
     prefix = 'slopes'
-    #iterations = 1000
-    #numberoffits = 10
-    iterations = 510
+    star_list = [1,18,21,24]
+    altitude = -1
+    '''
+    
+    acquire = 'slopes'
+    prefix = 'slopes_nouseB'
+    star_list = [1]
+    altitude = -1
+    
+
+    a = Acquisition(dir_name=dir_name)
+    iterations = 500
     numberoffits = 1
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
-        a.take_all_data(iterations,star_list,prefix)
+        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+

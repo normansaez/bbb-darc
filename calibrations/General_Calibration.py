@@ -63,7 +63,8 @@ class Calibration:
         #1- Setting useBrightest, loaded from the config. file.
         '''
         
-        self.c.Set('useBrightest',float(self.SHCamera.usebrightest))
+        #self.c.Set('useBrightest',float(self.SHCamera.usebrightest))
+        self.c.Set('useBrightest',-1558)
         
     def find_useBrightest(self):
         self.bgImage_fwShutter_calibration(1)
