@@ -57,7 +57,7 @@ class Acquisition:
         if(self.cases[acquire]==0):
             slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
         elif(self.cases[acquire]==1):
-            slope_stream = self.darc_instance.SumData('rtcPxlBuf', self.niter,'f')[0]/float(self.niter)
+            slope_stream = self.darc_instance.SumData('rtcCalPxlBuf', self.niter,'f')[0]/float(self.niter)
         else:
             print 'Can\'t acquire!'
             return
@@ -173,9 +173,9 @@ class Acquisition:
         
         for cmd in range(0,int(iterations)):
             if(altitude>=0.0 and altitude<=1.0):
-                cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),int(altitude*motorv.vr_end)]]
+                cmd_temp = cmd_temp + [[int(motorh.vr_end*cmd/iterations),int(altitude*motorv.vr_end)]]
             else:
-                cmd_temp = cmd_temp + [[int(motorh.vr_end*cmd/iterations),random.randint(0,motorv.vr_end)]]
+                cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),random.randint(0,motorv.vr_end)]]
 
         for it0 in range(0,int(iterations)):
             for it1 in range(0,len(cmd_temp)):
@@ -213,7 +213,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'nopinhole'
+    dir_name = 'postnorman'
     '''
     acquire = 'slopes'
     prefix = 'slopes'
@@ -222,7 +222,7 @@ if __name__ == '__main__':
     '''
     
     acquire = 'both'
-    prefix = 'useB_1500'
+    prefix = 'useB_0'
     star_list = [1]
     #star_list = [5,26]
     #altitude = 0

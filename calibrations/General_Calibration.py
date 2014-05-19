@@ -64,7 +64,7 @@ class Calibration:
         '''
         
         #self.c.Set('useBrightest',2*float(self.SHCamera.usebrightest))
-        self.c.Set('useBrightest',-1500)
+        self.c.Set('useBrightest',0)
         
     def find_useBrightest(self):
         self.bgImage_fwShutter_calibration(1)
@@ -260,6 +260,10 @@ class Calibration:
             for file_name in files:
                 os.remove(self.SHCamera.bg_path + file_name)
         FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='a')
+        #from pylab import imshow,show
+        #oli = FITS.Read('/home/dani/BeagleAcquisition/SH/BG/SH_bg_led_1_shutter_4095.fits')[1]
+        #imshow(oli.reshape((1080,1920)))
+        #show()
 
     def pupil_location(self,star_id):
         #Parameters
