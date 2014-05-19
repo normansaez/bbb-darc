@@ -39,7 +39,7 @@ class Acquisition:
         self.niter = 5
         self.image_path = self.SHCamera.image_path
         self.dir_name = dir_name
-        self.cases = {'slopes':0,'images':1}
+        self.cases = {'slopes':0,'images':1,'both':2}
 
     def take_slp_from_darc(self,acquire):
         '''
@@ -111,12 +111,16 @@ class Acquisition:
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         cali = Calibration(self.SHCamera.camera)
         cali.routine_calibration(star_list)
-        all_data = None
+        all_slopes = None
+        all_images = None
         cmd_list = None
         if(self.cases[acquire]==0):
-            all_data = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
+            all_slopes = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
         elif(self.cases[acquire]==1):
-            all_data = numpy.zeros((iterations,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_images = numpy.zeros((iterations,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+        elif(self.cases[acquire]==2):
+            all_slopes = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
+            all_images = numpy.zeros((iterations,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
         else:
             print 'Can\'t acquire!'
             return
@@ -127,14 +131,31 @@ class Acquisition:
         
         for i in range(0,iterations):
             print '\nTaking iteration #: %d' % (i+1)
-            oli = self.take_data(Star_list, cmd_list[i],acquire)
-            all_data[i,:] = oli
+            if(self.cases[acquire]==0):
+                oli = self.take_data(Star_list, cmd_list[i],'slopes')
+                all_slopes[i,:] = oli
+            elif(self.cases[acquire]==1):
+                oli = self.take_data(Star_list, cmd_list[i],'images')
+                all_images[i,:] = oli
+            elif(self.cases[acquire]==2):
+                oli = self.take_data(Star_list, cmd_list[i],'slopes')
+                all_slopes[i,:] = oli
+                oli = self.take_data(Star_list, cmd_list[i],'images')
+                all_images[i,:] = oli
 
-        slope_name = self.camera_name + '_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
         if os.path.exists(self.image_path+self.dir_name) is False:
             os.mkdir(self.image_path+self.dir_name)
+        slope_name = self.camera_name + '_slopes_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
+        image_name = self.camera_name + '_images_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
         slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
-        FITS.Write(all_data.astype(numpy.float32), slp_path, writeMode='a')
+        img_path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
+        if(self.cases[acquire]==0):
+            FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='a')
+        elif(self.cases[acquire]==1):
+            FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='a')
+        elif(self.cases[acquire]==2):
+            FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='a')
+            FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='a')
         logging.info('Data saved : %s' % slp_path)
         
     def cmdlist_gen(self,iterations,altitude=-1):
@@ -150,13 +171,13 @@ class Acquisition:
         cmdx = []
         cmdy = []
         
-        for cmd in range(0,iterations):
+        for cmd in range(0,int(iterations)):
             if(altitude>=0.0 and altitude<=1.0):
                 cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),int(altitude*motorv.vr_end)]]
             else:
-                cmd_temp = cmd_temp + [[random.randint(0,motorh.vr_end),random.randint(0,motorv.vr_end)]]
+                cmd_temp = cmd_temp + [[int(motorh.vr_end*cmd/iterations),random.randint(0,motorv.vr_end)]]
 
-        for it0 in range(0,iterations):
+        for it0 in range(0,int(iterations)):
             for it1 in range(0,len(cmd_temp)):
                 if(mindis > (abs(cmd_temp[it1][0]-cur_pos[0])*0.5 + (cmd_temp[it1][1]-cur_pos[1]))):
                     mindis = abs(cmd_temp[it1][0]-cur_pos[0])*0.5 + (cmd_temp[it1][1]-cur_pos[1])
@@ -192,7 +213,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'slopes'
+    dir_name = 'nopinhole'
     '''
     acquire = 'slopes'
     prefix = 'slopes'
@@ -200,16 +221,19 @@ if __name__ == '__main__':
     altitude = -1
     '''
     
-    acquire = 'slopes'
-    prefix = 'slopes_nouseB'
+    acquire = 'both'
+    prefix = 'useB_1500'
     star_list = [1]
-    altitude = -1
+    #star_list = [5,26]
+    #altitude = 0
     
 
     a = Acquisition(dir_name=dir_name)
-    iterations = 500
-    numberoffits = 1
+    iterations = 100
+    numberoffits = 5
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
-        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+        #a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+        fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
+        a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
 

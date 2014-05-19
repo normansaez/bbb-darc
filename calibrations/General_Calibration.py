@@ -63,8 +63,8 @@ class Calibration:
         #1- Setting useBrightest, loaded from the config. file.
         '''
         
-        #self.c.Set('useBrightest',float(self.SHCamera.usebrightest))
-        self.c.Set('useBrightest',-1558)
+        #self.c.Set('useBrightest',2*float(self.SHCamera.usebrightest))
+        self.c.Set('useBrightest',-1500)
         
     def find_useBrightest(self):
         self.bgImage_fwShutter_calibration(1)
@@ -215,7 +215,7 @@ class Calibration:
         bgImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
-        auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
+        auxImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.bbbc.star_off(star_id)
         auxImageMax = numpy.amax(auxImage)
         print ''
@@ -241,7 +241,7 @@ class Calibration:
                 bgImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
                 self.c.Set('bgImage',bgImage)
                 self.bbbc.star_on(star_id)
-                auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
+                auxImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
                 self.bbbc.star_off(star_id)
                 auxImageMax = numpy.amax(auxImage)
         
@@ -320,7 +320,7 @@ class Calibration:
         patternshape = self.majorpattern.shape
         self.bbbc.star_on(star_id)
         s = Star(star_id)
-        image = self.c.SumData("rtcPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        image = self.c.SumData("rtcCalPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
         image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
         correlation = scipy.signal.fftconvolve(image,self.majorpattern,mode='same')
         argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)
@@ -411,7 +411,9 @@ class Calibration:
         '''
         #Main loop. Calibrates for each star
         #First we flush
+        print 'Flushing!'
         self.flushAll()
+        print 'Done flushing.\nBg acquisition...'
         self.Set_useBrightest()
         for star_id in star_list:
             estrella = Star(star_id)
