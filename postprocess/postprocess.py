@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: May the 22th, 2014
+Last update: May the 27th, 2014
 '''
 
 import FITS
@@ -14,6 +14,7 @@ import numpy as np
 import os
 from numpy import unravel_index
 import pylab as pl
+from pylab import imshow,show
 #import random
 #from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Camera
@@ -80,12 +81,15 @@ def im2slope(path,imname,slpname,star_list,camera='camera'):
             img = imgs[frame,star*npix:(star+1)*npix]
             img = img.reshape((cam.pxly,cam.pxlx))
             count = 0
+            #imshow(img)
+            #pl.title('Estrella %d'%(star_list[star]))
+            #show()
             for flag in range(np.size(subapFlag)):
                 if(subapFlag[flag]):
-                    y1 = subapLoc[star,count,0]
-                    y2 = subapLoc[star,count,1]+1
-                    x1 = subapLoc[star,count,3]
-                    x2 = subapLoc[star,count,4]+1
+                    y1 = subapLoc[star,flag,0]
+                    y2 = subapLoc[star,flag,1]+1
+                    x1 = subapLoc[star,flag,3]
+                    x2 = subapLoc[star,flag,4]+1
                     s1 = star*cam.nsubaps*2+count*2
                     s2 = star*cam.nsubaps*2+(count+1)*2
                     slps[frame,s1:s2] = centerofmass(img[y1:y2,x1:x2])
@@ -93,21 +97,34 @@ def im2slope(path,imname,slpname,star_list,camera='camera'):
 
     FITS.Write(slps.astype(np.float32),path+slpname,writeMode='a')
 
-def centerofmass(array):
+def centerofmass(array,threshold=None):
     '''
     array is a float 32 2-dimensional numpy array
     cent = numpy.array([x,y])
     '''
+    newarray = None
+    if(threshold!=None):
+        boolarray = array>=threshold
+        newarray = boolarray*array
+    else:
+        newarray = array
+    #Classic
     cent = np.zeros(2)
-    totalmass = float(array.sum())
-    Xgrid,Ygrid = np.meshgrid(np.arange(array.shape[1]),np.arange(array.shape[0]))
-    cent[1] = np.sum(Ygrid*array)/totalmass
-    cent[0] = np.sum(Xgrid*array)/totalmass
+    totalmass = float(newarray.sum())
+    Xgrid,Ygrid = np.meshgrid(np.arange(newarray.shape[1]),np.arange(newarray.shape[0]))
+    if totalmass<1.0:
+        print 'totalmass: ',
+        print totalmass
+        imshow(newarray)
+        show()
+
+    cent[1] = np.sum(Ygrid*newarray)/totalmass
+    cent[0] = np.sum(Xgrid*newarray)/totalmass
     return cent
 
 def formattomodata(dirpath,filename,acquire='slopes'):
     files = os.listdir(dirpath)
-    files = [s for s in files if acquire in s]
+    files = [s for s in files if acquire in s and '.fits' in s]
     final = None
     aux = None
     firstfinal = 0
@@ -118,17 +135,16 @@ def formattomodata(dirpath,filename,acquire='slopes'):
             final = FITS.Read(dirpath+fil)[1]
         else:
             aux = FITS.Read(dirpath+fil)[1]
-            final = np.concatenate((final,aux),axis=1)
+            final = np.concatenate((final,aux),axis=0)
 
     if(acquire=='slopes'):
         final = final - final.mean(axis=0)
 
-    platescale = 0.1624108336 #[''/pix]
-    final = final*platescale
-
     if('.fits' in filename):
         FITS.Write(final.astype(np.float32),dirpath+filename,writeMode='a')
     elif('.gz' in filename):
+        platescale = 0.1624108336 #[''/pix]
+        final = final*platescale
         np.savetxt(dirpath+filename,final.astype(np.float32),fmt='%.5f')
 
 def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
@@ -141,7 +157,7 @@ def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
     '''
     
     files = os.listdir(dirpath)
-    files = [s for s in files if acquire in s]
+    files = [s for s in files if '_'+acquire+'_' in s and '.fits' in s]
     final = None
     aux = None
     firstfinal = 0
@@ -188,41 +204,8 @@ def comparedata(dirpath,fitsfile1,fitsfile2,axis=0):
 '''
     
 if __name__=='__main__':
-    '''
-    dirpath = '/home/dani/BeagleAcquisition/SH/postnorman/'
-    filename = 'images_from_darc.fits'
-    altitude_list = [0,25,50,75,100]
-    acquire = 'images'
-    formataltitude(dirpath,filename,altitude_list,acquire=acquire)
-    '''
-    
-    '''
-    dirpath = '/home/dani/BeagleAcquisition/SH/postnorman/'
-    filename = 'slopes_from_darc.fits'
-    altitude_list = [0,25,50,75,100]
-    acquire = 'slopes'
-    formataltitude(dirpath,filename,altitude_list,acquire=acquire)
-    '''
-    '''
-    dirpath = '/home/dani/BeagleAcquisition/SH/postnorman/'
-    imname = 'images_from_darc.fits'
-    slpname = 'slopes_from_images.fits'
-    star_list = [1,1,1,1,1]
-    im2slope(dirpath,imname,slpname,star_list,camera='camera')
-    '''
-    '''
-    dirpath = '/home/dani/BeagleAcquisition/SH/postnorman/'
-    filename = 'slopes_from_darc_averaged.fits'
-    altitude_list = [0,25,50,75,100]
-    acquire = 'slopes'
-    formataltitude(dirpath,filename,altitude_list,acquire=acquire)
-    '''
-
-    dirpath = '/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/'
-    filename = 'slopes.gz'
-    acquire = 'slopes'
-    formattomodata(dirpath,filename,acquire=acquire)
-    
+    formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.fits',acquire='slopes')
+        
 
 
 

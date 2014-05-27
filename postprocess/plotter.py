@@ -135,15 +135,15 @@ class Plotter:
                 else:
                     filas = 2
                     columnas = numpy.floor(((len(self.star_list)+1)/2.))
-                pl.subplot(filas,columnas,star_id+1,title='Altitude: %d'%(self.star_list[star_id])+'%')
-                #im = pl.imshow(self.majorpattern[star_id,:,:]/numpy.amax(self.majorpattern[star_id,:,:]),interpolation='nearest',origin=[0,0])
-                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=2)
+                pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
+                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=2.61)
                 pl.ylabel(self.ylabel)
                 pl.xlabel(self.xlabel)
 
         cax = fig.add_axes([0.94, 0.05, 0.02, 0.9])
         fig.colorbar(im,cax,orientation='vertical')
         fig.text(0.5,0.96,self.title,horizontalalignment='center',verticalalignment='top',fontsize=20)
+        fig.text(0.95, 0.04,'[pixels^2]',horizontalalignment='center',verticalalignment='top',fontsize=15)
         pl.show()
     
     def stat_curve(self):
@@ -201,12 +201,10 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/postnorman/'
-        file_name = 'slopes_from_darc_averaged.fits'
-        #file_name = 'SH_slopes_useB_1500_altitude_100_100_T2014_05_14T22_54_53.fits'
-        #star_list = [100]
-        star_list = [0,25,50,75,100]
-        title = 'Subaperture Variance'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/'
+        file_name = 'validationslopes.fits'
+        star_list = [1,18,21,24]
+        title = 'Sub-Aperture Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
