@@ -213,27 +213,28 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'postnorman'
-    '''
-    acquire = 'slopes'
-    prefix = 'slopes'
+    dir_name = 'tomodata_1_18_21_24'
+    
+    acquire = 'both'
+    prefix = 'useB_0'
     star_list = [1,18,21,24]
     altitude = -1
-    '''
     
+    '''
     acquire = 'both'
     prefix = 'useB_0'
     star_list = [1]
     #star_list = [5,26]
     #altitude = 0
+    '''
     
 
     a = Acquisition(dir_name=dir_name)
-    iterations = 100
-    numberoffits = 5
+    iterations = 300
+    numberoffits = 4
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
-        #a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
-        fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
-        a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
+        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+        #fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
+        #a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
 
