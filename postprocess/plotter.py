@@ -3,7 +3,7 @@ Creates plots
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: May the 15th, 2014
+Last update: May the 28th, 2014
 '''
 
 #!/usr/bin/env python
