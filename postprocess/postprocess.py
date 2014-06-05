@@ -124,7 +124,7 @@ def centerofmass(array,threshold=None):
 
 def formattomodata(dirpath,filename,acquire='slopes'):
     files = os.listdir(dirpath)
-    files = [s for s in files if acquire in s and '.fits' in s]
+    files = [s for s in files if acquire in s and '.fits' in s and 'SH' in s]
     final = None
     aux = None
     firstfinal = 0
@@ -143,7 +143,7 @@ def formattomodata(dirpath,filename,acquire='slopes'):
     if('.fits' in filename):
         FITS.Write(final.astype(np.float32),dirpath+filename,writeMode='a')
     elif('.gz' in filename):
-        platescale = 0.1624108336 #[''/pix]
+        platescale = 0.1612975147 #[''/pix]
         final = final*platescale
         np.savetxt(dirpath+filename,final.astype(np.float32),fmt='%.5f')
 
@@ -157,7 +157,7 @@ def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
     '''
     
     files = os.listdir(dirpath)
-    files = [s for s in files if '_'+acquire+'_' in s and '.fits' in s]
+    files = [s for s in files if '_'+acquire+'_' in s and '.fits' in s and 'SH' in s]
     final = None
     aux = None
     firstfinal = 0
@@ -204,7 +204,7 @@ def comparedata(dirpath,fitsfile1,fitsfile2,axis=0):
 '''
     
 if __name__=='__main__':
-    formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.fits',acquire='slopes')
+    formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.gz',acquire='slopes')
         
 
 

@@ -3,7 +3,7 @@ Creates plots
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: May the 28th, 2014
+Last update: June the 4th, 2014
 '''
 
 #!/usr/bin/env python
@@ -135,8 +135,11 @@ class Plotter:
                 else:
                     filas = 2
                     columnas = numpy.floor(((len(self.star_list)+1)/2.))
+
+
+            for star_id in range(len(self.star_list)):
                 pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
-                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=2.61)
+                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
                 pl.ylabel(self.ylabel)
                 pl.xlabel(self.xlabel)
 
@@ -201,10 +204,10 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/'
-        file_name = 'validationslopes.fits'
-        star_list = [1,18,21,24]
-        title = 'Sub-Aperture Variance'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/noise/'
+        file_name = 'SH_slopenoise_led_4_18_24_36.fits'
+        star_list = [4,18,24,36]
+        title = 'Sub-Aperture Noise Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None

@@ -213,11 +213,11 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'tomodata_1_18_21_24'
+    dir_name = 'tomodata_4_18_24_36'
     
     acquire = 'both'
     prefix = 'useB_0'
-    star_list = [1,18,21,24]
+    star_list = [4,18,24,36]
     altitude = -1
     
     '''
