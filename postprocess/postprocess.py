@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: May the 27th, 2014
+Last update: June the 10th, 2014
 '''
 
 import FITS
@@ -186,6 +186,36 @@ def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
     elif('.gz' in filename):
         np.savetxt(dirpath+filename,final.astype(np.float32),fmt='%.4f')
 
+def covariance(set1,set2,norm=True):
+    '''
+    Returns a handle to plot the covariance of two data sets 
+    versus a certain variable.
+    set1 and set2 are MxN numpy arrays where each row contains
+    cases for a same value of the variable.
+    The covariance is then calculated along the N-axis, for each
+    of the M cases.
+    This also returns a 1-d M length array with the covariances.
+    If norm = True, then the covariances are normalized.
+
+    Example:
+    set1               cov    set2
+    [1 4 2 6 8 3 7]     X     [6 9 3 6 1 3 6]   -> -1.0816
+           .            X            .           .
+           .            X            .           .
+           .            X            .           .
+    '''
+    cov = np.zeros(set1.shape[0])
+    if norm:
+        for i in range(set1.shape[0]):
+            covi = np.cov(np.array([set1[i,:],set2[i,:]]),bias=1)
+            cov[i] = covi[0,1]/np.sqrt(covi[0,0]*covi[1,1])
+    else:
+        for i in range(set1.shape[0]):
+            covi = np.cov(np.array[set1[i,:],set2[i,:]],bias=1)
+            cov[i] = covi[0,1]
+    
+    return cov
+
 '''
 def comparedata(dirpath,fitsfile1,fitsfile2,axis=0):
 
@@ -204,7 +234,8 @@ def comparedata(dirpath,fitsfile1,fitsfile2,axis=0):
 '''
     
 if __name__=='__main__':
-    formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.gz',acquire='slopes')
+    #formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.gz',acquire='slopes')
+    covsalt = covariance(valslopes,annslopes,norm=True)
         
 
 

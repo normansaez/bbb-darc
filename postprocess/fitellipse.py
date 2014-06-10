@@ -4,6 +4,7 @@ If the least-square fitting does not work, adjust
 the initial guess..
 
 Author: Nicolas S. Dubost
+        nsdubost@uc.cl
 Last update: June 10th, 2014
 '''
 import FITS
@@ -34,9 +35,11 @@ xdata[:,0] = slopes[:,0]
 xdata[:,1] = slopes[:,1]/np.absolute(slopes[:,1])
 
 # Least-square fitting. p0 is the initial guess
-#popt,pcov = optimize.curve_fit(circlefunc,xdata,slopes[:,1],p0=[5.,0.,0.])
-popt,pcov = optimize.curve_fit(elipsefunc,xdata,slopes[:,1],p0=[8.,5.5,0.,0.])
+popt,pcov = optimize.curve_fit(circlefunc,xdata,slopes[:,1],p0=[5.,0.,0.])
+#popt,pcov = optimize.curve_fit(elipsefunc,xdata,slopes[:,1],p0=[8.,5.5,0.,0.])
 
+'''
+#For fitting an ellipse
 a = popt[0]
 b = popt[1]
 x0 = popt[2]
@@ -51,11 +54,6 @@ juntosunos = np.concatenate((unos,menosunos))
 newdata = np.transpose(np.array([xs,juntosunos]))
 
 y = elipsefunc(newdata,a,b,x0,y0)
-
-handle = pl.plot(slopes[:,0],slopes[:,1],'ro',newdata[:,0],y,'b-',x0,y0,'g+',markersize=8.0)
-pl.title('Spots\' path for a turning wedge')
-pl.xlabel('X-slopes [pixels]')
-pl.ylabel('Y-slopes [pixels]')
 e = 0
 major = 0
 minor = 0
@@ -63,7 +61,30 @@ if a>b:
     e = np.sqrt(1-np.square(b/a))
 else:
     e = np.sqrt(1-np.square(a/b))
+'''
 
-pl.legend(handle,('Mean Slopes','Fitted Ellipse\nEccentricity: %.3f\nX-semi axis: %.3f\nY-semi axis: %.3f'%(e,a,b),'Ellipse\'s Center'),'upper right')
+#For fitting a circle
+a = popt[0]
+x0 = popt[1]
+y0 = popt[2]
+puntos = 1000
+xs1 = np.linspace(-a+x0,a+x0,puntos)
+xs2 = xs1[::-1] + 0.
+xs = np.concatenate((xs1,xs2))
+unos = np.zeros(puntos)+1
+menosunos = np.zeros(puntos)-1
+juntosunos = np.concatenate((unos,menosunos))
+newdata = np.transpose(np.array([xs,juntosunos]))
+
+y = circlefunc(newdata,a,x0,y0)
+
+
+handle = pl.plot(slopes[:,0],slopes[:,1],'ro',newdata[:,0],y,'b-',x0,y0,'g+',markersize=8.0)
+pl.title('Spots\' path for a turning wedge')
+pl.xlabel('X-slopes [pixels]')
+pl.ylabel('Y-slopes [pixels]')
+
+#pl.legend(handle,('Mean Slopes','Fitted Ellipse\nEccentricity: %.3f\nX-semi axis: %.3f\nY-semi axis: %.3f'%(e,a,b),'Ellipse\'s Center'),'upper right')
+pl.legend(handle,('Mean Slopes','Fitted Circle\nRadius: %.3f'%(a),'Center'),'upper right')
 
 show()

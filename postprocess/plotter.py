@@ -3,7 +3,7 @@ Creates plots
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: June the 4th, 2014
+Last update: June the 10th, 2014
 '''
 
 #!/usr/bin/env python
@@ -190,8 +190,7 @@ class Plotter:
         fig = pl.figure()
         ax = pl.Axes3D(fig)
         ax.plot_surface(X,Y,w)
-        pb.show()        
-
+        pb.show()
 
 
 if __name__ == '__main__':
