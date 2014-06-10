@@ -204,10 +204,10 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/noise/'
-        file_name = 'SH_slopenoise_led_4_18_24_36.fits'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/tomodata_4_18_24_36/'
+        file_name = 'SH_slopes_useB_0_1200_T2014_06_06T20_29_54.fits'
         star_list = [4,18,24,36]
-        title = 'Sub-Aperture Noise Variance'
+        title = 'Sub-Aperture Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None

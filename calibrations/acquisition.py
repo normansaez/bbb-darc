@@ -215,7 +215,7 @@ if __name__ == '__main__':
 
     dir_name = 'tomodata_4_18_24_36'
     
-    acquire = 'both'
+    acquire = 'slopes'
     prefix = 'useB_0'
     star_list = [4,18,24,36]
     altitude = -1
@@ -230,8 +230,8 @@ if __name__ == '__main__':
     
 
     a = Acquisition(dir_name=dir_name)
-    iterations = 300
-    numberoffits = 4
+    iterations = 1200
+    numberoffits = 1
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
         a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
