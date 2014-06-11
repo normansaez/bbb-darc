@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: June the 10th, 2014
+Last update: June the 11th, 2014
 '''
 
 import FITS
@@ -194,27 +194,73 @@ def covariance(set1,set2,norm=True):
     cases for a same value of the variable.
     The covariance is then calculated along the N-axis, for each
     of the M cases.
-    This also returns a 1-d M length array with the covariances.
+    This also returns a 2-d Mx4 length array with the covariances.
     If norm = True, then the covariances are normalized.
 
     Example:
-    set1               cov    set2
-    [1 4 2 6 8 3 7]     X     [6 9 3 6 1 3 6]   -> -1.0816
-           .            X            .           .
-           .            X            .           .
-           .            X            .           .
+    set1             cov    set2               covxx    covyy    covxy    covyx
+    [x y x y x y]     X     [x y x y x y]  ->
+    [1 4 2 6 8 3]     X     [6 9 3 6 1 3]  ->  -0.8746  0.3273   -0.9244  0.2167
+          .           X           .         .
+          .           X           .         .
+          .           X           .         .
     '''
-    cov = np.zeros(set1.shape[0])
+
+    covxx = np.zeros(set1.shape[0])
+    covyy = np.zeros(set1.shape[0])
+    covxy = np.zeros(set1.shape[0])
+    covyx = np.zeros(set1.shape[0])
+
     if norm:
         for i in range(set1.shape[0]):
-            covi = np.cov(np.array([set1[i,:],set2[i,:]]),bias=1)
-            cov[i] = covi[0,1]/np.sqrt(covi[0,0]*covi[1,1])
+            covi = np.cov(np.array([set1[i,::2],set2[i,::2]]),bias=1)
+            covxx[i] = covi[0,1]/np.sqrt(covi[0,0]*covi[1,1])
+            covi = np.cov(np.array([set1[i,1::2],set2[i,1::2]]),bias=1)
+            covyy[i] = covi[0,1]/np.sqrt(covi[0,0]*covi[1,1])
+            covi = np.cov(np.array([set1[i,::2],set2[i,1::2]]),bias=1)
+            covxy[i] = covi[0,1]/np.sqrt(covi[0,0]*covi[1,1])
+            covi = np.cov(np.array([set1[i,1::2],set2[i,::2]]),bias=1)
+            covyx[i] = covi[0,1]/np.sqrt(covi[0,0]*covi[1,1])
+
     else:
         for i in range(set1.shape[0]):
-            covi = np.cov(np.array[set1[i,:],set2[i,:]],bias=1)
-            cov[i] = covi[0,1]
+            covi = np.cov(np.array([set1[i,::2],set2[i,::2]]),bias=1)
+            covxx[i] = covi[0,1]
+            covi = np.cov(np.array([set1[i,1::2],set2[i,1::2]]),bias=1)
+            covyy[i] = covi[0,1]
+            covi = np.cov(np.array([set1[i,::2],set2[i,1::2]]),bias=1)
+            covxy[i] = covi[0,1]
+            covi = np.cov(np.array([set1[i,1::2],set2[i,::2]]),bias=1)
+            covyx[i] = covi[0,1]
     
-    return cov
+    return np.transpose(np.array([covxx,covyy,covxy,covyx]))
+
+def scattering(set1,set2,title='',xlabel='',ylabel=''):
+    '''
+    set1 and set2 are 1-d numpy arrays.
+    '''
+    mini = np.min([set1.min(),set2.min()])
+    maxi = np.max([set1.max(),set2.max()])
+
+    p,res,rank,sing,rcond= np.polyfit(set1,set2,1,full=True)
+    a = p[0]
+    b = p[1]
+    
+    res = 0
+    for i in range(set1.shape[0]):
+        res = res + np.square(set1[i]-set2[i])
+
+    print res/set1.shape[0]
+
+    handle = pl.plot(set1,set2,'bo'[mini,maxi],[mini,maxi],'g-',[mini,maxi],[mini*a+b,maxi*a+b],'r-') 
+    pl.legend(handle,(ylabel+' vs '+xlabel,'Reference Line','%.3f*x+%.3f'%(a,b)))
+    pl.title(title+'Mean Residual Error: %.3f[pix^2]'%(res/valslopes.shape[0]))
+    pl.xlabel(xlabel)
+    pl.ylabel(ylabel)
+
+    show()
+    
+
 
 '''
 def comparedata(dirpath,fitsfile1,fitsfile2,axis=0):
