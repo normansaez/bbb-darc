@@ -14,7 +14,7 @@ import numpy as np
 import os
 from numpy import unravel_index
 import pylab as pl
-from pylab import imshow,show
+from pylab import imshow,show,plot
 #import random
 #from BeagleDarc.Controller import Controller
 from BeagleDarc.Model import Camera
@@ -245,16 +245,17 @@ def scattering(set1,set2,title='',xlabel='',ylabel=''):
     p,res,rank,sing,rcond= np.polyfit(set1,set2,1,full=True)
     a = p[0]
     b = p[1]
+
+    if xlabel=='':
+        xlabel = 'set1'
+    if ylabel=='':
+        ylabel = 'set2'
+
+    lot = int(set1.shape[0]/4.)
     
-    res = 0
-    for i in range(set1.shape[0]):
-        res = res + np.square(set1[i]-set2[i])
-
-    print res/set1.shape[0]
-
-    handle = pl.plot(set1,set2,'bo'[mini,maxi],[mini,maxi],'g-',[mini,maxi],[mini*a+b,maxi*a+b],'r-') 
-    pl.legend(handle,(ylabel+' vs '+xlabel,'Reference Line','%.3f*x+%.3f'%(a,b)))
-    pl.title(title+'Mean Residual Error: %.3f[pix^2]'%(res/valslopes.shape[0]))
+    handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',set1[3*lot:4*lot],set2[3*lot:4*lot],'mo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
+    pl.legend(handle,('Stars','','','','Reference Line','%.3f*x+%.3f'%(a,b)))
+    pl.title(title+'\nMean Residual Error: %.3f[pix^2]'%(res[0]/set1.shape[0]))
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)
 
