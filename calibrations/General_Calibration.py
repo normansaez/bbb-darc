@@ -324,7 +324,7 @@ class Calibration:
         patternshape = self.majorpattern.shape
         self.bbbc.star_on(star_id)
         s = Star(star_id)
-        image = self.c.SumData("rtcCalPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        image = self.c.SumData("rtcPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
         image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
         correlation = scipy.signal.fftconvolve(image,self.majorpattern,mode='same')
         argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)

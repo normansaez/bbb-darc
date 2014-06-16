@@ -232,9 +232,9 @@ if __name__ == '__main__':
     a = Acquisition(dir_name=dir_name)
     iterations =60
     numberoffits = 4
-    a.first_calibration(star_list)
-    #for nof in range(1,numberoffits+1):
-     #   a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+    #a.first_calibration(star_list)
+    for nof in range(1,numberoffits+1):
+        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
         #fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
         #a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
 
