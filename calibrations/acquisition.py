@@ -213,28 +213,28 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'tomodata_4_18_24_36'
-    
+    dir_name = 'ground_all'
+    '''
     acquire = 'slopes'
     prefix = 'useB_0'
     star_list = [4,18,24,36]
     altitude = -1
-    
     '''
+    
     acquire = 'both'
     prefix = 'useB_0'
-    star_list = [1]
+    star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
-    #altitude = 0
-    '''
+    altitude = 0
+    
     
 
     a = Acquisition(dir_name=dir_name)
-    iterations = 1200
-    numberoffits = 1
-    #a.first_calibration(star_list)
-    for nof in range(1,numberoffits+1):
-        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+    iterations =60
+    numberoffits = 4
+    a.first_calibration(star_list)
+    #for nof in range(1,numberoffits+1):
+     #   a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
         #fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
         #a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
 
