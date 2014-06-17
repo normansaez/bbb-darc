@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: June the 11th, 2014
+Last update: June the 17th, 2014
 '''
 
 import FITS
@@ -23,8 +23,10 @@ from BeagleDarc.Model import Star
 #import scipy
 #from scipy import signal
 
-def im2slope(imgs,star_list,camera='camera'):
+def im2slope(imgs,star_list,camera='camera',useBrightest=0):
     '''
+    Returns slopes from the images.
+    
     VARIABLES
     
     imgs     [numpy.array] Images vertically and 
@@ -79,7 +81,7 @@ def im2slope(imgs,star_list,camera='camera'):
                     x2 = subapLoc[star,flag,4]+1
                     s1 = star*cam.nsubaps*2+count*2
                     s2 = star*cam.nsubaps*2+(count+1)*2
-                    slps[frame,s1:s2] = centerofmass(img[y1:y2,x1:x2])
+                    slps[frame,s1:s2] = centerofmass(img[y1:y2,x1:x2],useBrightest=useBrightest)
                     count += 1
     return slps
     #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='s')
@@ -90,11 +92,24 @@ def centerofmass(array,threshold=None,useBrightest=0):
     cent = numpy.array([x,y])
     '''
     newarray = None
+    newarray2 = None
+    useBrightest = int(useBrightest)
     if(threshold!=None):
         boolarray = array>=threshold
         newarray = boolarray*array
     else:
-        newarray = array
+        newarray = array + 0
+
+    if(useBrightest>0):
+        newarray2 = newarray*0.
+        for u in range(useBrightest):
+            maxv = newarray.max()
+            argmax = unravel_index(newarray.argmax(),newarray.shape)
+            newarray2[argmax[0],argmax[1]] = maxv
+            newarray[argmax[0],argmax[1]] = 0.
+    else:
+        newarray2 = newarray*1.
+
     #Classic
     cent = np.zeros(2)
     totalmass = float(newarray.sum())
