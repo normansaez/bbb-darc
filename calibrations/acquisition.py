@@ -107,7 +107,12 @@ class Acquisition:
             return slopes_frame
  
 
-    def take_all_data(self,iterations,star_list,prefix,acquire='slopes',altitude=-1):
+    def take_all_data(self,iterations,star_list,prefix,acquire='slopes',altitude=-1,fpf=0):
+        '''
+        fpf = frames per FITS. if fpf=0 all frames will be saved in the same FITS file
+        '''
+        if fpf==0:
+            fpf = iterations
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
         cali = Calibration(self.SHCamera.camera)
         cali.routine_calibration(star_list)
@@ -115,12 +120,12 @@ class Acquisition:
         all_images = None
         cmd_list = None
         if(self.cases[acquire]==0):
-            all_slopes = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
+            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.SHCamera.nsubaps))
         elif(self.cases[acquire]==1):
-            all_images = numpy.zeros((iterations,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_images = numpy.zeros((fpf,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
         elif(self.cases[acquire]==2):
-            all_slopes = numpy.zeros((iterations,len(star_list)*2*self.SHCamera.nsubaps))
-            all_images = numpy.zeros((iterations,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.SHCamera.nsubaps))
+            all_images = numpy.zeros((fpf,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
         else:
             print 'Can\'t acquire!'
             return
@@ -130,33 +135,44 @@ class Acquisition:
             Star_list.append(Star(s))
         
         for i in range(0,iterations):
+            Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
             print '\nTaking iteration #: %d' % (i+1)
             if(self.cases[acquire]==0):
                 oli = self.take_data(Star_list, cmd_list[i],'slopes')
-                all_slopes[i,:] = oli
+                all_slopes[i%fpf,:] = oli
             elif(self.cases[acquire]==1):
                 oli = self.take_data(Star_list, cmd_list[i],'images')
-                all_images[i,:] = oli
+                all_images[i%fpf,:] = oli
             elif(self.cases[acquire]==2):
                 oli = self.take_data(Star_list, cmd_list[i],'slopes')
-                all_slopes[i,:] = oli
+                all_slopes[i%fpf,:] = oli
                 oli = self.take_data(Star_list, cmd_list[i],'images')
-                all_images[i,:] = oli
-
-        if os.path.exists(self.image_path+self.dir_name) is False:
-            os.mkdir(self.image_path+self.dir_name)
-        slope_name = self.camera_name + '_slopes_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
-        image_name = self.camera_name + '_images_' + prefix + '_' +str(iterations).zfill(3) + '_T' +Start_time
-        slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
-        img_path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
-        if(self.cases[acquire]==0):
-            FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='a')
-        elif(self.cases[acquire]==1):
-            FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='a')
-        elif(self.cases[acquire]==2):
-            FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='a')
-            FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='a')
-        logging.info('Data saved : %s' % slp_path)
+                all_images[i%fpf,:] = oli
+            
+            if((i+1)%fpf==0 or i==(iterations-1)):
+                if os.path.exists(self.image_path+self.dir_name) is False:
+                    os.mkdir(self.image_path+self.dir_name)
+                slope_name = self.camera_name + '_slopes_' + prefix + '_' +str(fpf).zfill(3) + '_T' +Start_time
+                image_name = self.camera_name + '_images_' + prefix + '_' +str(fpf).zfill(3) + '_T' +Start_time 
+                slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
+                img_path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
+                if(self.cases[acquire]==0):
+                    FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='w')
+                elif(self.cases[acquire]==1):
+                    FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='w')
+                elif(self.cases[acquire]==2):
+                    FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='w')
+                    FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='w')
+                logging.info('Data saved : %s' % slp_path)
+                Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
+                if(self.cases[acquire]==0):
+                    all_slopes = all_slopes*0.
+                elif(self.cases[acquire]==1):
+                    all_images = all_images*0.
+                elif(self.cases[acquire]==2):
+                    all_slopes = all_slopes*0.
+                    all_images = all_images*0.
+               
         
     def cmdlist_gen(self,iterations,altitude=-1):
         # Motor 0: horizontal
@@ -190,8 +206,8 @@ class Acquisition:
             minarg = 0
             mindis = motorh.vr_end + motorv.vr_end
             
-        #plt.plot(cmdx,cmdy,'k')
-        #plt.show()
+        plt.plot(cmdx,cmdy,'k')
+        plt.show()
         return cmd_list
 
     def first_calibration(self,star_list):
@@ -230,11 +246,12 @@ if __name__ == '__main__':
     
 
     a = Acquisition(dir_name=dir_name)
-    iterations =60
-    numberoffits = 4
+    iterations = 1200
+    numberoffits = 1
+    fpf = 60
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
-        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude)
+        a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude,fpf=fpf)
         #fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
         #a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
 

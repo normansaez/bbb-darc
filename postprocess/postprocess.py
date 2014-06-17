@@ -23,13 +23,11 @@ from BeagleDarc.Model import Star
 #import scipy
 #from scipy import signal
 
-def im2slope(path,imname,slpname,star_list,camera='camera'):
+def im2slope(imgs,star_list,camera='camera'):
     '''
     VARIABLES
-    path     [string]      Directory path. Example:
-                           /home/dani/
     
-    imname   [string]      FITS file containg images vertically and 
+    imgs     [numpy.array] Images vertically and 
                            horizontally concatenated as:
 
                                star1/altitude1    star2/altitude2    ...   starn/altituden
@@ -42,23 +40,12 @@ def im2slope(path,imname,slpname,star_list,camera='camera'):
                            [immpix1 immpix2 ...|immpix1 immpix2 ...| ... |immpix1 immpix2 ...]
                            
                            In each of the m rows there are images for all n stars/altitudes.
-
-    slpname   [string]     Name with which will be saved the the resulting slopes array:
-                           
-                               star1/altitude1      star2/altitude2      ...   starn/altituden
- 
-                           [im1slpx1 im1slpy1 ...|im1slpx1 im1slpy1 ...| ... |im1slpx1 im1slpy1 ...]
-                           [im2slpx1 im2slpy1 ...|im2slpx1 im2slpy1 ...| ... |im2slpx1 im2slpy1 ...]
-                                                        .
-                                                        .
-                                                        .
-                           [immslpx1 immslpy1 ...|immslpx1 immslpy1 ...| ... |immslpx1 immslpy1 ...]
     
     star_list [list]       List containg n elements.
                            Example: 4 different stars -> star_list = [1,6,18,21]
                            Example: star 5 at 3 different altitudes -> star_list = [5,5,5]
     '''
-    imgs = FITS.Read(path+imname)[1]
+    #imgs = FITS.Read(path+imname)[1]
     cam = Camera(camera)
     slps = None
     npix = cam.pxlx*cam.pxly
@@ -94,10 +81,10 @@ def im2slope(path,imname,slpname,star_list,camera='camera'):
                     s2 = star*cam.nsubaps*2+(count+1)*2
                     slps[frame,s1:s2] = centerofmass(img[y1:y2,x1:x2])
                     count += 1
+    return slps
+    #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='s')
 
-    FITS.Write(slps.astype(np.float32),path+slpname,writeMode='a')
-
-def centerofmass(array,threshold=None):
+def centerofmass(array,threshold=None,useBrightest=0):
     '''
     array is a float 32 2-dimensional numpy array
     cent = numpy.array([x,y])
