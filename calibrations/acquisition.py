@@ -56,14 +56,15 @@ class Acquisition:
         #Get slope_streams:
         if(self.cases[acquire]==0):
             slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
+            logging.debug(slope_stream)
+            return slope_stream
         elif(self.cases[acquire]==1):
             slope_stream = self.darc_instance.SumData('rtcCalPxlBuf', self.niter,'f')[0]/float(self.niter)
+            logging.debug(slope_stream)
+            return slope_stream
         else:
             print 'Can\'t acquire!'
             return
-        
-        logging.debug(slope_stream)
-        return slope_stream
         
     
     def take_data(self, star_list, cmd_list,acquire):
@@ -91,19 +92,41 @@ class Acquisition:
 
             #vertical motor move
             self.bbbc.set_position('vertical_altitude_layer',cmd_list[1], 200)
+            
+            slopes_frame = None
+            images_frame = None
 
-            slopes_frame = numpy.array([])
+            if(self.cases[acquire]==0):
+                slopes_frame = numpy.array([])
+            elif(self.cases[acquire]==1):
+                images_frame = numpy.array([])
+            elif(self.cases[acquire]==2):
+                slopes_frame = numpy.array([])
+                images_frame = numpy.array([])
+
             # led on
             self.bbbc.star_off(1)
             for star in star_list:
                 star.setup(self.SHCamera)
                 self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
-                slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc(acquire))
+                if(self.cases[acquire]==0):
+                    slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc(acquire))
+                elif(self.cases[acquire]==1):
+                    images_frame = numpy.append(slopes_frame,self.take_slp_from_darc(acquire))
+                elif(self.cases[acquire]==2):
+                    slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc('slopes'))
+                    images_frame = numpy.append(slopes_frame,self.take_slp_from_darc('images'))
                 
                 #led off
                 self.bbbc.star_off(int(star.image_prefix))
             
+            if(self.cases[acquire]==0):
+                return slopes_frame
+            elif(self.cases[acquire]==1):
+                return images_frame
+            elif(self.cases[acquire]==2):
+                return (slopes_frame,images_frame)
             return slopes_frame
  
 
@@ -144,10 +167,9 @@ class Acquisition:
                 oli = self.take_data(Star_list, cmd_list[i],'images')
                 all_images[i%fpf,:] = oli
             elif(self.cases[acquire]==2):
-                oli = self.take_data(Star_list, cmd_list[i],'slopes')
-                all_slopes[i%fpf,:] = oli
-                oli = self.take_data(Star_list, cmd_list[i],'images')
-                all_images[i%fpf,:] = oli
+                oli = self.take_data(Star_list, cmd_list[i],'both')
+                all_slopes[i%fpf,:] = oli[0]
+                all_images[i%fpf,:] = oli[1]
             
             if((i+1)%fpf==0 or i==(iterations-1)):
                 if os.path.exists(self.image_path+self.dir_name) is False:
@@ -229,7 +251,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'ground_all'
+    dir_name = 'maxaltitude_all'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -241,8 +263,7 @@ if __name__ == '__main__':
     prefix = 'useB_0'
     star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
-    altitude = 0
-    
+    altitude = 1 
     
 
     a = Acquisition(dir_name=dir_name)

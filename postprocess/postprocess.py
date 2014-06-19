@@ -86,6 +86,72 @@ def im2slope(imgs,star_list,camera='camera',useBrightest=0):
     return slps
     #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='s')
 
+
+
+def subapBrightest(imgs,star_list,camera='camera'):
+    '''
+    Returns brightest pixel in subaps
+    
+    VARIABLES
+    
+    imgs     [numpy.array] Images vertically and 
+                           horizontally concatenated as:
+
+                               star1/altitude1    star2/altitude2    ...   starn/altituden
+ 
+                           [im1pix1 im1pix2 ...|im1pix1 im1pix2 ...| ... |im1pix1 im1pix2 ...]
+                           [im2pix1 im2pix2 ...|im2pix1 im2pix2 ...| ... |im2pix1 im2pix2 ...]
+                                                        .
+                                                        .
+                                                        .
+                           [immpix1 immpix2 ...|immpix1 immpix2 ...| ... |immpix1 immpix2 ...]
+                           
+                           In each of the m rows there are images for all n stars/altitudes.
+    
+    star_list [list]       List containg n elements.
+                           Example: 4 different stars -> star_list = [1,6,18,21]
+                           Example: star 5 at 3 different altitudes -> star_list = [5,5,5]
+    '''
+    #imgs = FITS.Read(path+imname)[1]
+    cam = Camera(camera)
+    slps = None
+    npix = cam.pxlx*cam.pxly
+    subapFlag = FITS.Read(cam.subapflag)[1].ravel()
+    files = os.listdir(cam.subaplocation_path)
+    subapname = [s for s in files if 'led_%d.'%(star_list[0]) in s]
+    subapLoc = np.zeros((len(star_list),cam.allsubaps,6))
+    for star in range(len(star_list)):
+        subapname = [s for s in files if 'led_%d.'%(star_list[star]) in s]
+        subapLoc[star] = FITS.Read(cam.subaplocation_path+subapname[0])[1]
+
+    if(imgs.shape[1]/npix==len(star_list)):
+        slps = np.zeros((imgs.shape[0],len(star_list)*cam.nsubaps))
+    else:
+        print 'Wrong camera, or wrong stars'
+        return None
+
+    for frame in range(imgs.shape[0]):
+        for star in range(len(star_list)):
+            img = imgs[frame,star*npix:(star+1)*npix]
+            img = img.reshape((cam.pxly,cam.pxlx))
+            count = 0
+            #imshow(img)
+            #pl.title('Estrella %d'%(star_list[star]))
+            #show()
+            for flag in range(np.size(subapFlag)):
+                if(subapFlag[flag]):
+                    y1 = subapLoc[star,flag,0]
+                    y2 = subapLoc[star,flag,1]+1
+                    x1 = subapLoc[star,flag,3]
+                    x2 = subapLoc[star,flag,4]+1
+                    s1 = star*cam.nsubaps+count
+                    slps[frame,s1] = img[y1:y2,x1:x2].max()
+                    count += 1
+    return slps
+    #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='w')
+
+
+
 def centerofmass(array,threshold=None,useBrightest=0):
     '''
     array is a float 32 2-dimensional numpy array
@@ -107,8 +173,7 @@ def centerofmass(array,threshold=None,useBrightest=0):
             argmax = unravel_index(newarray.argmax(),newarray.shape)
             newarray2[argmax[0],argmax[1]] = maxv
             newarray[argmax[0],argmax[1]] = 0.
-    else:
-        newarray2 = newarray*1.
+        newarray = newarray2 + 0
 
     #Classic
     cent = np.zeros(2)
@@ -124,9 +189,10 @@ def centerofmass(array,threshold=None,useBrightest=0):
     cent[0] = np.sum(Xgrid*newarray)/totalmass
     return cent
 
-def formattomodata(dirpath,filename,acquire='slopes'):
+def concatenatefiles(dirpath,acquire='slopes'):
     files = os.listdir(dirpath)
     files = [s for s in files if acquire in s and '.fits' in s and 'SH' in s]
+    files = sorted(files)
     final = None
     aux = None
     firstfinal = 0
@@ -142,12 +208,13 @@ def formattomodata(dirpath,filename,acquire='slopes'):
     if(acquire=='slopes'):
         final = final - final.mean(axis=0)
 
-    if('.fits' in filename):
-        FITS.Write(final.astype(np.float32),dirpath+filename,writeMode='a')
-    elif('.gz' in filename):
-        platescale = 0.1612975147 #[''/pix]
-        final = final*platescale
-        np.savetxt(dirpath+filename,final.astype(np.float32),fmt='%.5f')
+    return final
+    #if('.fits' in filename):
+    #    FITS.Write(final.astype(np.float32),dirpath+filename,writeMode='a')
+    #elif('.gz' in filename):
+    #    platescale = 0.1612975147 #[''/pix]
+    #    final = final*platescale
+    #    np.savetxt(dirpath+filename,final.astype(np.float32),fmt='%.5f')
 
 def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
     '''
