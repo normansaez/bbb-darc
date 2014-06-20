@@ -40,16 +40,24 @@ class Plotter:
         self.figlegend = figlegend
 
     
-    def spot_cloud(self,mode='gaussian'):
+    def subapstat(self,mode='variance'):
         '''
         Takes a FITS file containing slopes for 1 or many stars. 
         Plots a representation of the long term exposure spots.
         '''
-        modes = {'gaussian':0,'flat':1}
+        modes = {'variance':0,'mean':1}
 
         slopes = FITS.Read(self.path + self.filename)[1]
-        Xslopes = slopes[:,::2]
-        Yslopes = slopes[:,1::2]
+        Xslopes = None
+        Yslopes = None
+        isdouble = int(slopes.shape[1]/(len(self.star_list)*self.nsubaps))
+        if isdouble == 1:
+            Xslopes = slopes[:,::2]
+            Yslopes = slopes[:,1::2]
+        else:
+            Xslopes = slopes
+            Yslopes = slopes
+            
         Xmean = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
         Ymean = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
         Xvar = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
@@ -97,8 +105,6 @@ class Plotter:
         if(self.majorpattern==None):
             self.majorpattern = numpy.zeros((len(self.star_list),-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
             self.minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
-            centx = float(Xwidth+1)/2 - 0.5
-            centy = float(Ywidth+1)/2 - 0.5
             subapLocAux = subapLocation
             Aux = numpy.zeros((allsubaps,6))
             Aux[:,0:2] = subapLocAux[:,0:2] - subapLocation[0,0]
@@ -113,33 +119,36 @@ class Plotter:
                 subaptrack = 0
                 for subap in Aux:
                     if(int(subapflag[tracker])):
-                        centx = float(Xwidth+1)/2 - 0.5 + Xmean[star_id,subaptrack]
-                        centy = float(Ywidth+1)/2 - 0.5 + Ymean[star_id,subaptrack]
                         for y in range(0,Ywidth):
                             for x in range(0,Xwidth):
-                                if(modes[mode]==1):
+                                if(modes[mode]==0):
                                     if(x>=(Xwidth-(Xgap-1)) and x<=(Xgap-2) and y>=(Ywidth-(Ygap-1)) and y<=(Ygap-2)):
                                         self.minorpattern[y,x] = Xvar[star_id,subaptrack]+Yvar[star_id,subaptrack]
                                     else:
                                         self.minorpattern[y,x] = 0.0
                                 else:
-                                    self.minorpattern[y,x] = numpy.exp(-0.5*(pow(x-centx,2)/Xvar[star_id,subaptrack]+pow(y-centy,2))/Yvar[star_id,subaptrack])
+                                    if(x>=(Xwidth-(Xgap-1)) and x<=(Xgap-2) and y>=(Ywidth-(Ygap-1)) and y<=(Ygap-2)):
+                                        self.minorpattern[y,x] = numpy.sqrt(numpy.square(Xmean[star_id,subaptrack])+numpy.square(Ymean[star_id,subaptrack]))
+                                    else:
+                                        self.minorpattern[y,x] = 0.0
                             
                         self.majorpattern[star_id,subap[0]:subap[1]+1,subap[3]:subap[4]+1] += self.minorpattern
                         subaptrack += 1
                     tracker += 1
             
-                if(len(self.star_list)<3):
-                    filas = 1
-                    columnas = len(self.star_list)
-                else:
-                    filas = 2
-                    columnas = numpy.floor(((len(self.star_list)+1)/2.))
-
+                #if(len(self.star_list)<3):
+                #    filas = 1
+                #    columnas = len(self.star_list)
+                #else:
+                #    filas = 2
+                #    columnas = numpy.floor(((len(self.star_list)+1)/2.))
+                filas = 3
+                columnas = 7
 
             for star_id in range(len(self.star_list)):
                 pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
                 im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
+                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=3)
                 pl.ylabel(self.ylabel)
                 pl.xlabel(self.xlabel)
 
@@ -195,24 +204,24 @@ class Plotter:
 
 if __name__ == '__main__':
 
-    case = 'spot_cloud'
+    case = 'subapstat'
     #case = 'stat_curve'
     #case = 'join_slopes_altitudes'
-    cases = {'spot_cloud':0,'stat_curve':1,'surface':2,'join_slopes_altitudes':3}
+    cases = {'subapstat':0,'stat_curve':1,'surface':2,'join_slopes_altitudes':3}
     plotty = None
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/tomodata_4_18_24_36/'
-        file_name = 'SH_slopes_useB_0_1200_T2014_06_06T20_29_54.fits'
-        star_list = [4,18,24,36]
+        path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all/'
+        file_name = 'img_slopes_uB_1_value.fits'
+        star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
         title = 'Sub-Aperture Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
         
         ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
-        ploty.spot_cloud(mode='flat')
+        ploty.subapstat(mode='mean')
 
     elif(cases[case] == 1):
 

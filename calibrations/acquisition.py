@@ -41,7 +41,7 @@ class Acquisition:
         self.dir_name = dir_name
         self.cases = {'slopes':0,'images':1,'both':2}
 
-    def take_slp_from_darc(self,acquire):
+    def grab_data_from_darc(self,acquire):
         '''
         Using darc, take a FITS image and save it into the disk. By default use
         a <camera name>_<image prefix>_YEAR-MONTH-DAYTHOUR-MIN-SEC.fits as
@@ -111,12 +111,12 @@ class Acquisition:
                 self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
                 if(self.cases[acquire]==0):
-                    slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc(acquire))
+                    slopes_frame = numpy.append(slopes_frame,self.grab_data_from_darc(acquire))
                 elif(self.cases[acquire]==1):
-                    images_frame = numpy.append(slopes_frame,self.take_slp_from_darc(acquire))
+                    images_frame = numpy.append(images_frame,self.grab_data_from_darc(acquire))
                 elif(self.cases[acquire]==2):
-                    slopes_frame = numpy.append(slopes_frame,self.take_slp_from_darc('slopes'))
-                    images_frame = numpy.append(slopes_frame,self.take_slp_from_darc('images'))
+                    slopes_frame = numpy.append(slopes_frame,self.grab_data_from_darc('slopes'))
+                    images_frame = numpy.append(images_frame,self.grab_data_from_darc('images'))
                 
                 #led off
                 self.bbbc.star_off(int(star.image_prefix))
@@ -228,8 +228,8 @@ class Acquisition:
             minarg = 0
             mindis = motorh.vr_end + motorv.vr_end
             
-        plt.plot(cmdx,cmdy,'k')
-        plt.show()
+        #plt.plot(cmdx,cmdy,'k')
+        #plt.show()
         return cmd_list
 
     def first_calibration(self,star_list):
@@ -251,7 +251,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'maxaltitude_all'
+    dir_name = 'ground_all_v2'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     prefix = 'useB_0'
     star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
-    altitude = 1 
+    altitude = 0 
     
 
     a = Acquisition(dir_name=dir_name)
