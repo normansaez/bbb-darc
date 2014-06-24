@@ -119,19 +119,33 @@ class Plotter:
                 subaptrack = 0
                 for subap in Aux:
                     if(int(subapflag[tracker])):
+                        value = 0
+                        if(modes[mode]==0):
+                            if isdouble == 1:
+                                value = Xvar[star_id,subaptrack]+Yvar[star_id,subaptrack]
+                            else:
+                                value = Xvar[star_id,subaptrack]
+                        else:
+                            if isdouble == 1:
+                                value = numpy.sqrt(numpy.square(Xmean[star_id,subaptrack])+numpy.square(Ymean[star_id,subaptrack]))
+                            else:
+                                value = Xmean[star_id,subaptrack]
+
+                        self.minorpattern[(Ywidth-(Ygap-1)):(Ygap-2)+1,(Xwidth-(Xgap-1)):(Xgap-2)+1] = value
+                        '''    
                         for y in range(0,Ywidth):
                             for x in range(0,Xwidth):
                                 if(modes[mode]==0):
                                     if(x>=(Xwidth-(Xgap-1)) and x<=(Xgap-2) and y>=(Ywidth-(Ygap-1)) and y<=(Ygap-2)):
-                                        self.minorpattern[y,x] = Xvar[star_id,subaptrack]+Yvar[star_id,subaptrack]
+                                        self.minorpattern[y,x] = value
                                     else:
                                         self.minorpattern[y,x] = 0.0
                                 else:
                                     if(x>=(Xwidth-(Xgap-1)) and x<=(Xgap-2) and y>=(Ywidth-(Ygap-1)) and y<=(Ygap-2)):
-                                        self.minorpattern[y,x] = numpy.sqrt(numpy.square(Xmean[star_id,subaptrack])+numpy.square(Ymean[star_id,subaptrack]))
+                                        self.minorpattern[y,x] = value
                                     else:
                                         self.minorpattern[y,x] = 0.0
-                            
+                        '''    
                         self.majorpattern[star_id,subap[0]:subap[1]+1,subap[3]:subap[4]+1] += self.minorpattern
                         subaptrack += 1
                     tracker += 1
@@ -212,7 +226,7 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all/'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all_v2/'
         file_name = 'img_slopes_uB_1_value.fits'
         star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
         title = 'Sub-Aperture Variance'
