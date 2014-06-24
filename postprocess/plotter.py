@@ -161,14 +161,19 @@ class Plotter:
 
             for star_id in range(len(self.star_list)):
                 pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
-                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
-                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=3)
+                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
+                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=6)
                 pl.ylabel(self.ylabel)
                 pl.xlabel(self.xlabel)
 
         cax = fig.add_axes([0.94, 0.05, 0.02, 0.9])
         fig.colorbar(im,cax,orientation='vertical')
         fig.text(0.5,0.96,self.title,horizontalalignment='center',verticalalignment='top',fontsize=20)
+        figtext = ''
+        if(modes[mode]==0):
+            figtext = '[pixels^2]'
+        else:
+            figtext = 'ADU'
         fig.text(0.95, 0.04,'[pixels^2]',horizontalalignment='center',verticalalignment='top',fontsize=15)
         pl.show()
     
@@ -227,15 +232,15 @@ if __name__ == '__main__':
     if(cases[case] == 0):
 
         path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all_v2/'
-        file_name = 'img_slopes_uB_1_value.fits'
+        file_name = 'img_slopes_uB_1.fits'
         star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        title = 'Sub-Aperture Variance'
+        title = 'Post-process Sub-Aperture Variance, useB = 1'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
         
         ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
-        ploty.subapstat(mode='mean')
+        ploty.subapstat(mode='variance')
 
     elif(cases[case] == 1):
 
