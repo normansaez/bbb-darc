@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: June the 17th, 2014
+Last update: July the 1st, 2014
 '''
 
 import FITS
@@ -88,9 +88,10 @@ def im2slope(imgs,star_list,camera='camera',useBrightest=0):
 
 
 
-def subapBrightest(imgs,star_list,camera='camera'):
+def subapBrightest(imgs,star_list,camera='camera',nbrightest=1):
     '''
-    Returns brightest pixel in subaps
+    Returns mean of nbrightest pixels in subaps
+    When nbrightest=-1, mean of all pixels in subaps are returned
     
     VARIABLES
     
@@ -145,12 +146,27 @@ def subapBrightest(imgs,star_list,camera='camera'):
                     x1 = subapLoc[star,flag,3]
                     x2 = subapLoc[star,flag,4]+1
                     s1 = star*cam.nsubaps+count
-                    slps[frame,s1] = img[y1:y2,x1:x2].max()
+                    subap = brightest(img[y1:y2,x1:x2],nbrightest)
+                    slps[frame,s1] = subap.mean()
                     count += 1
     return slps
     #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='w')
 
-
+def brightest(array,nbrightest):
+    '''
+    Receives a 2-d numpy.array and returns it
+    with all but the nbrightest pixels as zeros
+    '''
+    toreturn = array*0.
+    if nbrightest == -1:
+        toreturn = array + 0
+    else:
+        for u in range(nbrightest):
+            maxv = array.max()
+            argmax = unravel_index(array.argmax(),array.shape)
+            toreturn[argmax[0],argmax[1]] = maxv
+            array[argmax[0],argmax[1]] = 0.
+    return toreturn
 
 def centerofmass(array,threshold=None,useBrightest=0):
     '''
@@ -158,7 +174,6 @@ def centerofmass(array,threshold=None,useBrightest=0):
     cent = numpy.array([x,y])
     '''
     newarray = None
-    newarray2 = None
     useBrightest = int(useBrightest)
     if(threshold!=None):
         boolarray = array>=threshold
@@ -167,13 +182,7 @@ def centerofmass(array,threshold=None,useBrightest=0):
         newarray = array + 0
 
     if(useBrightest>0):
-        newarray2 = newarray*0.
-        for u in range(useBrightest):
-            maxv = newarray.max()
-            argmax = unravel_index(newarray.argmax(),newarray.shape)
-            newarray2[argmax[0],argmax[1]] = maxv
-            newarray[argmax[0],argmax[1]] = 0.
-        newarray = newarray2 + 0
+        newarray = brightest(newarray,usebrightest)
 
     #Classic
     cent = np.zeros(2)
