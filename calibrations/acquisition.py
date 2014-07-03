@@ -252,7 +252,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'altitude_0.15_all_v1'
+    dir_name = 'altitude_0.15_all_v2'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     a = Acquisition(dir_name=dir_name)
     iterations = 1200
     numberoffits = 1
-    fpf = 60
+    fpf = 30
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
         a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude,fpf=fpf)
