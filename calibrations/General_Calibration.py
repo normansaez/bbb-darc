@@ -260,6 +260,7 @@ class Calibration:
             for file_name in files:
                 os.remove(self.SHCamera.bg_path + file_name)
         FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
+        FITS.Write(auxImage,self.SHCamera.bg_path + 'SH_aux_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
         #from pylab import imshow,show
         #oli = FITS.Read('/home/dani/BeagleAcquisition/SH/BG/SH_bg_led_1_shutter_4095.fits')[1]
         #imshow(oli.reshape((1080,1920)))
@@ -345,7 +346,7 @@ class Calibration:
         FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='w')
 
         FITS.Write(image,self.SHCamera.subaplocation_path + 'image_%d.fits'%(star_id),writeMode='w')
-        FITS.Write(correlation,self.SHCamera.subaplocation_path + 'correlation_%d.fits'%(star_id),writeMode='a')
+        FITS.Write(correlation,self.SHCamera.subaplocation_path + 'correlation_%d.fits'%(star_id),writeMode='w')
         FITS.Write(self.majorpattern,self.SHCamera.subaplocation_path + 'major.fits',writeMode='w')
         FITS.Write(self.minorpattern,self.SHCamera.subaplocation_path + 'minor.fits',writeMode='w')
 
@@ -414,6 +415,7 @@ class Calibration:
         for given stars
         '''
         #Main loop. Calibrates for each star
+        self.bbbc.set_position('horizontal_altitude_layer',-10000,200)
         #First we flush
         print 'Flushing!'
         self.flushAll()

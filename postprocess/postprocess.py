@@ -88,10 +88,10 @@ def im2slope(imgs,star_list,camera='camera',useBrightest=0):
 
 
 
-def subapBrightest(imgs,star_list,camera='camera',nbrightest=1):
+def subapBrightest(imgs,star_list,camera='camera',useBrightest=1):
     '''
-    Returns mean of nbrightest pixels in subaps
-    When nbrightest=-1, mean of all pixels in subaps are returned
+    Returns mean of useBrightest pixels in subaps
+    When useBrightest=-1, mean of all pixels in subaps are returned
     
     VARIABLES
     
@@ -146,22 +146,22 @@ def subapBrightest(imgs,star_list,camera='camera',nbrightest=1):
                     x1 = subapLoc[star,flag,3]
                     x2 = subapLoc[star,flag,4]+1
                     s1 = star*cam.nsubaps+count
-                    subap = brightest(img[y1:y2,x1:x2],nbrightest)
+                    subap = brightest(img[y1:y2,x1:x2],useBrightest)
                     slps[frame,s1] = subap.mean()
                     count += 1
     return slps
     #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='w')
 
-def brightest(array,nbrightest):
+def brightest(array,useBrightest):
     '''
     Receives a 2-d numpy.array and returns it
     with all but the nbrightest pixels as zeros
     '''
     toreturn = array*0.
-    if nbrightest == -1:
+    if useBrightest == -1:
         toreturn = array + 0
     else:
-        for u in range(nbrightest):
+        for u in range(useBrightest):
             maxv = array.max()
             argmax = unravel_index(array.argmax(),array.shape)
             toreturn[argmax[0],argmax[1]] = maxv

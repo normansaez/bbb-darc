@@ -194,6 +194,7 @@ class Acquisition:
                 elif(self.cases[acquire]==2):
                     all_slopes = all_slopes*0.
                     all_images = all_images*0.
+                cali.flushAll()
                
         
     def cmdlist_gen(self,iterations,altitude=-1):

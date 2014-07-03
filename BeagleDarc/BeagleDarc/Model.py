@@ -241,7 +241,7 @@ class Star(object):
             localrefcent = FITS.Read(camera.refcent_path+'SH_RefCent_led_%d.fits'%(self._star))[1]
 
             files = os.listdir(camera.bg_path)
-            file_name = [s for s in files if 'led_%d_'%(self._star) in s][0]
+            file_name = [s for s in files if 'led_%d_'%(self._star) in s and '_bg_' in s][0]
             localshutter = int(re.findall('\d+',re.findall('shutter_\d+',file_name)[0])[0])
             localbg = FITS.Read(camera.bg_path + file_name)[1]
 

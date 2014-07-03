@@ -161,8 +161,8 @@ class Plotter:
 
             for star_id in range(len(self.star_list)):
                 pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
-                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
-                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=6)
+                im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
+                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=6)
                 pl.ylabel(self.ylabel)
                 pl.xlabel(self.xlabel)
 
@@ -232,15 +232,15 @@ if __name__ == '__main__':
     if(cases[case] == 0):
 
         path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all_v2/'
-        file_name = 'img_slopes_uB_1.fits'
+        file_name = 'img_slopes_uB_all_value.fits'
         star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        title = 'Post-process Sub-Aperture Variance, useB = 1'
+        title = 'Post-process Sub-Aperture Value, useB = all'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
         
         ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
-        ploty.subapstat(mode='variance')
+        ploty.subapstat(mode='mean')
 
     elif(cases[case] == 1):
 
