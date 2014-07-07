@@ -182,7 +182,7 @@ def centerofmass(array,threshold=None,useBrightest=0):
         newarray = array + 0
 
     if(useBrightest>0):
-        newarray = brightest(newarray,usebrightest)
+        newarray = brightest(newarray,useBrightest)
 
     #Classic
     cent = np.zeros(2)

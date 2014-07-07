@@ -252,7 +252,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'altitude_0.15_all_v2'
+    dir_name = 'ground_all_v3'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -264,7 +264,7 @@ if __name__ == '__main__':
     prefix = 'useB_0'
     star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
-    altitude = 0.15 
+    altitude = 0.
     
 
     a = Acquisition(dir_name=dir_name)

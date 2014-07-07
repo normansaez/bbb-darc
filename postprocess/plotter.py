@@ -231,10 +231,10 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all_v2/'
-        file_name = 'img_slopes_uB_all_value.fits'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/altitude_0.15_all_v1/'
+        file_name = 'darc_slopes.fits'
         star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        title = 'Post-process Sub-Aperture Value, useB = all'
+        title = 'DARC\'s Sub-Aperture Variance, useB = all'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None

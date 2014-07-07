@@ -4,7 +4,7 @@ and reference centroids.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: April the 4rd, 2014
+Last update: July the 7th, 2014
 """
 
 #!/usr/bin/env python
@@ -212,7 +212,7 @@ class Calibration:
         shutter = self.maxShutter*0.3
         self.c.Set('bgImage',None)
         self.c.Set('fwShutter',int(shutter))
-        bgImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
+        bgImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
         auxImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
@@ -238,7 +238,7 @@ class Calibration:
             else:
                 self.c.Set('bgImage',None)
                 self.c.Set('fwShutter',int(shutter))
-                bgImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
+                bgImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
                 self.c.Set('bgImage',bgImage)
                 self.bbbc.star_on(star_id)
                 auxImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
@@ -251,6 +251,10 @@ class Calibration:
         print str(100*auxImageMax/self.SHsat)+'%'
         self.c.Set('bgImage',None)
         bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        self.c.Set('bgImage',bgImage)
+        self.bbbc.star_on(star_id)
+        auxImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        self.bbbc.star_off(star_id)
         self.c.Set('bgImage',bgImage)
         
         #Saving values found and removing previous values
@@ -325,7 +329,7 @@ class Calibration:
         patternshape = self.majorpattern.shape
         self.bbbc.star_on(star_id)
         s = Star(star_id)
-        image = self.c.SumData("rtcPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        image = self.c.SumData("rtcCalPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
         image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
         correlation = scipy.signal.fftconvolve(image,self.majorpattern,mode='same')
         argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)
