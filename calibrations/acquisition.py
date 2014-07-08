@@ -270,7 +270,7 @@ if __name__ == '__main__':
     a = Acquisition(dir_name=dir_name)
     iterations = 1200
     numberoffits = 1
-    fpf = 30
+    fpf = 20
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
         a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude,fpf=fpf)

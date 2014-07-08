@@ -209,6 +209,8 @@ class Calibration:
         star_id[int]
         '''
         #2-3 bgImage & fwShutter iteration
+        star = Star(star_id)
+        star.setup(self.SHCamera)
         shutter = self.maxShutter*0.3
         self.c.Set('bgImage',None)
         self.c.Set('fwShutter',int(shutter))
@@ -250,11 +252,11 @@ class Calibration:
         print 'Final auxImageMax: ',
         print str(100*auxImageMax/self.SHsat)+'%'
         self.c.Set('bgImage',None)
-        bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        bgImage = self.c.SumData('rtcCalPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
         self.c.Set('bgImage',bgImage)
         self.flushAll()
         self.bbbc.star_on(star_id)
-        auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
+        auxImage = self.c.SumData('rtcCalPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.bbbc.star_off(star_id)
         self.c.Set('bgImage',bgImage)
         
@@ -265,14 +267,11 @@ class Calibration:
             for file_name in files:
                 os.remove(self.SHCamera.bg_path + file_name)
         FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
-        FITS.Write(auxImage,self.SHCamera.bg_path + 'SH_aux_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
-        #from pylab import imshow,show
-        #oli = FITS.Read('/home/dani/BeagleAcquisition/SH/BG/SH_bg_led_1_shutter_4095.fits')[1]
-        #imshow(oli.reshape((1080,1920)))
-        #show()
+        FITS.Write(auxImage.reshape((self.SHCamera.pxly,self.SHCamera.pxlx)),self.SHCamera.bg_path + 'SH_aux_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
 
     def pupil_location(self,star_id):
         #Parameters
+        self.c.Set('bgImage',None)
         allsubaps = self.SHCamera.allsubaps                    # Active+Inactive subaps
         side = int(numpy.sqrt(allsubaps))
         nstars = self.SHCamera.nstars
@@ -330,7 +329,8 @@ class Calibration:
         patternshape = self.majorpattern.shape
         self.bbbc.star_on(star_id)
         s = Star(star_id)
-        image = self.c.SumData("rtcCalPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        #image = self.c.SumData("rtcCalPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
+        image = self.c.SumData("rtcPxlBuf",1,"f")[0]
         image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
         correlation = scipy.signal.fftconvolve(image,self.majorpattern,mode='same')
         argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)
@@ -445,9 +445,9 @@ class Calibration:
             estrella = Star(star_id)
             if(estrella.valid):
                 print '\nCalibrating star:%3.0f ' %star_id
-                self.bgImage_fwShutter_calibration(star_id)
                 self.pupil_location(star_id)
                 self.subap_calibration(star_id)
+                self.bgImage_fwShutter_calibration(star_id)
         raw_input('First calibration concluded.\nSet phase screen and press enter to continue')
 
     def flushAll(self):
