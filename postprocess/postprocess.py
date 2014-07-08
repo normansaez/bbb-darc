@@ -147,7 +147,8 @@ def subapBrightest(imgs,star_list,camera='camera',useBrightest=1):
                     x2 = subapLoc[star,flag,4]+1
                     s1 = star*cam.nsubaps+count
                     subap = brightest(img[y1:y2,x1:x2],useBrightest)
-                    slps[frame,s1] = subap.mean()
+                    bina = subap > 0.
+                    slps[frame,s1] = subap.sum()/float(bina.sum())
                     count += 1
     return slps
     #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='w')
