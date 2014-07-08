@@ -252,8 +252,9 @@ class Calibration:
         self.c.Set('bgImage',None)
         bgImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
         self.c.Set('bgImage',bgImage)
+        self.flushAll()
         self.bbbc.star_on(star_id)
-        auxImage = self.c.SumData('rtcPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        auxImage = self.c.SumData('rtcPxlBuf',self.finalniter,'f')[0]/float(self.finalniter)
         self.bbbc.star_off(star_id)
         self.c.Set('bgImage',bgImage)
         

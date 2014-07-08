@@ -162,7 +162,7 @@ class Plotter:
             for star_id in range(len(self.star_list)):
                 pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
                 im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
-                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=6.)
+                #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=5.)
                 pl.ylabel(self.ylabel)
                 pl.xlabel(self.xlabel)
 
@@ -232,9 +232,9 @@ if __name__ == '__main__':
     if(cases[case] == 0):
 
         path_to_file = '/home/dani/BeagleAcquisition/SH/altitude_0.15_all_v1/'
-        file_name = 'img_slopes_uB_1_value.fits'
+        file_name = 'img_slopes_uB_all_value.fits'
         star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        title = 'Sub-Aperture Spot Intensity, useB = 1'
+        title = 'Sub-Aperture Spot Intensity, useB = all'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
