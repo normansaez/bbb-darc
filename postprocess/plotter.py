@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/altitude_0.15_all_v1/'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all_v3/'
         file_name = 'img_slopes_uB_all_value.fits'
         star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
         title = 'Sub-Aperture Spot Intensity, useB = all'

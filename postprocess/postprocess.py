@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: July the 1st, 2014
+Last update: July the 11th, 2014
 '''
 
 import FITS
@@ -21,6 +21,7 @@ from BeagleDarc.Model import Camera
 from BeagleDarc.Model import Star
 #import ConfigParser
 #import scipy
+from scipy import optimize
 #from scipy import signal
 
 def im2slope(imgs,star_list,camera='camera',useBrightest=0):
@@ -199,6 +200,25 @@ def centerofmass(array,threshold=None,useBrightest=0):
     cent[0] = np.sum(Xgrid*newarray)/totalmass
     return cent
 
+def gauss2d(shape,A,x0,y0,sigmax,sigmay,theta):
+    '''
+    theta in degrees
+    '''
+    t = theta*np.pi/180.
+    vx = np.square(sigmax)
+    vy = np.square(sigmay)
+    xrow = np.linspace(0,shape[1]-1,shape[1])-x0 -np.floor((shape[1]-1)/2.)
+    yrow = np.linspace(0,shape[0]-1,shape[0])-y0 -np.floor((shape[0]-1)/2.)
+    x,y = np.meshgrid(xrow,yrow)
+    a = np.square(np.cos(t)/sigmax)+np.square(np.sin(t)/sigmay)
+    b = 2.*(1/vx-1/vy)*np.cos(t)*np.sin(t)
+    c = np.square(np.sin(t)/sigmax)+np.square(np.cos(t)/sigmay)
+    return A*np.exp(-0.5*(a*np.square(x)+b*x*y+c*np.square(y)))
+
+def gauss2dfit(array):
+    # Least-square fitting. p0 is the initial guess
+    popt,pcov = optimize.curve_fit(circlefunc,xdata,slopes[:,1],p0=[5.,0.,0.])
+
 def concatenatefiles(dirpath,acquire='slopes'):
     files = os.listdir(dirpath)
     files = [s for s in files if acquire in s and '.fits' in s and 'SH' in s]
@@ -228,7 +248,7 @@ def concatenatefiles(dirpath,acquire='slopes'):
 
 def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
     '''
-    Takes all the fits files in the dirpath, concatenates the
+    Takes all the fits files in the dirpath, concatenates them
     horizontally for different altitudes and vertically for
     different runs. Before concatenating vertically, it
     substract the mean. It saves the resulting array in a two
@@ -339,25 +359,6 @@ def scattering(set1,set2,title='',xlabel='',ylabel=''):
     pl.ylabel(ylabel)
 
     show()
-    
-
-
-'''
-def comparedata(dirpath,fitsfile1,fitsfile2,axis=0):
-
-    Compare 2 2-dimensional arrays along the given axis.
-    Returns a 1-dimensional array with the error.
-
-    array1 = FITS.Read(dirpath+fitsfile1)[1]
-    array2 = FITS.Read(dirpath+fitsfile2)[1]
-    error = array2-array1
-    squaremeanerror = np.square(error).mean(1-axis)
-    print 'Max mean error: ',
-    print np.amax(squaremeanerror)
-    print 'Mean mean error',
-    print np.mean(squaremeanerror)
-    return squaremeanerror
-'''
     
 if __name__=='__main__':
     #formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.gz',acquire='slopes')
