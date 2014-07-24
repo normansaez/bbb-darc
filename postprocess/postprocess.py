@@ -1,11 +1,11 @@
 '''
-Module containing pos-process functions to format data,
+Module containing post-process functions to format data,
 calculate slopes and all of the other things I haven't 
 yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: July the 11th, 2014
+Last update: July the 24th, 2014
 '''
 
 import FITS
@@ -24,9 +24,13 @@ from BeagleDarc.Model import Star
 from scipy import optimize
 #from scipy import signal
 
-def im2slope(imgs,star_list,camera='camera',useBrightest=0):
+def im2(imgs,star_list,output='centerofmass',camera='camera',useBrightest=0):
     '''
-    Returns slopes from the images.
+    Returns something from the images.
+    Your options are 'centerofmass' for center of mass centroids,
+                     'centerofgauss' for gauss fitted centroids,
+                     'stdev' for standard deviation
+                     'allgauss' for all gaussian parameters
     
     VARIABLES
     
@@ -60,8 +64,16 @@ def im2slope(imgs,star_list,camera='camera',useBrightest=0):
         subapname = [s for s in files if 'led_%d.'%(star_list[star]) in s]
         subapLoc[star] = FITS.Read(cam.subaplocation_path+subapname[0])[1]
 
+    ndata = 0
+    if len(imgs.shape)==1: 
+        imgs = np.array([imgs])
+
     if(imgs.shape[1]/npix==len(star_list)):
-        slps = np.zeros((imgs.shape[0],len(star_list)*2*cam.nsubaps))
+        if output in 'allgauss':
+            ndata = 7
+        else:
+            ndata = 2
+        slps = np.zeros((imgs.shape[0],len(star_list)*ndata*cam.nsubaps))
     else:
         print 'Wrong camera, or wrong stars'
         return None
@@ -80,9 +92,43 @@ def im2slope(imgs,star_list,camera='camera',useBrightest=0):
                     y2 = subapLoc[star,flag,1]+1
                     x1 = subapLoc[star,flag,3]
                     x2 = subapLoc[star,flag,4]+1
-                    s1 = star*cam.nsubaps*2+count*2
-                    s2 = star*cam.nsubaps*2+(count+1)*2
-                    slps[frame,s1:s2] = centerofmass(img[y1:y2,x1:x2],useBrightest=useBrightest)
+                    s1 = (star*cam.nsubaps+count)*ndata
+                    s2 = (star*cam.nsubaps+count+1)*ndata
+
+                    if output in 'centerofmass':
+                        slps[frame,s1:s2] = centerofmass(img[y1:y2,x1:x2],useBrightest=useBrightest)
+                    elif output in 'centerofgauss':
+                        try:
+                            popt = gauss2dfit(img[y1:y2,x1:x2])
+                            slps[frame,s1] = popt[1]
+                            slps[frame,s1+1] = popt[2]
+                            show()
+                        except:
+                            imshow(img[y1:y2,x1:x2],interpolation='nearest')
+                            pl.title('Bad Robot: %d'%(count))
+                            show()
+                    elif output in 'stdev':
+                        popt = gauss2dfit(img[y1:y2,x1:x2])
+                        slps[frame,s1] = popt[3]
+                        slps[frame,s1+1] = popt[4]
+                    elif output in 'allgauss':
+                        try:
+                            popt = gauss2dfit(img[y1:y2,x1:x2])
+                            slps[frame,s1] = popt[0]
+                            slps[frame,s1+1] = popt[1]
+                            slps[frame,s1+2] = popt[2]
+                            slps[frame,s1+3] = popt[3]
+                            slps[frame,s1+4] = popt[4]
+                            slps[frame,s1+5] = popt[5]
+                            slps[frame,s1+6] = popt[6]
+                            show()
+                        except:
+                            imshow(img[y1:y2,x1:x2],interpolation='nearest')
+                            pl.title('Bad Robot: %d'%(count))
+                            show()
+                    else:
+                        print 'Wrong whatever'
+                        return None
                     count += 1
     return slps
     #FITS.Write(slps.astype(np.float32),path+slpname,writeMode='s')
@@ -200,24 +246,40 @@ def centerofmass(array,threshold=None,useBrightest=0):
     cent[0] = np.sum(Xgrid*newarray)/totalmass
     return cent
 
-def gauss2d(shape,A,x0,y0,sigmax,sigmay,theta):
+def gauss2d((x,y),A,x0,y0,sigmax,sigmay,theta,offset):
     '''
-    theta in degrees
+    theta in degrees, returns raveled array
     '''
     t = theta*np.pi/180.
     vx = np.square(sigmax)
     vy = np.square(sigmay)
-    xrow = np.linspace(0,shape[1]-1,shape[1])-x0 -np.floor((shape[1]-1)/2.)
-    yrow = np.linspace(0,shape[0]-1,shape[0])-y0 -np.floor((shape[0]-1)/2.)
-    x,y = np.meshgrid(xrow,yrow)
+    x = x - x0
+    y = y - y0
     a = np.square(np.cos(t)/sigmax)+np.square(np.sin(t)/sigmay)
     b = 2.*(1/vx-1/vy)*np.cos(t)*np.sin(t)
     c = np.square(np.sin(t)/sigmax)+np.square(np.cos(t)/sigmay)
-    return A*np.exp(-0.5*(a*np.square(x)+b*x*y+c*np.square(y)))
+    bell = offset + A*np.exp(-0.5*(a*np.square(x)+b*x*y+c*np.square(y)))
+    return bell.ravel()
 
 def gauss2dfit(array):
-    # Least-square fitting. p0 is the initial guess
-    popt,pcov = optimize.curve_fit(circlefunc,xdata,slopes[:,1],p0=[5.,0.,0.])
+    ymax,xmax = np.unravel_index(array.argmax(),array.shape)
+    ymax = ymax -np.floor((array.shape[0]-1)/2.)
+    xmax = xmax -np.floor((array.shape[1]-1)/2.)
+    gmax = array.max()
+    # Least-square fitting. p0 is the initial guess. array is 2-D
+    intial_guess = (gmax,xmax,ymax,7.,7.,0.,0.)
+    
+    xrow = np.linspace(0,array.shape[1]-1, array.shape[1]) -np.floor((array.shape[1]-1)/2.)
+    yrow = np.linspace(0,array.shape[0]-1, array.shape[0]) -np.floor((array.shape[0]-1)/2.)
+    x,y = np.meshgrid(xrow,yrow)
+
+    x = x.ravel()
+    y = y.ravel()
+    xdata = (x,y)
+    ydata = array.ravel()
+    
+    popt,pcov = optimize.curve_fit(gauss2d,xdata,ydata,p0=intial_guess)
+    return popt
 
 def concatenatefiles(dirpath,acquire='slopes'):
     files = os.listdir(dirpath)
@@ -333,6 +395,20 @@ def covariance(set1,set2,norm=True):
             covyx[i] = covi[0,1]
     
     return np.transpose(np.array([covxx,covyy,covxy,covyx]))
+
+def autocorrelate(dataset):
+    '''
+    Auto-correlates 1d arrays
+    '''
+    cor = np.correlate(dataset,dataset,mode='full')
+    cor = cor[np.floor(cor.size/2.):]
+    siz = cor.size
+    if siz == dataset.size:
+        print 'Todo Bien en la Auto-Correlacion'
+    n = np.arange(siz)+1
+    n = n[::-1]
+    cor = cor/n
+    return cor
 
 def scattering(set1,set2,title='',xlabel='',ylabel=''):
     '''
