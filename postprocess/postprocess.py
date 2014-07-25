@@ -250,7 +250,7 @@ def gauss2d((x,y),A,x0,y0,sigmax,sigmay,theta,offset):
     '''
     theta in degrees, returns raveled array
     '''
-    t = theta*np.pi/180.
+    t = (theta%90.)*np.pi/180.
     vx = np.square(sigmax)
     vy = np.square(sigmay)
     x = x - x0
@@ -398,13 +398,12 @@ def covariance(set1,set2,norm=True):
 
 def autocorrelate(dataset):
     '''
-    Auto-correlates 1d arrays
+    Auto-correlates 1d arrays.
     '''
-    cor = np.correlate(dataset,dataset,mode='full')
+    dts = dataset - dataset.mean()
+    cor = np.correlate(dts,dts,mode='full')
     cor = cor[np.floor(cor.size/2.):]
     siz = cor.size
-    if siz == dataset.size:
-        print 'Todo Bien en la Auto-Correlacion'
     n = np.arange(siz)+1
     n = n[::-1]
     cor = cor/n
@@ -429,7 +428,7 @@ def scattering(set1,set2,title='',xlabel='',ylabel=''):
     lot = int(set1.shape[0]/4.)
     
     handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',set1[3*lot:4*lot],set2[3*lot:4*lot],'mo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
-    pl.legend(handle,('Stars','','','','Reference Line','%.3f*x+%.3f'%(a,b)))
+    pl.legend(handle,('Star 1\nSubap Lots','','','','Reference Line','%.3f*x+%.3f'%(a,b)))
     pl.title(title+'\nMean Residual Error: %.3f[pix^2]'%(res[0]/set1.shape[0]))
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)
