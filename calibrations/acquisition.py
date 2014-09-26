@@ -25,7 +25,7 @@ from BeagleDarc.Model import Camera
 from General_Calibration import Calibration
 
 class Acquisition:
-    def __init__(self,dir_name='slopes'):
+    def __init__(self,dir_name='slopes',camera='pike'):
         #Darc Controller instance
         self.camera_name = "SH"
         self.darc_instance = darc.Control(self.camera_name)
@@ -33,7 +33,7 @@ class Acquisition:
         self.bbbc = Controller()
         #self.logger = logging.getLogger(__name__)
         #Camera instance
-        self.SHCamera = Camera('camera')
+        self.SHCamera = Camera(camera)
 
         #
         self.niter = 5
