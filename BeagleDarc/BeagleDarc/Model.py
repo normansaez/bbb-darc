@@ -539,7 +539,7 @@ class Camera(object):
     @exptime.setter
     def exptime(self, value):
         self.bd.write(self._config_name, 'exptime', value)
-        self._ exptime= value
+        self._exptime= value
 
     @property
     def shutter(self):
