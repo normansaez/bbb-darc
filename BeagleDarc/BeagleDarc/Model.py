@@ -427,6 +427,8 @@ class Camera(object):
         self._rawdata_path = None
         self._refcent_path = None
         self._subapflag = None
+        self._exptime = None
+        self._shutter = None
         self._usebrightest = None
         self._maxshutter = None
         self._bg_iter = None
@@ -518,6 +520,36 @@ class Camera(object):
     def refcent_path(self, value):
         self.bd.write(self._config_name, 'refcent_path', value)
         self._refcent_path = value
+
+    @property
+    def subapflag(self):
+        self._subapflag= self.bd.config.get(self._config_name, 'subapflag')
+        return self._subapflag
+
+    @subapflag.setter
+    def subapflag(self, value):
+        self.bd.write(self._config_name, 'subapflag', value)
+        self._subapflag = value
+
+    @property
+    def exptime(self):
+        self._exptime= self.bd.config.get(self._config_name, 'exptime')
+        return self._exptime
+
+    @exptime.setter
+    def exptime(self, value):
+        self.bd.write(self._config_name, 'exptime', value)
+        self._ exptime= value
+
+    @property
+    def shutter(self):
+        self._shutter= self.bd.config.get(self._config_name, 'shutter')
+        return self._shutter
+
+    @shutter.setter
+    def shutter(self, value):
+        self.bd.write(self._config_name, 'shutter', value)
+        self._shutter= value
 
     @property
     def usebrightest(self):
@@ -638,16 +670,6 @@ class Camera(object):
     def fwhm(self, value):
         self.bd.write(self._config_name, 'fwhm', value)
         self._fwhm = value
-
-    @property
-    def subapflag(self):
-        self._subapflag= self.bd.config.get(self._config_name, 'subapflag')
-        return self._subapflag
-
-    @subapflag.setter
-    def subapflag(self, value):
-        self.bd.write(self._config_name, 'subapflag', value)
-        self._subapflag = value
 
     @property
     def image_path_dir(self):
