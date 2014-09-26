@@ -455,7 +455,6 @@ class Calibration:
 
             
 if __name__ == '__main__':
-    from General_Calibration import General_Calibration
-    cali = General_Calibration('SH')
-    array = cali.subaps_location(1)
-    print array
+    from General_Calibration import Calibration
+    cali = Calibration('SH')
+    array = cali.routine_calibration([1])

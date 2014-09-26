@@ -121,7 +121,6 @@ def im2(imgs,star_list,output='centerofmass',camera='camera',useBrightest=0):
                             slps[frame,s1+4] = popt[4]
                             slps[frame,s1+5] = popt[5]
                             slps[frame,s1+6] = popt[6]
-                            show()
                         except:
                             imshow(img[y1:y2,x1:x2],interpolation='nearest')
                             pl.title('Bad Robot: %d'%(count))
@@ -267,7 +266,7 @@ def gauss2dfit(array):
     xmax = xmax -np.floor((array.shape[1]-1)/2.)
     gmax = array.max()
     # Least-square fitting. p0 is the initial guess. array is 2-D
-    intial_guess = (gmax,xmax,ymax,7.,7.,0.,0.)
+    intial_guess = (gmax,xmax,ymax,7.,7.,45.,0.)
     
     xrow = np.linspace(0,array.shape[1]-1, array.shape[1]) -np.floor((array.shape[1]-1)/2.)
     yrow = np.linspace(0,array.shape[0]-1, array.shape[0]) -np.floor((array.shape[0]-1)/2.)
@@ -279,6 +278,7 @@ def gauss2dfit(array):
     ydata = array.ravel()
     
     popt,pcov = optimize.curve_fit(gauss2d,xdata,ydata,p0=intial_guess)
+    popt[5] = popt[5]%90.
     return popt
 
 def concatenatefiles(dirpath,acquire='slopes'):

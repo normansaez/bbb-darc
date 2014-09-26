@@ -150,14 +150,14 @@ class Plotter:
                         subaptrack += 1
                     tracker += 1
             
-                #if(len(self.star_list)<3):
-                #    filas = 1
-                #    columnas = len(self.star_list)
-                #else:
-                #    filas = 2
-                #    columnas = numpy.floor(((len(self.star_list)+1)/2.))
-                filas = 3
-                columnas = 7
+                if(len(self.star_list)<3):
+                    filas = 1
+                    columnas = len(self.star_list)
+                else:
+                    filas = 2
+                    columnas = numpy.floor(((len(self.star_list)+1)/2.))
+                #filas = 3
+                #columnas = 7
 
             for star_id in range(len(self.star_list)):
                 pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
@@ -231,16 +231,17 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/ground_all_v3/'
-        file_name = 'img_slopes_uB_all_value.fits'
-        star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        title = 'Sub-Aperture Spot Intensity, useB = all'
+        path_to_file = '/home/dani/BeagleAcquisition/SH/noise/images_led1/'
+        file_name = 'GAUSSThetas.fits'
+        #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
+        star_list = [1]
+        title = 'Sub-Aperture Theta\'s Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
         
         ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
-        ploty.subapstat(mode='mean')
+        ploty.subapstat(mode='variance')
 
     elif(cases[case] == 1):
 

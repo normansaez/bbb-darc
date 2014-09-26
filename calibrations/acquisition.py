@@ -53,13 +53,23 @@ class Acquisition:
         logging.info('About to take data with darc ...')
         slope_stream = None
 
+        ### BORRAR ESTO DESPUES DE DATOS EXCEPCIONALES
+        self.darc_instance.Set('bgImage',None)
+
         #Get slope_streams:
         if(self.cases[acquire]==0):
             slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
             logging.debug(slope_stream)
             return slope_stream
         elif(self.cases[acquire]==1):
-            slope_stream = self.darc_instance.SumData('rtcCalPxlBuf', self.niter,'f')[0]/float(self.niter)
+            ### BORRAR ESTO DESPUES DE DATOS EXCEPCIONALES
+            block = self.darc_instance.GetStreamBlock('SHrtcCalPxlBuf',self.niter)
+            block = block[block.keys()[0]]
+            block2 = numpy.zeros((self.niter,block[0][0].shape[0]))
+            for j in range(self.niter):
+                block2[j,:] = block[j][0]
+            slope_stream = block2.sum(0)/float(self.niter)
+            #slope_stream = self.darc_instance.SumData('rtcCalPxlBuf', self.niter,'f')[0]/float(self.niter)
             logging.debug(slope_stream)
             return slope_stream
         else:
@@ -252,7 +262,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'ground_all_v3'
+    dir_name = 'ground_all_v4_vertical_PhScr'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -260,10 +270,11 @@ if __name__ == '__main__':
     altitude = -1
     '''
     
-    acquire = 'both'
+    acquire = 'images'
     prefix = 'useB_0'
-    star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
+    #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
+    star_list = [1,18,26]
     altitude = 0.
     
 
