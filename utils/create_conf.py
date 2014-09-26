@@ -62,8 +62,8 @@ filehandler_cfg.write("fwhm = 6\n")
 filehandler_cfg.write("\n")
 filehandler_cfg.write("[sbig]\n")
 filehandler_cfg.write("camera = SBIG\n")
-filehandler_cfg.write("pxlx = 1920\n")
-filehandler_cfg.write("pxly = 1080\n")
+filehandler_cfg.write("pxlx = 765\n")
+filehandler_cfg.write("pxly = 510\n")
 filehandler_cfg.write("image_path = /home/dani/BeagleAcquisition/SBIG/\n")
 filehandler_cfg.write("bg_path = /home/dani/BeagleAcquisition/SBIG/BG/\n")
 filehandler_cfg.write("subaplocation_path = /home/dani/BeagleAcquisition/SBIG/subapLocation/\n")
@@ -86,8 +86,9 @@ filehandler_cfg.write("ygap = 37\n")
 filehandler_cfg.write("fwhm = 5\n")
 
 filehandler_cfg.write("\n")
+
 with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
     for row in spamreader:
         if row[1].__contains__('m') and not row[1].__contains__('name'):
             if row[1] == 'm1':
@@ -141,7 +142,7 @@ filehandler_cfg.close()
 filehandler_dic.write("LED_STATUS = {")
 lines = ""
 with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
     for row in spamreader:
         if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
             pass
@@ -162,7 +163,7 @@ dbus_list = list(sorted(dbus_set))
 #Generate LE_DICT
 filehandler_dic.write("LE_DICT = {")
 with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
     for row in spamreader:
         if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
             pass
