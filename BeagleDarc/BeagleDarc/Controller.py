@@ -155,4 +155,4 @@ if __name__ == '__main__':
     #print c.layer_move_skip_sensor('ground_layer')
     c.set_position('ground_layer',-5,200)
     import darc
-    c = darc.Control('SH')
+    c = darc.Control('pike')

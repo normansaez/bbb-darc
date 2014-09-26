@@ -33,19 +33,19 @@ class Calibration:
         #Beagle Controller instance
         self.bbbc = Controller()
         #Darc camera instance
-        self.SHCamera = Camera('camera')
+        self.pikeCamera = Camera('camera')
 
         #Parameters
         self.niter = int(5)
         self.finalniter = int(10)
         self.slopeniter = int(10)
-        self.nsubaps = int(self.SHCamera.nsubaps)                             # number of active subaps(208*2)
+        self.nsubaps = int(self.pikeCamera.nsubaps)                             # number of active subaps(208*2)
         self.nsubaps *= 2
-        self.nstars = self.SHCamera.nstars                                    # number of stars
-        self.maxShutter = float(self.SHCamera.maxshutter)                     # maximum shutter time. when shutter time is set outside
+        self.nstars = self.pikeCamera.nstars                                    # number of stars
+        self.maxShutter = float(self.pikeCamera.maxshutter)                     # maximum shutter time. when shutter time is set outside
                                                                     # the range [0:4095] it is taken as the modulus of tShutter/4095
-        self.SHsat = float(self.SHCamera.saturation)                          # SH saturation value
-        self.cameraName = self.SHCamera.camera
+        self.pikesat = float(self.pikeCamera.saturation)                          # pike saturation value
+        self.cameraName = self.pikeCamera.camera
         self.shutter = self.maxShutter
         self.majorpattern = None
         self.minorpattern = None
@@ -63,7 +63,7 @@ class Calibration:
         #1- Setting useBrightest, loaded from the config. file.
         '''
         
-        #self.c.Set('useBrightest',2*float(self.SHCamera.usebrightest))
+        #self.c.Set('useBrightest',2*float(self.pikeCamera.usebrightest))
         self.c.Set('useBrightest',0)
         
     def find_useBrightest(self):
@@ -73,7 +73,7 @@ class Calibration:
         nBrightest = 100                                    # range of values
                                                             # to test
         noise = numpy.zeros(nBrightest)
-        cameraName = 'SH'
+        cameraName = 'pike'
         frames = numpy.zeros([hardniter,self.nsubaps])
         self.bbbc.star_on(1)
         for i in range(0,nBrightest):
@@ -89,7 +89,7 @@ class Calibration:
 
         print noise.argmin(0)
         self.c.Set('useBrightest',-float(noise.argmin(0)))
-        self.SHCamera.usebrightest = -int(noise.argmin(0))
+        self.pikeCamera.usebrightest = -int(noise.argmin(0))
         pylab.plot(noise)
         pylab.show()
         
@@ -101,23 +101,23 @@ class Calibration:
         threshold = 1.0
         for star_id in range(1,1+nstars):
             star = Star(star_id)
-            ok = star.setup(self.SHCamera)
+            ok = star.setup(self.pikeCamera)
             if(ok):
                 slope_niter = find_niter(stream,threshold)
                 if(slope_niter[0] != -1):
                     star.slope_iter = slope_niter[0]
-                    FITS.Write(slope_niter[1],self.SHCamera.rawdata_path + 'SH_slopes_noscreen_led_%d.fits'%(star_id),writeMode='a')
+                    FITS.Write(slope_niter[1],self.pikeCamera.rawdata_path + 'SH_slopes_noscreen_led_%d.fits'%(star_id),writeMode='a')
                 else:
                     print 'Relax threshold'
                              
     def find_bg_niter():
         stream = 'rtcPxlBuf'
         threshold = 10
-        c.Set('fwShutter',self.SHCamera.maxshutter)
+        c.Set('fwShutter',self.pikeCamera.maxshutter)
         bg_niter = find_niter(stream,threshold)
         if(bg_iter[0] != -1):
-            self.SHCamera.bg_niter = bg_niter[0]
-            FITS.Write(bg_niter[1],self.SHCamera.rawdata_path + 'SH_bgImage_shutter_%d.fits'%(int(self.SHCamera.maxshutter)),writeMode='a')
+            self.pikeCamera.bg_niter = bg_niter[0]
+            FITS.Write(bg_niter[1],self.pikeCamera.rawdata_path + 'SH_bgImage_shutter_%d.fits'%(int(self.pikeCamera.maxshutter)),writeMode='a')
         else:
             print 'Relax threshold'
         
@@ -210,7 +210,7 @@ class Calibration:
         '''
         #2-3 bgImage & fwShutter iteration
         star = Star(star_id)
-        star.setup(self.SHCamera)
+        star.setup(self.pikeCamera)
         shutter = self.maxShutter*0.3
         self.c.Set('bgImage',None)
         self.c.Set('fwShutter',int(shutter))
@@ -224,18 +224,18 @@ class Calibration:
         relativemax = 0.7
         threshold = 0.05
 
-        while(numpy.absolute(auxImageMax/self.SHsat-relativemax)>threshold):
+        while(numpy.absolute(auxImageMax/self.pikesat-relativemax)>threshold):
             # The while condition is set so that the maximum value found in the image
             # is around 60% of the saturation value
             print "shutter: ",
             print shutter
             print 'auxImageMax: ',
-            print str(100*auxImageMax/self.SHsat)+'%'
-            shutter = shutter*(self.SHsat*float(relativemax))/auxImageMax
+            print str(100*auxImageMax/self.pikesat)+'%'
+            shutter = shutter*(self.pikesat*float(relativemax))/auxImageMax
             if(shutter>=self.maxShutter):
                 # Protection
                 shutter = self.maxShutter
-                auxImageMax = self.SHsat*relativemax
+                auxImageMax = self.pikesat*relativemax
                 self.c.Set('fwShutter',int(shutter))
             else:
                 self.c.Set('bgImage',None)
@@ -250,9 +250,9 @@ class Calibration:
         print "Final shutter: ",
         print shutter
         print 'Final auxImageMax: ',
-        print str(100*auxImageMax/self.SHsat)+'%'
+        print str(100*auxImageMax/self.pikesat)+'%'
         self.c.Set('bgImage',None)
-        bgImage = self.c.SumData('rtcCalPxlBuf',int(self.SHCamera.bg_iter),'f')[0]/float(self.SHCamera.bg_iter)
+        bgImage = self.c.SumData('rtcCalPxlBuf',int(self.pikeCamera.bg_iter),'f')[0]/float(self.pikeCamera.bg_iter)
         self.c.Set('bgImage',bgImage)
         self.flushAll()
         self.bbbc.star_on(star_id)
@@ -261,28 +261,28 @@ class Calibration:
         self.c.Set('bgImage',bgImage)
         
         #Saving values found and removing previous values
-        files = os.listdir(self.SHCamera.bg_path)
+        files = os.listdir(self.pikeCamera.bg_path)
         files = [s for s in files if 'led_%d_'%(star_id) in s]
         if(files!=[]):
             for file_name in files:
-                os.remove(self.SHCamera.bg_path + file_name)
-        FITS.Write(bgImage,self.SHCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
-        FITS.Write(auxImage.reshape((self.SHCamera.pxly,self.SHCamera.pxlx)),self.SHCamera.bg_path + 'SH_aux_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
+                os.remove(self.pikeCamera.bg_path + file_name)
+        FITS.Write(bgImage,self.pikeCamera.bg_path + 'SH_bg_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
+        FITS.Write(auxImage.reshape((self.pikeCamera.pxly,self.pikeCamera.pxlx)),self.pikeCamera.bg_path + 'SH_aux_led_%d_shutter_%d.fits'%(star_id,int(shutter)),writeMode='w')
 
     def pupil_location(self,star_id):
         #Parameters
         self.c.Set('bgImage',None)
-        allsubaps = self.SHCamera.allsubaps                    # Active+Inactive subaps
+        allsubaps = self.pikeCamera.allsubaps                    # Active+Inactive subaps
         side = int(numpy.sqrt(allsubaps))
-        nstars = self.SHCamera.nstars
+        nstars = self.pikeCamera.nstars
         subapLocation = numpy.zeros((allsubaps,6))             # Centred on (0,0)
         subapLocation[:,2] = subapLocation[:,2] + 1
         subapLocation[:,5] = subapLocation[:,5] + 1
 
-        Xwidth = self.SHCamera.xwidth
-        Ywidth = self.SHCamera.ywidth
-        Xgap = self.SHCamera.xgap
-        Ygap = self.SHCamera.ygap
+        Xwidth = self.pikeCamera.xwidth
+        Ywidth = self.pikeCamera.ywidth
+        Xgap = self.pikeCamera.xgap
+        Ygap = self.pikeCamera.ygap
 
         # Checking for parity
         xRow = numpy.array([])
@@ -308,12 +308,12 @@ class Calibration:
             self.minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
             centx = float(Xwidth+1)/2 - 0.5
             centy = float(Ywidth+1)/2 - 0.5
-            fwhm = self.SHCamera.fwhm
+            fwhm = self.pikeCamera.fwhm
             subapLocAux = subapLocation
             Aux = numpy.zeros((allsubaps,6))
             Aux[:,0:2] = subapLocAux[:,0:2] - subapLocation[0,0]
             Aux[:,3:5] = subapLocAux[:,3:5] - subapLocation[0,3]
-            subapflag = FITS.Read(self.SHCamera.subapflag)[1]
+            subapflag = FITS.Read(self.pikeCamera.subapflag)[1]
             subapflag = subapflag.ravel()
             
             for y in range(0,Ywidth):
@@ -331,7 +331,7 @@ class Calibration:
         s = Star(star_id)
         #image = self.c.SumData("rtcCalPxlBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
         image = self.c.SumData("rtcPxlBuf",1,"f")[0]
-        image = image.reshape((self.SHCamera.pxly,self.SHCamera.pxlx))
+        image = image.reshape((self.pikeCamera.pxly,self.pikeCamera.pxlx))
         correlation = scipy.signal.fftconvolve(image,self.majorpattern,mode='same')
         argmx = numpy.unravel_index(correlation.argmax(),correlation.shape)
         print 'Pupil centre for star %d: '%(star_id),
@@ -343,21 +343,21 @@ class Calibration:
 
 
         #Saving values found and removing previous values
-        files = os.listdir(self.SHCamera.subaplocation_path)
+        files = os.listdir(self.pikeCamera.subaplocation_path)
         files = [st for st in files if 'led_%d.fits'%(star_id) in st]
         if(files!=[]):
             for file_name in files:
-                os.remove(self.SHCamera.subaplocation_path + file_name)
-        FITS.Write(subapLocation,self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='w')
+                os.remove(self.pikeCamera.subaplocation_path + file_name)
+        FITS.Write(subapLocation,self.pikeCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='w')
 
-        FITS.Write(image,self.SHCamera.subaplocation_path + 'image_%d.fits'%(star_id),writeMode='w')
-        FITS.Write(correlation,self.SHCamera.subaplocation_path + 'correlation_%d.fits'%(star_id),writeMode='w')
-        FITS.Write(self.majorpattern,self.SHCamera.subaplocation_path + 'major.fits',writeMode='w')
-        FITS.Write(self.minorpattern,self.SHCamera.subaplocation_path + 'minor.fits',writeMode='w')
+        FITS.Write(image,self.pikeCamera.subaplocation_path + 'image_%d.fits'%(star_id),writeMode='w')
+        FITS.Write(correlation,self.pikeCamera.subaplocation_path + 'correlation_%d.fits'%(star_id),writeMode='w')
+        FITS.Write(self.majorpattern,self.pikeCamera.subaplocation_path + 'major.fits',writeMode='w')
+        FITS.Write(self.minorpattern,self.pikeCamera.subaplocation_path + 'minor.fits',writeMode='w')
 
         self.bbbc.star_off(star_id)
 
-        subapflag = FITS.Read(self.SHCamera.subapflag)[1]
+        subapflag = FITS.Read(self.pikeCamera.subapflag)[1]
         subapflag = subapflag.ravel()
         v = subapflag.argmax()
         print '1st subap centre for star %d: '%(star_id),
@@ -377,7 +377,7 @@ class Calibration:
         self.bbbc.star_on(star_id)
         s = Star(star_id)
         if(s.valid):
-            subapLocation = FITS.Read(self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id))[1]
+            subapLocation = FITS.Read(self.pikeCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id))[1]
             self.c.Set('subapLocation',subapLocation.astype(numpy.float32))
             self.c.Set("refCentroids",None)
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
@@ -389,26 +389,26 @@ class Calibration:
             print round(cent[1::2].mean())
 
             #Saving values found and removing previous values
-            files = os.listdir(self.SHCamera.subaplocation_path)
+            files = os.listdir(self.pikeCamera.subaplocation_path)
             files = [st for st in files if 'led_%d.fits'%(star_id) in st]
             if(files!=[]):
                 for file_name in files:
-                    os.remove(self.SHCamera.subaplocation_path + file_name)
+                    os.remove(self.pikeCamera.subaplocation_path + file_name)
 
-            FITS.Write(subapLocation.astype(numpy.float32),self.SHCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
+            FITS.Write(subapLocation.astype(numpy.float32),self.pikeCamera.subaplocation_path + 'SH_subapLocation_led_%d.fits'%(star_id),writeMode='a')
 
             #5- Ref Cent
             self.c.Set('subapLocation',subapLocation.astype(numpy.float32))
             cent = self.c.SumData("rtcCentBuf",s.slope_iter,"f")[0]/float(s.slope_iter)
 
             #Saving values found and removing previous values
-            files = os.listdir(self.SHCamera.refcent_path)
+            files = os.listdir(self.pikeCamera.refcent_path)
             files = [st for st in files if 'led_%d.fits'%(star_id) in st]
             if(files!=[]):
                 for file_name in files:
-                    os.remove(self.SHCamera.refcent_path + file_name)
+                    os.remove(self.pikeCamera.refcent_path + file_name)
 
-            FITS.Write(cent.astype(numpy.float32),self.SHCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id),writeMode='a')
+            FITS.Write(cent.astype(numpy.float32),self.pikeCamera.refcent_path+'SH_RefCent_led_%d.fits'%(star_id),writeMode='a')
             self.c.Set('refCentroids',cent.astype(numpy.float32))
         else:
             print 'No subaps for led_%d'%(star_id)
@@ -456,5 +456,5 @@ class Calibration:
             
 if __name__ == '__main__':
     from General_Calibration import Calibration
-    cali = Calibration('SH')
+    cali = Calibration('pike')
     array = cali.routine_calibration([1])

@@ -27,17 +27,17 @@ from General_Calibration import Calibration
 class Acquisition:
     def __init__(self,dir_name='slopes',camera='pike'):
         #Darc Controller instance
-        self.camera_name = "SH"
+        self.camera_name = "pike"
         self.darc_instance = darc.Control(self.camera_name)
         #Beagle Controller instance
         self.bbbc = Controller()
         #self.logger = logging.getLogger(__name__)
         #Camera instance
-        self.SHCamera = Camera(camera)
+        self.pikeCamera = Camera(camera)
 
         #
         self.niter = 5
-        self.image_path = self.SHCamera.image_path
+        self.image_path = self.pikeCamera.image_path
         self.dir_name = dir_name
         self.cases = {'slopes':0,'images':1,'both':2}
 
@@ -63,7 +63,7 @@ class Acquisition:
             return slope_stream
         elif(self.cases[acquire]==1):
             ### BORRAR ESTO DESPUES DE DATOS EXCEPCIONALES
-            block = self.darc_instance.GetStreamBlock('SHrtcCalPxlBuf',self.niter)
+            block = self.darc_instance.GetStreamBlock('pikertcCalPxlBuf',self.niter)
             block = block[block.keys()[0]]
             block2 = numpy.zeros((self.niter,block[0][0].shape[0]))
             for j in range(self.niter):
@@ -117,7 +117,7 @@ class Acquisition:
             # led on
             self.bbbc.star_off(1)
             for star in star_list:
-                star.setup(self.SHCamera)
+                star.setup(self.pikeCamera)
                 self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
                 if(self.cases[acquire]==0):
@@ -147,18 +147,18 @@ class Acquisition:
         if fpf==0:
             fpf = iterations
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        cali = Calibration(self.SHCamera.camera)
+        cali = Calibration(self.pikeCamera.camera)
         cali.routine_calibration(star_list)
         all_slopes = None
         all_images = None
         cmd_list = None
         if(self.cases[acquire]==0):
-            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.SHCamera.nsubaps))
+            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.pikeCamera.nsubaps))
         elif(self.cases[acquire]==1):
-            all_images = numpy.zeros((fpf,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_images = numpy.zeros((fpf,len(star_list)*self.pikeCamera.pxlx*self.pikeCamera.pxly))
         elif(self.cases[acquire]==2):
-            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.SHCamera.nsubaps))
-            all_images = numpy.zeros((fpf,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.pikeCamera.nsubaps))
+            all_images = numpy.zeros((fpf,len(star_list)*self.pikeCamera.pxlx*self.pikeCamera.pxly))
         else:
             print 'Can\'t acquire!'
             return
@@ -244,7 +244,7 @@ class Acquisition:
         return cmd_list
 
     def first_calibration(self,star_list):
-        cali = Calibration(self.SHCamera.camera)
+        cali = Calibration(self.pikeCamera.camera)
         cali.first_calibration(star_list)
 
 if __name__ == '__main__':
