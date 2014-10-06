@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: July the 24th, 2014
+Last update: October the 6th, 2014
 '''
 
 import FITS
@@ -434,7 +434,19 @@ def scattering(set1,set2,title='',xlabel='',ylabel=''):
     pl.ylabel(ylabel)
 
     show()
+
+def unpack(StreamBlock):
+    '''
+    Unpack a StreamBlock as given by DARC's GetStreamBlock()
+    '''
+    block = StreamBlock[StreamBlock.keys()[0]]
+    fpf = len(block)
+    images = np.zeros((fpf),block[0][0].size)
+    for j in range(fpf):
+        images[j,:] = block[j][0]
     
+    return images
+
 if __name__=='__main__':
     #formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.gz',acquire='slopes')
     covsalt = covariance(valslopes,annslopes,norm=True)

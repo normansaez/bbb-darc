@@ -10,10 +10,11 @@ import glob
 import logging
 import random
 import ConfigParser
-import numpy
+import numpy as np
 import darc
 import FITS
 import matplotlib.pyplot as plt
+import postprocess as pp
 
 from optparse import OptionParser
 from subprocess import Popen, PIPE
@@ -26,20 +27,25 @@ from General_Calibration import Calibration
 
 class Acquisition:
     def __init__(self,dir_name='slopes',camera='pike'):
+        #Camera instance
+        self.Cam = Camera(camera)
         #Darc Controller instance
-        self.camera_name = "SH"
-        self.darc_instance = darc.Control(self.camera_name)
+        self.c = darc.Control(self.Cam.name)
         #Beagle Controller instance
         self.bbbc = Controller()
         #self.logger = logging.getLogger(__name__)
         #Camera instance
-        self.SHCamera = Camera(camera)
+        self.Cam = Camera(camera)
 
         #
         self.niter = 5
-        self.image_path = self.SHCamera.image_path
+        self.image_path = self.Cam.image_path
         self.dir_name = dir_name
         self.cases = {'slopes':0,'images':1,'both':2}
+
+    def grab(stream,niter):
+        taken = pp.unpack(self.c.GetStreamBlock(self.Cam.name+'rtcPxlBuf',niter)).sum(0)/float(niter)
+        return taken
 
     def grab_data_from_darc(self,acquire):
         '''
@@ -53,23 +59,13 @@ class Acquisition:
         logging.info('About to take data with darc ...')
         slope_stream = None
 
-        ### BORRAR ESTO DESPUES DE DATOS EXCEPCIONALES
-        self.darc_instance.Set('bgImage',None)
-
         #Get slope_streams:
         if(self.cases[acquire]==0):
-            slope_stream = self.darc_instance.SumData('rtcCentBuf', self.niter,'f')[0]/float(self.niter)
+            slope_stream = self.grab('rtcCentBuf',self.niter)
             logging.debug(slope_stream)
             return slope_stream
         elif(self.cases[acquire]==1):
-            ### BORRAR ESTO DESPUES DE DATOS EXCEPCIONALES
-            block = self.darc_instance.GetStreamBlock('SHrtcCalPxlBuf',self.niter)
-            block = block[block.keys()[0]]
-            block2 = numpy.zeros((self.niter,block[0][0].shape[0]))
-            for j in range(self.niter):
-                block2[j,:] = block[j][0]
-            slope_stream = block2.sum(0)/float(self.niter)
-            #slope_stream = self.darc_instance.SumData('rtcCalPxlBuf', self.niter,'f')[0]/float(self.niter)
+            slope_stream = self.grab('rtcCalPxlBuf',self.niter)
             logging.debug(slope_stream)
             return slope_stream
         else:
@@ -107,26 +103,26 @@ class Acquisition:
             images_frame = None
 
             if(self.cases[acquire]==0):
-                slopes_frame = numpy.array([])
+                slopes_frame = np.array([])
             elif(self.cases[acquire]==1):
-                images_frame = numpy.array([])
+                images_frame = np.array([])
             elif(self.cases[acquire]==2):
-                slopes_frame = numpy.array([])
-                images_frame = numpy.array([])
+                slopes_frame = np.array([])
+                images_frame = np.array([])
 
             # led on
             self.bbbc.star_off(1)
             for star in star_list:
-                star.setup(self.SHCamera)
+                star.setup(self.Cam)
                 self.bbbc.star_on(int(star.image_prefix))
                 #take img with darc
                 if(self.cases[acquire]==0):
-                    slopes_frame = numpy.append(slopes_frame,self.grab_data_from_darc(acquire))
+                    slopes_frame = np.append(slopes_frame,self.grab_data_from_darc(acquire))
                 elif(self.cases[acquire]==1):
-                    images_frame = numpy.append(images_frame,self.grab_data_from_darc(acquire))
+                    images_frame = np.append(images_frame,self.grab_data_from_darc(acquire))
                 elif(self.cases[acquire]==2):
-                    slopes_frame = numpy.append(slopes_frame,self.grab_data_from_darc('slopes'))
-                    images_frame = numpy.append(images_frame,self.grab_data_from_darc('images'))
+                    slopes_frame = np.append(slopes_frame,self.grab_data_from_darc('slopes'))
+                    images_frame = np.append(images_frame,self.grab_data_from_darc('images'))
                 
                 #led off
                 self.bbbc.star_off(int(star.image_prefix))
@@ -147,18 +143,18 @@ class Acquisition:
         if fpf==0:
             fpf = iterations
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        cali = Calibration(self.SHCamera.camera)
+        cali = Calibration(self.Cam.camera)
         cali.routine_calibration(star_list)
         all_slopes = None
         all_images = None
         cmd_list = None
         if(self.cases[acquire]==0):
-            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.SHCamera.nsubaps))
+            all_slopes = np.zeros((fpf,len(star_list)*2*self.Cam.nsubaps))
         elif(self.cases[acquire]==1):
-            all_images = numpy.zeros((fpf,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_images = np.zeros((fpf,len(star_list)*self.Cam.pxlx*self.Cam.pxly))
         elif(self.cases[acquire]==2):
-            all_slopes = numpy.zeros((fpf,len(star_list)*2*self.SHCamera.nsubaps))
-            all_images = numpy.zeros((fpf,len(star_list)*self.SHCamera.pxlx*self.SHCamera.pxly))
+            all_slopes = np.zeros((fpf,len(star_list)*2*self.Cam.nsubaps))
+            all_images = np.zeros((fpf,len(star_list)*self.Cam.pxlx*self.Cam.pxly))
         else:
             print 'Can\'t acquire!'
             return
@@ -184,17 +180,17 @@ class Acquisition:
             if((i+1)%fpf==0 or i==(iterations-1)):
                 if os.path.exists(self.image_path+self.dir_name) is False:
                     os.mkdir(self.image_path+self.dir_name)
-                slope_name = self.camera_name + '_slopes_' + prefix + '_' +str(fpf).zfill(3) + '_T' +Start_time
-                image_name = self.camera_name + '_images_' + prefix + '_' +str(fpf).zfill(3) + '_T' +Start_time 
+                slope_name = self.Cam.name + '_slopes_' + prefix + '_' +str(fpf).zfill(3) + '_T' +Start_time
+                image_name = self.Cam.name + '_images_' + prefix + '_' +str(fpf).zfill(3) + '_T' +Start_time 
                 slp_path = os.path.normpath(self.image_path+self.dir_name+'/'+slope_name)
                 img_path = os.path.normpath(self.image_path+self.dir_name+'/'+image_name)
                 if(self.cases[acquire]==0):
-                    FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='w')
+                    FITS.Write(all_slopes.astype(np.float32), slp_path, writeMode='w')
                 elif(self.cases[acquire]==1):
-                    FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='w')
+                    FITS.Write(all_images.astype(np.float32), img_path, writeMode='w')
                 elif(self.cases[acquire]==2):
-                    FITS.Write(all_slopes.astype(numpy.float32), slp_path, writeMode='w')
-                    FITS.Write(all_images.astype(numpy.float32), img_path, writeMode='w')
+                    FITS.Write(all_slopes.astype(np.float32), slp_path, writeMode='w')
+                    FITS.Write(all_images.astype(np.float32), img_path, writeMode='w')
                 logging.info('Data saved : %s' % slp_path)
                 Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
                 if(self.cases[acquire]==0):
@@ -244,7 +240,7 @@ class Acquisition:
         return cmd_list
 
     def first_calibration(self,star_list):
-        cali = Calibration(self.SHCamera.camera)
+        cali = Calibration(self.Cam.camera)
         cali.first_calibration(star_list)
 
 if __name__ == '__main__':
@@ -278,7 +274,7 @@ if __name__ == '__main__':
     altitude = 0.
     
 
-    a = Acquisition(dir_name=dir_name)
+    a = Acquisition(dir_name=dir_name,camera='sbig')
     iterations = 1200
     numberoffits = 1
     fpf = 20

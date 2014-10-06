@@ -235,20 +235,20 @@ class Star(object):
         import FITS
         import os
         import re
-        c = darc.Control(camera.camera)
+        c = darc.Control(camera.name)
         if(self.valid):
             localsubap = FITS.Read(camera.subaplocation_path+'SH_subapLocation_led_%d.fits'%(self._star))[1]
             localrefcent = FITS.Read(camera.refcent_path+'SH_RefCent_led_%d.fits'%(self._star))[1]
 
             files = os.listdir(camera.bg_path)
             file_name = [s for s in files if 'led_%d_'%(self._star) in s and '_bg_' in s][0]
-            localshutter = int(re.findall('\d+',re.findall('shutter_\d+',file_name)[0])[0])
+            localexptime = int(re.findall('\d+',re.findall('exptime_\d+',file_name)[0])[0])
             localbg = FITS.Read(camera.bg_path + file_name)[1]
 
             c.Set('bgImage',localbg)
             c.Set('subapLocation',localsubap)
             c.Set('refCentroids',localrefcent)
-            c.Set('fwShutter',localshutter)
+            c.Set(camera.exptime,localexptime)
             return True
         else:
             print 'Cannot set star (led_%d)'%(self._star)
@@ -418,7 +418,7 @@ class Camera(object):
     def __init__(self, config_name):
         self.bd = BD()
         self._config_name = config_name
-        self._camera = None
+        self._name = None
         self._pxlx = None 
         self._pxly = None 
         self._image_path = None
@@ -430,7 +430,7 @@ class Camera(object):
         self._exptime = None
         self._shutter = None
         self._usebrightest = None
-        self._maxshutter = None
+        self._maxexptime = None
         self._bg_iter = None
         self._allsubaps = None
         self._saturation = None
@@ -442,14 +442,14 @@ class Camera(object):
         self._fwhm = None
 
     @property
-    def camera(self):
-        self._camera = self.bd.config.get(self._config_name, 'camera')
-        return self._camera
+    def name(self):
+        self._name = self.bd.config.get(self._config_name, 'name')
+        return self._name
 
-    @camera.setter
-    def camera(self, value):
-        self.bd.write(self._config_name, 'camera', value)
-        self._camera = value
+    @name.setter
+    def name(self, value):
+        self.bd.write(self._config_name, 'name', value)
+        self._name = value
 
     @property
     def pxlx(self):
@@ -572,14 +572,14 @@ class Camera(object):
         self._bg_iter = value
         
     @property
-    def maxshutter(self):
-        self._maxshutter = self.bd.config.getfloat(self._config_name, 'maxshutter')
-        return self._maxshutter
+    def maxexptime(self):
+        self._maxexptime = self.bd.config.getfloat(self._config_name, 'maxexptime')
+        return self._maxexptime
 
-    @maxshutter.setter
-    def maxshutter(self, value):
-        self.bd.write(self._config_name, 'maxshutter', value)
-        self._maxshutter = value
+    @maxexptime.setter
+    def maxexptime(self, value):
+        self.bd.write(self._config_name, 'maxexptime', value)
+        self._maxexptime = value
 
     @property
     def nstars(self):
