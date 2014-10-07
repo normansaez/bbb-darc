@@ -237,8 +237,8 @@ class Star(object):
         import re
         c = darc.Control(camera.name)
         if(self.valid):
-            localsubap = FITS.Read(camera.subaplocation_path+'SH_subapLocation_led_%d.fits'%(self._star))[1]
-            localrefcent = FITS.Read(camera.refcent_path+'SH_RefCent_led_%d.fits'%(self._star))[1]
+            localsubap = FITS.Read(camera.subaplocation_path+camera.name+'_subapLocation_led_%d.fits'%(self._star))[1]
+            localrefcent = FITS.Read(camera.refcent_path+camera.name+'_RefCent_led_%d.fits'%(self._star))[1]
 
             files = os.listdir(camera.bg_path)
             file_name = [s for s in files if 'led_%d_'%(self._star) in s and '_bg_' in s][0]
