@@ -283,7 +283,7 @@ def gauss2dfit(array):
 
 def concatenatefiles(dirpath,acquire='slopes'):
     files = os.listdir(dirpath)
-    files = [s for s in files if acquire in s and '.fits' in s and 'SH' in s]
+    files = [s for s in files if acquire in s and '.fits' in s and 'pike' in s]
     files = sorted(files)
     final = None
     aux = None
@@ -318,7 +318,7 @@ def formataltitude(dirpath,filename,altitude_list,acquire='slopes'):
     '''
     
     files = os.listdir(dirpath)
-    files = [s for s in files if '_'+acquire+'_' in s and '.fits' in s and 'SH' in s]
+    files = [s for s in files if '_'+acquire+'_' in s and '.fits' in s and 'pike' in s]
     final = None
     aux = None
     firstfinal = 0

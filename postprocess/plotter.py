@@ -18,16 +18,16 @@ import scipy
 from scipy import signal
 
 class Plotter:
-    def __init__(self,path_to_file,file_name,star_list,cameraName='SH',title=None,xlabel=None,ylabel=None,figlegend=None):
+    def __init__(self,path_to_file,file_name,star_list,cameraName='pike',title=None,xlabel=None,ylabel=None,figlegend=None):
         #Darc camera instance
-        self.SHCamera = Camera('camera')
+        self.pikeCamera = Camera('camera')
 
         #Parameters
-        self.nsubaps = int(self.SHCamera.nsubaps)                             # number of active subaps(208*2)
+        self.nsubaps = int(self.pikeCamera.nsubaps)                             # number of active subaps(208*2)
         self.nsubaps *= 2
-        self.nstars = self.SHCamera.nstars                                    # number of stars
+        self.nstars = self.pikeCamera.nstars                                    # number of stars
 
-        self.cameraName = self.SHCamera.camera
+        self.cameraName = self.pikeCamera.camera
         self.majorpattern = None
         self.minorpattern = None
         self.grid = None
@@ -71,17 +71,17 @@ class Plotter:
 
 
         #Parameters
-        allsubaps = self.SHCamera.allsubaps                    # Active+Inactive subaps
+        allsubaps = self.pikeCamera.allsubaps                    # Active+Inactive subaps
         side = int(numpy.sqrt(allsubaps))
-        nstars = self.SHCamera.nstars
+        nstars = self.pikeCamera.nstars
         subapLocation = numpy.zeros((allsubaps,6))             # Centred on (0,0)
         subapLocation[:,2] = subapLocation[:,2] + 1
         subapLocation[:,5] = subapLocation[:,5] + 1
 
-        Xwidth = self.SHCamera.xwidth
-        Ywidth = self.SHCamera.ywidth
-        Xgap = self.SHCamera.xgap
-        Ygap = self.SHCamera.ygap
+        Xwidth = self.pikeCamera.xwidth
+        Ywidth = self.pikeCamera.ywidth
+        Xgap = self.pikeCamera.xgap
+        Ygap = self.pikeCamera.ygap
 
         # Checking for parity
         xRow = numpy.array([])
@@ -109,7 +109,7 @@ class Plotter:
             Aux = numpy.zeros((allsubaps,6))
             Aux[:,0:2] = subapLocAux[:,0:2] - subapLocation[0,0]
             Aux[:,3:5] = subapLocAux[:,3:5] - subapLocation[0,3]
-            subapflag = FITS.Read(self.SHCamera.subapflag)[1]
+            subapflag = FITS.Read(self.pikeCamera.subapflag)[1]
             subapflag = subapflag.ravel()
             
             fig = pl.figure(1)
@@ -209,8 +209,8 @@ class Plotter:
         '''
         oli = FITS.Read(self.path+self.filename)[1]
         ola = oli.mean(axis=0)
-        if(ola.shape[0]/numpy.float(self.SHCamera.pxlx*self.SHCamera.pxlx) >= 2):
-            print 'Only plotting first star out of %d'%(ola.shape[0]/numpy.float(self.SHCamera.pxlx*self.SHCamera.pxlx))
+        if(ola.shape[0]/numpy.float(self.pikeCamera.pxlx*self.pikeCamera.pxlx) >= 2):
+            print 'Only plotting first star out of %d'%(ola.shape[0]/numpy.float(self.pikeCamera.pxlx*self.pikeCamera.pxlx))
         
         i,j = numpy.ogrid[-pixelSize*arraySize/2.:pixelSize*arraySize/2.:w.shape[0]*1j,0:0:w.shape[0]*1j]
         Y = i*1000 + j
@@ -240,7 +240,7 @@ if __name__ == '__main__':
         ylabel = 'Y pixels'
         figlegend = None
         
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.subapstat(mode='variance')
 
     elif(cases[case] == 1):
@@ -253,7 +253,7 @@ if __name__ == '__main__':
         ylabel = 'Pixels'
         figlegend = ('Xmean','Ymean','Xvar','Yvar')
 
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.stat_curve()
 
     elif(cases[case] == 2):
@@ -266,7 +266,7 @@ if __name__ == '__main__':
         ylabel = 'Pixels'
         figlegend = ('Xmean','Ymean','Xvar','Yvar')         
         
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.surface()
 
     elif(cases[case] == 3):
@@ -279,5 +279,5 @@ if __name__ == '__main__':
         ylabel = 'Y pixels'
         figlegend = None
         
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='SH',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.join_slopes_altitudes()
