@@ -5,7 +5,7 @@ yet thought of.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: October the 6th, 2014
+Last update: October the 10th, 2014
 '''
 
 import FITS
@@ -24,12 +24,13 @@ from BeagleDarc.Model import Star
 from scipy import optimize
 #from scipy import signal
 
-def im2(imgs,star_list,output='centerofmass',camera='camera',useBrightest=0):
+def im2(imgs,star_list,cam,output='centerofmass',useBrightest=0):
     '''
     Returns something from the images.
     Your options are 'centerofmass' for center of mass centroids,
                      'centerofgauss' for gauss fitted centroids,
-                     'stdev' for standard deviation
+                     'stdev' for standard deviation as the gaussian parameter
+                     from gaussian fit
                      'allgauss' for all gaussian parameters
     
     VARIABLES
@@ -53,7 +54,6 @@ def im2(imgs,star_list,output='centerofmass',camera='camera',useBrightest=0):
                            Example: star 5 at 3 different altitudes -> star_list = [5,5,5]
     '''
     #imgs = FITS.Read(path+imname)[1]
-    cam = Camera(camera)
     slps = None
     npix = cam.pxlx*cam.pxly
     subapFlag = FITS.Read(cam.subapflag)[1].ravel()
@@ -134,7 +134,7 @@ def im2(imgs,star_list,output='centerofmass',camera='camera',useBrightest=0):
 
 
 
-def subapBrightest(imgs,star_list,camera='camera',useBrightest=1):
+def subapBrightest(imgs,star_list,cam,useBrightest=1):
     '''
     Returns mean of useBrightest pixels in subaps
     When useBrightest=-1, mean of all pixels in subaps are returned
@@ -160,7 +160,6 @@ def subapBrightest(imgs,star_list,camera='camera',useBrightest=1):
                            Example: star 5 at 3 different altitudes -> star_list = [5,5,5]
     '''
     #imgs = FITS.Read(path+imname)[1]
-    cam = Camera(camera)
     slps = None
     npix = cam.pxlx*cam.pxly
     subapFlag = FITS.Read(cam.subapflag)[1].ravel()
