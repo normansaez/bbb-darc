@@ -4,7 +4,7 @@ and reference centroids.
 
 Author: Nicolas S. Dubost
         nsdubost@uc.cl
-Last update: October the 6th, 2014
+Last update: October the 13th, 2014
 """
 
 #!/usr/bin/env python
@@ -212,7 +212,7 @@ class Calibration:
         #2-3 bgImage & exptime iteration
         star = Star(star_id)
         star.setup(self.Cam)
-        exptime = numpy.round(self.maxexptime*0.3)
+        exptime = numpy.round(self.initexptime)
         self.c.Set('bgImage',None)
         self.c.Set(self.Cam.exptime,int(exptime))
         bgImage = self.grab('rtcPxlBuf,'self.finalniter) #1313

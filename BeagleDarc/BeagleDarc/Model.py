@@ -431,6 +431,7 @@ class Camera(object):
         self._shutter = None
         self._usebrightest = None
         self._maxexptime = None
+        self._initexptime = None
         self._bg_iter = None
         self._allsubaps = None
         self._saturation = None
@@ -580,6 +581,16 @@ class Camera(object):
     def maxexptime(self, value):
         self.bd.write(self._config_name, 'maxexptime', value)
         self._maxexptime = value
+
+    @property
+    def initexptime(self):
+        self._initexptime = self.bd.config.getfloat(self._config_name, 'initexptime')
+        return self._initexptime
+
+    @initexptime.setter
+    def initexptime(self, value):
+        self.bd.write(self._config_name, 'initexptime', value)
+        self._initexptime = value
 
     @property
     def nstars(self):
