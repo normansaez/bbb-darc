@@ -43,8 +43,8 @@ class Acquisition:
         self.dir_name = dir_name
         self.cases = {'slopes':0,'images':1,'both':2}
 
-    def grab(stream,niter):
-        taken = pp.unpack(self.c.GetStreamBlock(self.Cam.name+'rtcPxlBuf',niter)).sum(0)/float(niter)
+    def grab(self,stream,niter):
+        taken = pp.unpack(self.c.GetStreamBlock(self.Cam.name+stream,niter)).sum(0)/float(niter)
         return taken
 
     def grab_data_from_darc(self,acquire):
@@ -143,7 +143,7 @@ class Acquisition:
         if fpf==0:
             fpf = iterations
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        cali = Calibration(self.Cam.camera)
+        cali = Calibration(self.Cam.name)
         cali.routine_calibration(star_list)
         all_slopes = None
         all_images = None
@@ -258,7 +258,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'ground_all_v4_vertical_PhScr'
+    dir_name = 'ground_1_20_24_v1_horizontal_PhScr'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -270,7 +270,8 @@ if __name__ == '__main__':
     prefix = 'useB_0'
     #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
-    star_list = [1,18,26]
+    #star_list = [1,18,26]
+    star_list = [1,20,34]
     altitude = 0.
     
 

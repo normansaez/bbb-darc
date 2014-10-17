@@ -38,7 +38,7 @@ class Calibration:
 
         #Parameters
         self.niter = int(5)
-        self.finalniter = int(10)
+        self.finalniter = int(1)
         self.slopeniter = int(10)
         self.nsubaps = int(self.Cam.nsubaps)                             # number of active subaps(208*2)
         self.nsubaps *= 2
@@ -210,12 +210,12 @@ class Calibration:
         star_id[int]
         '''
         #2-3 bgImage & exptime iteration
-        star = Star(star_id)
-        star.setup(self.Cam)
-        exptime = numpy.round(self.initexptime)
+        #star = Star(star_id)
+        #star.setup(self.Cam)
+        exptime = numpy.round(self.Cam.initexptime)
         self.c.Set('bgImage',None)
         self.c.Set(self.Cam.exptime,int(exptime))
-        bgImage = self.grab('rtcPxlBuf,'self.finalniter) #1313
+        bgImage = self.grab('rtcPxlBuf',self.finalniter)
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
         auxImage = self.grab('rtcCalPxlBuf',self.finalniter)
@@ -424,7 +424,7 @@ class Calibration:
         self.bbbc.set_position('horizontal_altitude_layer',-10000,200)
         #First we flush
         print 'Flushing!'
-        self.flushAll()
+        #self.bbbc.flush_all_leds()
         print 'Done flushing.\nBg acquisition...'
         self.Set_useBrightest()
         for star_id in star_list:
@@ -451,15 +451,13 @@ class Calibration:
                 self.bgImage_exptime_calibration(star_id)
         raw_input('First calibration concluded.\nSet phase screen and press enter to continue')
 
-    def flushAll(self):
-        self.bbbc.flush_all_leds()
 
-    def grab(stream,niter):
-        taken = pp.unpack(self.c.GetStreamBlock(self.Cam.name+'rtcPxlBuf',niter)).sum(0)/float(niter)
+    def grab(self,stream,niter):
+        taken = pp.unpack(self.c.GetStreamBlock(self.Cam.name+stream,niter)).sum(0)/float(niter)
         return taken
 
             
 if __name__ == '__main__':
     from General_Calibration import Calibration
     cali = Calibration('sbig')
-    array = cali.routine_calibration([1])
+    array = cali.grab('rtcPxlBuf',10)

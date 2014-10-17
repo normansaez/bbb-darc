@@ -440,7 +440,7 @@ def unpack(StreamBlock):
     '''
     block = StreamBlock[StreamBlock.keys()[0]]
     fpf = len(block)
-    images = np.zeros((fpf),block[0][0].size)
+    images = np.zeros((fpf,block[0][0].size))
     for j in range(fpf):
         images[j,:] = block[j][0]
     
