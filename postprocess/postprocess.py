@@ -446,6 +446,7 @@ def unpack(StreamBlock):
     
     return images
 
+
 if __name__=='__main__':
     #formattomodata('/home/dani/BeagleAcquisition/SH/tomodata_1_18_21_24/','validationslopes.gz',acquire='slopes')
     covsalt = covariance(valslopes,annslopes,norm=True)

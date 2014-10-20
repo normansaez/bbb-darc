@@ -216,6 +216,11 @@ class Calibration:
         self.c.Set('bgImage',None)
         self.c.Set(self.Cam.exptime,int(exptime))
         bgImage = self.grab('rtcPxlBuf',self.finalniter)
+        print bgImage
+        print 'bgImage.shape: ',
+        print bgImage.shape
+        print 'bhImage.__class__: ',
+        print bgImage.__class__
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
         auxImage = self.grab('rtcCalPxlBuf',self.finalniter)

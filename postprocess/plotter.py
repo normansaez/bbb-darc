@@ -8,7 +8,7 @@ Last update: June the 10th, 2014
 
 #!/usr/bin/env python
 import FITS
-import numpy
+import numpy as np
 import os
 from numpy import unravel_index
 import pylab as pl
@@ -18,16 +18,15 @@ import scipy
 from scipy import signal
 
 class Plotter:
-    def __init__(self,path_to_file,file_name,star_list,cameraName='pike',title=None,xlabel=None,ylabel=None,figlegend=None):
+    def __init__(self,path_to_file,file_name,star_list,camera='pike',title=None,xlabel=None,ylabel=None,figlegend=None):
         #Darc camera instance
-        self.pikeCamera = Camera('camera')
+        self.Cam = Camera(camera)
 
         #Parameters
-        self.nsubaps = int(self.pikeCamera.nsubaps)                             # number of active subaps(208*2)
+        self.nsubaps = int(self.Cam.nsubaps)                             # number of active subaps(208*2)
         self.nsubaps *= 2
-        self.nstars = self.pikeCamera.nstars                                    # number of stars
+        self.nstars = self.Cam.nstars                                    # number of stars
 
-        self.cameraName = self.pikeCamera.camera
         self.majorpattern = None
         self.minorpattern = None
         self.grid = None
@@ -58,10 +57,10 @@ class Plotter:
             Xslopes = slopes
             Yslopes = slopes
             
-        Xmean = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
-        Ymean = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
-        Xvar = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
-        Yvar = numpy.zeros((len(self.star_list),self.nsubaps/2.0))
+        Xmean = np.zeros((len(self.star_list),self.nsubaps/2.0))
+        Ymean = np.zeros((len(self.star_list),self.nsubaps/2.0))
+        Xvar = np.zeros((len(self.star_list),self.nsubaps/2.0))
+        Yvar = np.zeros((len(self.star_list),self.nsubaps/2.0))
 
         for star_id in range(len(star_list)):
             Xmean[star_id,:] = Xslopes[:,star_id*self.nsubaps/2.:(star_id+1)*self.nsubaps/2.].mean(axis=0)
@@ -71,30 +70,30 @@ class Plotter:
 
 
         #Parameters
-        allsubaps = self.pikeCamera.allsubaps                    # Active+Inactive subaps
-        side = int(numpy.sqrt(allsubaps))
-        nstars = self.pikeCamera.nstars
-        subapLocation = numpy.zeros((allsubaps,6))             # Centred on (0,0)
+        allsubaps = self.Cam.allsubaps                    # Active+Inactive subaps
+        side = int(np.sqrt(allsubaps))
+        nstars = self.Cam.nstars
+        subapLocation = np.zeros((allsubaps,6))             # Centred on (0,0)
         subapLocation[:,2] = subapLocation[:,2] + 1
         subapLocation[:,5] = subapLocation[:,5] + 1
 
-        Xwidth = self.pikeCamera.xwidth
-        Ywidth = self.pikeCamera.ywidth
-        Xgap = self.pikeCamera.xgap
-        Ygap = self.pikeCamera.ygap
+        Xwidth = self.Cam.xwidth
+        Ywidth = self.Cam.ywidth
+        Xgap = self.Cam.xgap
+        Ygap = self.Cam.ygap
 
         # Checking for parity
-        xRow = numpy.array([])
+        xRow = np.array([])
         if(side%2):
-            xRow = numpy.arange(-numpy.ceil(float(side)/2),round(float(side)/2))*Xgap -round(Xwidth/2)
+            xRow = np.arange(-np.ceil(float(side)/2),round(float(side)/2))*Xgap -round(Xwidth/2)
         else:
-            xRow = numpy.arange(-float(side)/2,float(side)/2)*Xgap + round(Xgap/2) -round(Xwidth/2)
+            xRow = np.arange(-float(side)/2,float(side)/2)*Xgap + round(Xgap/2) -round(Xwidth/2)
 
-        yRow = numpy.array([])
+        yRow = np.array([])
         if(side%2):
-            yRow = numpy.arange(-numpy.ceil(float(side)/2),round(float(side)/2))*Ygap -round(Ywidth/2)
+            yRow = np.arange(-np.ceil(float(side)/2),round(float(side)/2))*Ygap -round(Ywidth/2)
         else:
-            yRow = numpy.arange(-float(side)/2,float(side)/2)*Ygap + round(Ygap/2) -round(Ywidth/2)
+            yRow = np.arange(-float(side)/2,float(side)/2)*Ygap + round(Ygap/2) -round(Ywidth/2)
 
         for row in range(1,int(side+1)):
             subapLocation[side*(row-1):side*(row),0] = yRow[row-1]
@@ -103,13 +102,13 @@ class Plotter:
             subapLocation[side*(row-1):side*(row),4] = subapLocation[side*(row-1):side*(row),3] + Xwidth
 
         if(self.majorpattern==None):
-            self.majorpattern = numpy.zeros((len(self.star_list),-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
-            self.minorpattern = numpy.zeros((Ywidth+1,Xwidth+1))
+            self.majorpattern = np.zeros((len(self.star_list),-subapLocation[0,0]+subapLocation[-1,1]+1,-subapLocation[0,3]+subapLocation[-1,4]+1))
+            self.minorpattern = np.zeros((Ywidth+1,Xwidth+1))
             subapLocAux = subapLocation
-            Aux = numpy.zeros((allsubaps,6))
+            Aux = np.zeros((allsubaps,6))
             Aux[:,0:2] = subapLocAux[:,0:2] - subapLocation[0,0]
             Aux[:,3:5] = subapLocAux[:,3:5] - subapLocation[0,3]
-            subapflag = FITS.Read(self.pikeCamera.subapflag)[1]
+            subapflag = FITS.Read(self.Cam.subapflag)[1]
             subapflag = subapflag.ravel()
             
             fig = pl.figure(1)
@@ -127,7 +126,7 @@ class Plotter:
                                 value = Xvar[star_id,subaptrack]
                         else:
                             if isdouble == 1:
-                                value = numpy.sqrt(numpy.square(Xmean[star_id,subaptrack])+numpy.square(Ymean[star_id,subaptrack]))
+                                value = np.sqrt(np.square(Xmean[star_id,subaptrack])+np.square(Ymean[star_id,subaptrack]))
                             else:
                                 value = Xmean[star_id,subaptrack]
 
@@ -155,12 +154,13 @@ class Plotter:
                     columnas = len(self.star_list)
                 else:
                     filas = 2
-                    columnas = numpy.floor(((len(self.star_list)+1)/2.))
+                    columnas = np.floor(((len(self.star_list)+1)/2.))
                 #filas = 3
                 #columnas = 7
 
             for star_id in range(len(self.star_list)):
-                pl.subplot(filas,columnas,star_id+1,title='Star: %d'%(self.star_list[star_id]))
+                subtitles = ['COM','GAUSS']
+                pl.subplot(filas,columnas,star_id+1,title=subtitles[star_id])
                 im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
                 #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=5.)
                 pl.ylabel(self.ylabel)
@@ -209,12 +209,12 @@ class Plotter:
         '''
         oli = FITS.Read(self.path+self.filename)[1]
         ola = oli.mean(axis=0)
-        if(ola.shape[0]/numpy.float(self.pikeCamera.pxlx*self.pikeCamera.pxlx) >= 2):
-            print 'Only plotting first star out of %d'%(ola.shape[0]/numpy.float(self.pikeCamera.pxlx*self.pikeCamera.pxlx))
+        if(ola.shape[0]/np.float(self.Cam.pxlx*self.Cam.pxlx) >= 2):
+            print 'Only plotting first star out of %d'%(ola.shape[0]/np.float(self.Cam.pxlx*self.Cam.pxlx))
         
-        i,j = numpy.ogrid[-pixelSize*arraySize/2.:pixelSize*arraySize/2.:w.shape[0]*1j,0:0:w.shape[0]*1j]
+        i,j = np.ogrid[-pixelSize*arraySize/2.:pixelSize*arraySize/2.:w.shape[0]*1j,0:0:w.shape[0]*1j]
         Y = i*1000 + j
-        X = numpy.transpose(Y)
+        X = np.transpose(Y)
         fig = pl.figure()
         ax = pl.Axes3D(fig)
         ax.plot_surface(X,Y,w)
@@ -231,16 +231,16 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SH/noise/images_led1/'
-        file_name = 'GAUSSThetas.fits'
+        path_to_file = '/home/dani/BeagleAcquisition/SBIG/noise/images_led1/'
+        file_name = 'COMGAUSSCentroids.fits'
         #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        star_list = [1]
-        title = 'Sub-Aperture Theta\'s Variance'
+        star_list = [1,2]
+        title = 'Centroids\' Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None
         
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,camera='sbig',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.subapstat(mode='variance')
 
     elif(cases[case] == 1):
@@ -253,7 +253,7 @@ if __name__ == '__main__':
         ylabel = 'Pixels'
         figlegend = ('Xmean','Ymean','Xvar','Yvar')
 
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,camera='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.stat_curve()
 
     elif(cases[case] == 2):
@@ -266,7 +266,7 @@ if __name__ == '__main__':
         ylabel = 'Pixels'
         figlegend = ('Xmean','Ymean','Xvar','Yvar')         
         
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,camera='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.surface()
 
     elif(cases[case] == 3):
@@ -279,5 +279,5 @@ if __name__ == '__main__':
         ylabel = 'Y pixels'
         figlegend = None
         
-        ploty = Plotter(path_to_file,file_name,star_list,cameraName='pike',title=title,xlabel=xlabel,ylabel=ylabel)
+        ploty = Plotter(path_to_file,file_name,star_list,camera='pike',title=title,xlabel=xlabel,ylabel=ylabel)
         ploty.join_slopes_altitudes()
