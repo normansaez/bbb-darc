@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SBIG/noise/images_led1/'
+        path_to_file = '/home/dani/BeagleAcquisition/SBIG/noise/images_led34/'
         file_name = 'COMGAUSSCentroids.fits'
         #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
         star_list = [1,2]

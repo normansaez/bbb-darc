@@ -200,7 +200,7 @@ class Acquisition:
                 elif(self.cases[acquire]==2):
                     all_slopes = all_slopes*0.
                     all_images = all_images*0.
-                cali.flushAll()
+                self.bbbc.flush_all_leds()
                
         
     def cmdlist_gen(self,iterations,altitude=-1):
@@ -258,7 +258,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'ground_1_20_24_v1_horizontal_PhScr'
+    dir_name = 'ground_1_20_34_v2_horizontal_PhScr'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'

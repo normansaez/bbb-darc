@@ -37,27 +37,16 @@ class Calibration:
         self.Cam = Camera(cameraName)
 
         #Parameters
-        self.niter = int(5)
-        self.finalniter = int(1)
-        self.slopeniter = int(10)
+        self.niter = int(1)
         self.nsubaps = int(self.Cam.nsubaps)                             # number of active subaps(208*2)
         self.nsubaps *= 2
         self.nstars = self.Cam.nstars                                    # number of stars
         self.maxexptime = float(self.Cam.maxexptime)                     # maximum exptime time. when exptime time is set outside
                                                                     # the range [0:4095] it is taken as the modulus of tExptime/4095
         self.sat = float(self.Cam.saturation)                          # self.Cam.name saturation value
-        self.name = self.Cam.name
-        self.exptime = self.maxexptime
         self.majorpattern = None
         self.minorpattern = None
 
-        #Auxiliary arrays & variables
-        self.cent = numpy.zeros((self.niter,self.nsubaps))
-        self.centx = 0.0
-        self.centy = 0.0
-        #bgImage = c.SumData("rtcPxlBuf",1,"f")[0]
-        #auxImage = bgImage
-        #auxImageMax = numpy.amax(auxImage)
 
     def Set_useBrightest(self):
         '''
@@ -210,23 +199,18 @@ class Calibration:
         star_id[int]
         '''
         #2-3 bgImage & exptime iteration
-        #star = Star(star_id)
-        #star.setup(self.Cam)
+        star = Star(star_id)
+        star.setup(self.Cam)
         exptime = numpy.round(self.Cam.initexptime)
         self.c.Set('bgImage',None)
         self.c.Set(self.Cam.exptime,int(exptime))
-        bgImage = self.grab('rtcPxlBuf',self.finalniter)
-        print bgImage
-        print 'bgImage.shape: ',
-        print bgImage.shape
-        print 'bhImage.__class__: ',
-        print bgImage.__class__
+        bgImage = self.grab('rtcPxlBuf',self.niter)
         self.c.Set('bgImage',bgImage)
         self.bbbc.star_on(star_id)
-        auxImage = self.grab('rtcCalPxlBuf',self.finalniter)
+        auxImage = self.grab('rtcCalPxlBuf',self.niter)
         self.bbbc.star_off(star_id)
-        auxImageMax = numpy.amax(auxImage)
-        print ''
+        auxImageMax = auxImage.max()
+        print 'auxImageMax: ', auxImageMax
         relativemax = 0.7
         threshold = 0.05
 
@@ -237,19 +221,23 @@ class Calibration:
             print exptime
             print 'auxImageMax: ',
             print str(100*auxImageMax/self.sat)+'%'
-            exptime = exptime*(self.sat*float(relativemax))/auxImageMax
+            exptime = float(exptime)*(self.sat*float(relativemax))/auxImageMax
             if(exptime>=self.maxexptime):
                 # Protection
                 exptime = self.maxexptime
                 auxImageMax = self.sat*relativemax
                 self.c.Set(self.Cam.exptime,int(exptime))
+            elif(exptime<1.0):
+                exptime = 1.0
+                auxImageMax = self.sat*relativemax
+                self.c.Set(self.Cam.exptime,int(exptime))
             else:
                 self.c.Set('bgImage',None)
                 self.c.Set(self.Cam.exptime,int(exptime))
-                bgImage = self.grab('rtcPxlBuf',self.finalniter)
+                bgImage = self.grab('rtcPxlBuf',self.niter)
                 self.c.Set('bgImage',bgImage)
                 self.bbbc.star_on(star_id)
-                auxImage = self.grab('rtcCalPxlBuf',self.finalniter)
+                auxImage = self.grab('rtcCalPxlBuf',self.niter)
                 self.bbbc.star_off(star_id)
                 auxImageMax = numpy.amax(auxImage)
         
@@ -260,9 +248,9 @@ class Calibration:
         self.c.Set('bgImage',None)
         bgImage = self.grab('rtcPxlBuf',self.Cam.bg_iter)
         self.c.Set('bgImage',bgImage)
-        self.flushAll()
+        self.bbbc.flush_all_leds()
         self.bbbc.star_on(star_id)
-        auxImage = self.grab('rtcCalPxlBuf',self.finalniter)
+        auxImage = self.grab('rtcCalPxlBuf',self.niter)
         self.bbbc.star_off(star_id)
         self.c.Set('bgImage',bgImage)
         
@@ -429,7 +417,7 @@ class Calibration:
         self.bbbc.set_position('horizontal_altitude_layer',-10000,200)
         #First we flush
         print 'Flushing!'
-        #self.bbbc.flush_all_leds()
+        self.bbbc.flush_all_leds()
         print 'Done flushing.\nBg acquisition...'
         self.Set_useBrightest()
         for star_id in star_list:
@@ -445,7 +433,7 @@ class Calibration:
         '''
         #Main loop. Calibrates for each star
         #First we flush
-        self.flushAll()
+        self.bbbc.flush_all_leds()
         self.Set_useBrightest()
         for star_id in star_list:
             estrella = Star(star_id)

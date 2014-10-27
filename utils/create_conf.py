@@ -84,8 +84,8 @@ filehandler_cfg.write("allsubaps = 256\n")
 filehandler_cfg.write("saturation = 65535.0\n")
 filehandler_cfg.write("xwidth = 34\n")
 filehandler_cfg.write("ywidth = 34\n")
-filehandler_cfg.write("xgap = 30\n")
-filehandler_cfg.write("ygap = 30\n")
+filehandler_cfg.write("xgap = 28\n")
+filehandler_cfg.write("ygap = 28\n")
 filehandler_cfg.write("fwhm = 5\n")
 
 filehandler_cfg.write("\n")
@@ -131,7 +131,7 @@ with open('mapping.csv', 'rb') as csvfile:
                 filehandler_cfg.write("simulated = False\n")
                 filehandler_cfg.write("exp_time = 15000.0\n")
                 filehandler_cfg.write("brightness = 94\n")
-                filehandler_cfg.write("slope_iter = 10\n")
+                filehandler_cfg.write("slope_iter = 1\n")
                 if row[5] == '1':
                     filehandler_cfg.write("valid = True\n")
                 else:
