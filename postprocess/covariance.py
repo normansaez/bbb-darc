@@ -24,3 +24,10 @@ def subapmap(cam):
     subapflag = FITS.Read(cam.subapflag)[1]
     cam.nsubaps
     cam.allsubaps
+    smap = []
+    for i in range(subapflag.shape[0]):
+        for j in range(subapflag.shape[1]):
+            if subapflag[i,j]==1:
+                smap.append((i,j))
+    
+    return smap
