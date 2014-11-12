@@ -160,7 +160,8 @@ class Plotter:
 
             for star_id in range(len(self.star_list)):
                 subtitles = ['COM','GAUSS']
-                pl.subplot(filas,columnas,star_id+1,title=subtitles[star_id])
+                #pl.subplot(filas,columnas,star_id+1,title=subtitles[star_id])
+                pl.subplot(filas,columnas,star_id+1,title='Star %d'%(star_id))
                 im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=self.majorpattern.max())
                 #im = pl.imshow(self.majorpattern[star_id,:,:],interpolation='nearest',origin=[0,0],vmin=0,vmax=5.)
                 pl.ylabel(self.ylabel)
@@ -231,11 +232,12 @@ if __name__ == '__main__':
 
     if(cases[case] == 0):
 
-        path_to_file = '/home/dani/BeagleAcquisition/SBIG/noise/images_led34/'
-        file_name = 'COMGAUSSCentroids.fits'
+        path_to_file = '/home/dani/BeagleAcquisition/SBIG/ground_1_20_34_v2_horizontal_PhScr/'
+        file_name = 'centerofmass_slopes.fits'
         #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
-        star_list = [1,2]
-        title = 'Centroids\' Variance'
+        #star_list = [1,2]
+        star_list = [1,20,34]
+        title = 'COM Centroids\' Variance'
         xlabel = 'X pixels'
         ylabel = 'Y pixels'
         figlegend = None

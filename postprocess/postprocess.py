@@ -408,12 +408,14 @@ def autocorrelate(dataset):
     cor = cor/n
     return cor
 
-def scattering(set1,set2,title='',xlabel='',ylabel=''):
+def scattering(set1,set2,cam,star_list=[1],title='',xlabel='',ylabel=''):
     '''
     set1 and set2 are 1-d numpy arrays.
     '''
     mini = np.min([set1.min(),set2.min()])
     maxi = np.max([set1.max(),set2.max()])
+    
+    nsubaps = cam.nsubaps
 
     p,res,rank,sing,rcond= np.polyfit(set1,set2,1,full=True)
     a = p[0]
@@ -424,10 +426,21 @@ def scattering(set1,set2,title='',xlabel='',ylabel=''):
     if ylabel=='':
         ylabel = 'set2'
 
-    lot = int(set1.shape[0]/4.)
+    lot = int(set1.shape[0]/len(star_list))
     
-    handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',set1[3*lot:4*lot],set2[3*lot:4*lot],'mo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
-    pl.legend(handle,('Star 1\nSubap Lots','','','','Reference Line','%.3f*x+%.3f'%(a,b)))
+    if len(star_list)==1:
+        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
+        pl.legend(handle,('Star %d'%(star_list[0]),'Reference Line','%.3f*x+%.3f'%(a,b)))
+    elif len(star_list)==2:
+        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
+        pl.legend(handle,('Star %d'%(star_list[0]),'Star %d'%(star_list[1]),'Reference Line','%.3f*x+%.3f'%(a,b)))
+    elif len(star_list)==3:
+        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
+        pl.legend(handle,('Star %d'%(star_list[0]),'Star %d'%(star_list[1]),'Star %d'%(star_list[2]),'Reference Line','%.3f*x+%.3f'%(a,b)))
+    elif len(star_list)==4:
+        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',set1[3*lot:4*lot],set2[3*lot:4*lot],'mo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
+        pl.legend(handle,('Star %d'%(star_list[0]),'Star %d'%(star_list[1]),'Star %d'%(star_list[2]),'Star %d'%(star_list[3]),'Reference Line','%.3f*x+%.3f'%(a,b)))
+    
     pl.title(title+'\nMean Residual Error: %.3f[pix^2]'%(res[0]/set1.shape[0]))
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)

@@ -136,15 +136,17 @@ class Acquisition:
             return slopes_frame
  
 
-    def take_all_data(self,iterations,star_list,prefix,acquire='slopes',altitude=-1,fpf=0):
+    def take_all_data(self,iterations,star_list,prefix,acquire='slopes',altitude=-1,fpf=10):
         '''
-        fpf = frames per FITS. if fpf=0 all frames will be saved in the same FITS file
+        fpf = frames per FITS.
+        smpling = steps per position
         '''
-        if fpf==0:
-            fpf = iterations
         Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
-        cali = Calibration(self.Cam.name)
-        cali.routine_calibration(star_list)
+        #cali = Calibration(self.Cam.name)
+        #cali.routine_calibration(star_list)
+
+        # Comment this flush when calibrating
+        self.bbbc.flush_all_leds()
         all_slopes = None
         all_images = None
         cmd_list = None
@@ -163,7 +165,7 @@ class Acquisition:
         for s in star_list:
             Star_list.append(Star(s))
         
-        for i in range(0,iterations):
+        for i in range(0,int(iterations)):
             Start_time = str(time.strftime("%Y_%m_%dT%H_%M_%S.fits", time.gmtime()))
             print '\nTaking iteration #: %d' % (i+1)
             if(self.cases[acquire]==0):
@@ -258,7 +260,7 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'ground_1_20_34_v2_horizontal_PhScr'
+    dir_name = 'alt_050_v1_s_16_8_3_1_5_12_20_34'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -271,14 +273,14 @@ if __name__ == '__main__':
     #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
     #star_list = [1,18,26]
-    star_list = [1,20,34]
-    altitude = 0.
+    star_list = [16,8,3,1,5,12,20,34]
+    altitude = 0.5
     
 
-    a = Acquisition(dir_name=dir_name,camera='sbig')
-    iterations = 1200
+    a = Acquisition(dir_name=dir_name,camera='pike')
+    iterations = 14500./18. # 18 is the number of steps per position
     numberoffits = 1
-    fpf = 20
+    fpf = 10
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
         a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude,fpf=fpf)
