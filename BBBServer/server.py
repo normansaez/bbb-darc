@@ -32,7 +32,8 @@ class Server_i (BBBServer__POA.Server):
                 self.led_on(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
                 self.led_off(star.pin_led, star.pin_pwm, star.pin_enable, star.name, star.simulated, star.exp_time, star.brightness)
             except Exception, e:
-                print e
+                #print e
+                pass
         return 0
     def turn_off_all_leds(self):    
         #0- PWM to LOW
@@ -110,24 +111,24 @@ class Server_i (BBBServer__POA.Server):
         #Disable all LE
         self.disable_all_LE()
         
-        for key, value in LED_STATUS.iteritems():
-            if value[1] == "ON":
-                msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
-                print msg
-            else:
+#        for key, value in LED_STATUS.iteritems():
+#            if value[1] == "ON":
+#                msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
+#                print msg
+#            else:
 #                print key, value
-                pass
+#                pass
                 
     def led_on(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print sys._getframe().f_code.co_name,
-        print ": %s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        #print sys._getframe().f_code.co_name,
+        #print ": %s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         LED_STATUS[name][1] = "ON"
         self.refresh_led_status(pin_pwm, pin_enable)
         return "ok"
 
     def led_off(self, pin_led, pin_pwm, pin_enable, name, simulated, exp_time, brightness):
-        print sys._getframe().f_code.co_name,
-        print ": %s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
+        #print sys._getframe().f_code.co_name,
+        #print ": %s(%s,%s,%s)" % (name, pin_led, pin_pwm, pin_enable)
         LED_STATUS[name][1] = "OFF"
         self.refresh_led_status(pin_pwm, pin_enable)
         return "ok"
@@ -143,22 +144,22 @@ class Server_i (BBBServer__POA.Server):
         dir_pin = 0
         motor.cur_pos = 0
         motor.cmd_pos = 0
-        print "SET ALL TO ZERO"
-        print "name      %s" % motor.name
-        print "direction %s" % motor.direction
-        print "velocity  %d" % motor.velocity
-        print "steps     %d" % motor.steps
-        print "cur_pos   %d" % motor.cur_pos
-        print "cmd_pos   %d" % motor.cmd_pos
+        #print "SET ALL TO ZERO"
+        #print "name      %s" % motor.name
+        #print "direction %s" % motor.direction
+        #print "velocity  %d" % motor.velocity
+        #print "steps     %d" % motor.steps
+        #print "cur_pos   %d" % motor.cur_pos
+        #print "cmd_pos   %d" % motor.cmd_pos
         return 0
     
     def motor_move_skip_sensor(self, name, direction, velocity, steps, cur_pos, cmd_pos):
-        print "name      %s" % name
-        print "direction %s" % direction
-        print "velocity  %d" % velocity
-        print "steps     %d" % steps
-        print "cur_pos   %d" % cur_pos
-        print "cmd_pos   %d" % cmd_pos
+        #print "name      %s" % name
+        #print "direction %s" % direction
+        #print "velocity  %d" % velocity
+        #print "steps     %d" % steps
+        #print "cur_pos   %d" % cur_pos
+        #print "cmd_pos   %d" % cmd_pos
         motor = Layer(name)
         motor.steps = steps
         motor.direction = direction
@@ -170,10 +171,10 @@ class Server_i (BBBServer__POA.Server):
         else:
             dir_pin = motor.pos_dir
 
-        if(dir_pin):
-            print 'pin on'
-        else:
-            print 'pin off'
+#        if(dir_pin):
+            #print 'pin on'
+#        else:
+            #print 'pin off'
 
         if(dir_pin):
             self.turn_on_gpio(motor.pin_dir)
@@ -183,12 +184,12 @@ class Server_i (BBBServer__POA.Server):
         self.turn_on_gpio(motor.pin_sleep)
         s = c_driver.move_motor(steps, motor.pin_step)
         self.turn_off_gpio(motor.pin_sleep)
-        print sys._getframe().f_code.co_name,
-        print ": %s -> %1.2f " % (name, s)
+        #print sys._getframe().f_code.co_name,
+        #print ": %s -> %1.2f " % (name, s)
 
         motor.cur_pos = cmd_pos
         motor.cmd_pos = cmd_pos
-        print "\n\n"
+        #print "\n\n"
         return motor.cur_pos
     
     def get_stars_status_keys(self):
@@ -220,32 +221,32 @@ if __name__ == '__main__':
         obj         = orb.resolve_initial_references("NameService")
         rootContext = obj._narrow(CosNaming.NamingContext)
         if rootContext is None:
-            print "Failed to narrow the root naming context"
+            #print "Failed to narrow the root naming context"
             sys.exit(1)
         
         # Bind a context named "BeagleBone.Server" to the root context
         name = [CosNaming.NameComponent("BeagleBone", "Server")]
         try:
             BeagleBoneContext = rootContext.bind_new_context(name)
-            print "New BeagleBone context bound"
+            #print "New BeagleBone context bound"
             
         except CosNaming.NamingContext.AlreadyBound, ex:
-            print "BeagleBone context already exists"
+            #print "BeagleBone context already exists"
             obj = rootContext.resolve(name)
             BeagleBoneContext = obj._narrow(CosNaming.NamingContext)
             if BeagleBoneContext is None:
-                print "BeagleBone.Server exists but is not a NamingContext"
+                #print "BeagleBone.Server exists but is not a NamingContext"
                 sys.exit(1)
         
         # Bind the BBBServer object to the BeagleBone context
         name = [CosNaming.NameComponent("BBBServer", "Object")]
         try:
             BeagleBoneContext.bind(name, servant)
-            print "New BBBServer object bound"
+            #print "New BBBServer object bound"
         
         except CosNaming.NamingContext.AlreadyBound:
             BeagleBoneContext.rebind(name, servant)
-            print "BBBServer binding already existed -- rebound"
+            #print "BBBServer binding already existed -- rebound"
         
         # Activate the POA
         poaManager = poa._get_the_POAManager()
@@ -254,5 +255,5 @@ if __name__ == '__main__':
         # Block for ever (or until the ORB is shut down)
         orb.run()
     else:
-        print "The server should run as root!!:\nsudo su -\npython\
+        #print "The server should run as root!!:\nsudo su -\npython\
         /home/ubuntu/bbb-darc/BBBServer/server.py"
