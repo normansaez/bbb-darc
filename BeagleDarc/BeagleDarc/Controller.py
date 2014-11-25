@@ -11,45 +11,54 @@ from BeagleDarc.Model import Star
 from BeagleDarc.Model import Layer
 from subprocess import Popen, PIPE
 from omniORB import CORBA
+import Pyro4
 
 class Controller:
     '''
     Controller:
     '''
-    def __init__(self):
+    def __init__(self, server='CORBA'):
         '''
         Init server in BBB called BBBServer
         '''
         self.bds = BeagleDarcServerM('beagledarc_server')
-        # Initialise the ORB
-        orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
-        
-        # Obtain a reference to the root naming context
-#        obj         = orb.resolve_initial_references("NameService")
-        obj         = orb.string_to_object("corbaloc:iiop:10.42.0.97/NameService")
-        rootContext = obj._narrow(CosNaming.NamingContext)
-        
-        if rootContext is None:
-            print "Failed to narrow the root naming context"
-            sys.exit(1)
-        
-        # Resolve the name "BeagleBone.Server/BBBServer.Object"
-        name = [CosNaming.NameComponent("BeagleBone", "Server"),
-                CosNaming.NameComponent("BBBServer", "Object")]
-        try:
-            obj = rootContext.resolve(name)
-        
-        except CosNaming.NamingContext.NotFound, ex:
-            print "Name not found"
-            sys.exit(1)
-        
-        # Narrow the object to an BBBServer::Server
-        self.client = obj._narrow(BBBServer.Server)
-        
-        if (self.client is None):
-            print "Object reference is not an BBBServer::Server"
-            sys.exit(1)
+        if server == 'CORBA':
+            # Initialise the ORB
+            orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
+            
+            # Obtain a reference to the root naming context
+            #obj         = orb.resolve_initial_references("NameService")
+            obj         = orb.string_to_object("corbaloc:iiop:10.42.0.97/NameService")
+            rootContext = obj._narrow(CosNaming.NamingContext)
+            
+            if rootContext is None:
+                print "Failed to narrow the root naming context"
+                sys.exit(1)
+            
+            # Resolve the name "BeagleBone.Server/BBBServer.Object"
+            name = [CosNaming.NameComponent("BeagleBone", "Server"),
+                    CosNaming.NameComponent("BBBServer", "Object")]
+            try:
+                obj = rootContext.resolve(name)
+            
+            except CosNaming.NamingContext.NotFound, ex:
+                print "Name not found"
+                sys.exit(1)
+            
+            # Narrow the object to an BBBServer::Server
+            self.client = obj._narrow(BBBServer.Server)
+            
+            if (self.client is None):
+                print "Object reference is not an BBBServer::Server"
+                sys.exit(1)
+        if server == 'PYRO':
+            with Pyro4.core.Proxy("PYRONAME:bbb.server") as proxy:
+                self.client = proxy
 
+            if (self.client is None):
+                print "Object reference is not an PYRONAME:bbb.server"
+                sys.exit(1)
+#
     #star methods
     def flush_all_leds(self):
         return self.client.flush_all_leds()
