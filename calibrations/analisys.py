@@ -1,3 +1,7 @@
+'''
+Wrote by Tim on his visit. This has examples on how to use DARC.
+'''
+
 import FITS
 FITS.Read('SHrtcCentBuf_140114_124359_led1.fits')
 cent = FITS.Read('SHrtcCentBuf_140114_124359_led1.fits')

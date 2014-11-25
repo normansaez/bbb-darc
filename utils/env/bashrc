@@ -134,4 +134,5 @@ export PINMUX=/sys/kernel/debug/pinctrl/44e10800.pinmux/pinmux-pins
 export PINGROUPS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pingroups
 export PYTHONPATH=$PYTHONPATH:.:/home/$USER/bbb-darc/BBBServer:/home/$USER/bbb-darc/BeagleDarc/
 ############## ADITIONAL ###################################
-
+#ssh -vvvv -L 2227:10.197.52.108:22 nsaez@login.alma.cl #tunnel to 10.197.52.108:22 using localhost:2227
+#ssh -vvv -p 2227 nsaez@localhost

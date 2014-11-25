@@ -33,33 +33,65 @@ filehandler_cfg.write("host = 10.42.0.97\n")
 filehandler_cfg.write("user = root\n")
 filehandler_cfg.write("password = \n")
 filehandler_cfg.write("port = \n")
+
 filehandler_cfg.write("\n")
-filehandler_cfg.write("[camera]\n")
-filehandler_cfg.write("camera = SH\n")
+filehandler_cfg.write("[pike]\n")
+filehandler_cfg.write("name = pike\n")
 filehandler_cfg.write("pxlx = 1920\n")
 filehandler_cfg.write("pxly = 1080\n")
-filehandler_cfg.write("image_path = /home/dani/BeagleAcquisition/SH/\n")
-filehandler_cfg.write("bg_path = /home/dani/BeagleAcquisition/SH/BG/\n")
-filehandler_cfg.write("subaplocation_path = /home/dani/BeagleAcquisition/SH/subapLocation/\n")
-filehandler_cfg.write("rawdata_path = /home/dani/BeagleAcquisition/SH/RawData/\n")
-filehandler_cfg.write("refcent_path = /home/dani/BeagleAcquisition/SH/RefCent/\n")
+filehandler_cfg.write("image_path = /home/dani/BeagleAcquisition/Pike/\n")
+filehandler_cfg.write("bg_path = /home/dani/BeagleAcquisition/Pike/BG/\n")
+filehandler_cfg.write("subaplocation_path = /home/dani/BeagleAcquisition/Pike/subapLocation/\n")
+filehandler_cfg.write("rawdata_path = /home/dani/BeagleAcquisition/Pike/RawData/\n")
+filehandler_cfg.write("refcent_path = /home/dani/BeagleAcquisition/Pike/RefCent/\n")
 filehandler_cfg.write("subapflag = /home/dani/git/canaryLaserCommissioning/subapFlag.fits\n")
+filehandler_cfg.write("exptime = fwShutter\n")
+filehandler_cfg.write("shutter = fwShutter\n")
 filehandler_cfg.write("usebrightest = -85\n")
 filehandler_cfg.write("bg_iter = 100\n")
-filehandler_cfg.write("maxshutter = 4095.0\n")
+filehandler_cfg.write("maxexptime = 4095.0\n")
+filehandler_cfg.write("initexptime = 1228.0\n")
 filehandler_cfg.write("nstars = 53\n")
 filehandler_cfg.write("nsubaps = 208\n")
 filehandler_cfg.write("allsubaps = 256\n")
 filehandler_cfg.write("saturation = 65532.0\n")
 filehandler_cfg.write("xwidth = 42\n")
-filehandler_cfg.write("ywidth = 39\n")
+filehandler_cfg.write("ywidth = 42\n")
 filehandler_cfg.write("xgap = 37\n")
 filehandler_cfg.write("ygap = 37\n")
 filehandler_cfg.write("fwhm = 6\n")
+
+filehandler_cfg.write("\n")
+filehandler_cfg.write("[sbig]\n")
+filehandler_cfg.write("name = sbig\n")
+filehandler_cfg.write("pxlx = 765\n")
+filehandler_cfg.write("pxly = 510\n")
+filehandler_cfg.write("image_path = /home/dani/BeagleAcquisition/SBIG/\n")
+filehandler_cfg.write("bg_path = /home/dani/BeagleAcquisition/SBIG/BG/\n")
+filehandler_cfg.write("subaplocation_path = /home/dani/BeagleAcquisition/SBIG/subapLocation/\n")
+filehandler_cfg.write("rawdata_path = /home/dani/BeagleAcquisition/SBIG/RawData/\n")
+filehandler_cfg.write("refcent_path = /home/dani/BeagleAcquisition/SBIG/RefCent/\n")
+filehandler_cfg.write("subapflag = /home/dani/git/canaryLaserCommissioning/subapFlag.fits\n")
+filehandler_cfg.write("exptime = sbigExpTime\n")
+filehandler_cfg.write("shutter = sbigShutter\n")
+filehandler_cfg.write("usebrightest = -85\n")
+filehandler_cfg.write("bg_iter = 100\n")
+filehandler_cfg.write("maxexptime = 360000\n")
+filehandler_cfg.write("initexptime = 6.0\n")
+filehandler_cfg.write("nstars = 53\n")
+filehandler_cfg.write("nsubaps = 208\n")
+filehandler_cfg.write("allsubaps = 256\n")
+filehandler_cfg.write("saturation = 65535.0\n")
+filehandler_cfg.write("xwidth = 34\n")
+filehandler_cfg.write("ywidth = 34\n")
+filehandler_cfg.write("xgap = 28\n")
+filehandler_cfg.write("ygap = 28\n")
+filehandler_cfg.write("fwhm = 5\n")
+
 filehandler_cfg.write("\n")
 
 with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
     for row in spamreader:
         if row[1].__contains__('m') and not row[1].__contains__('name'):
             if row[1] == 'm1':
@@ -99,7 +131,7 @@ with open('mapping.csv', 'rb') as csvfile:
                 filehandler_cfg.write("simulated = False\n")
                 filehandler_cfg.write("exp_time = 15000.0\n")
                 filehandler_cfg.write("brightness = 94\n")
-                filehandler_cfg.write("slope_iter = 10\n")
+                filehandler_cfg.write("slope_iter = 1\n")
                 if row[5] == '1':
                     filehandler_cfg.write("valid = True\n")
                 else:
@@ -113,7 +145,7 @@ filehandler_cfg.close()
 filehandler_dic.write("LED_STATUS = {")
 lines = ""
 with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
     for row in spamreader:
         if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
             pass
@@ -134,7 +166,7 @@ dbus_list = list(sorted(dbus_set))
 #Generate LE_DICT
 filehandler_dic.write("LE_DICT = {")
 with open('mapping.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
     for row in spamreader:
         if row[1] == "name" or row[1].__contains__('m') or row[1] == "" or row[2] == "NA"  or row[2] == "GND":
             pass
