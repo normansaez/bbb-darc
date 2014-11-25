@@ -1,13 +1,20 @@
 #!/usr/bin/env python
 
-import sys, os
-import BBBServer, BBBServer__POA
-from omniORB import CORBA, PortableServer
-import CosNaming
+import socket
+import socket
+import select
+import sys
+
+import Pyro4.core
+import Pyro4.naming
+import Pyro4.socketutil
+import os
+
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import getpass
 import c_driver
+
 from time import sleep
 from server_dic import LED_STATUS
 from server_dic import LE_DICT
@@ -18,7 +25,7 @@ from BeagleDarc.Model import Star
 
 MOTORS = ['ground_layer','vertical_altitude_layer','horizontal_altitude_layer']
 
-class Server_i (BBBServer__POA.Server):
+class Server(object):
 
     def __init__(self):
         self.turn_off_all_leds()
@@ -111,7 +118,7 @@ class Server_i (BBBServer__POA.Server):
         #Disable all LE
         self.disable_all_LE()
         
-#        for key, value in LED_STATUS.iteritems():
+#                print key, value
 #            if value[1] == "ON":
 #                msg = "\033[31m%s->%s\033[0m" % (str(key), str(value))
 #                print msg
@@ -211,49 +218,64 @@ class Server_i (BBBServer__POA.Server):
 
 if __name__ == '__main__':
     if getpass.getuser() == 'root':
-        # Initialise the ORB and find the root POA
-        orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
-        poa = orb.resolve_initial_references("RootPOA")
+        Pyro4.config.SERVERTYPE = "thread"
+        hostname = socket.gethostname()
+        my_ip = Pyro4.socketutil.getIpAddress(None, workaround127=True)
+        print("initializing services... servertype=%s" % Pyro4.config.SERVERTYPE)
+        # start a name server with broadcast server as well
+        nameserverUri, nameserverDaemon, broadcastServer = Pyro4.naming.startNS(host=my_ip)
+        assert broadcastServer is not None, "expect a broadcast server to be created"
         
-        servanti = Server_i()
-        servant = servanti._this()
-        # Obtain a reference to the root naming context
-        obj         = orb.resolve_initial_references("NameService")
-        rootContext = obj._narrow(CosNaming.NamingContext)
-        if rootContext is None:
-            #print "Failed to narrow the root naming context"
-            sys.exit(1)
+        print("got a Nameserver, uri=%s" % nameserverUri)
+        print("ns daemon location string=%s" % nameserverDaemon.locationStr)
+        print("ns daemon sockets=%s" % nameserverDaemon.sockets)
+        print("bc server socket=%s (fileno %d)" % (broadcastServer.sock, broadcastServer.fileno()))
         
-        # Bind a context named "BeagleBone.Server" to the root context
-        name = [CosNaming.NameComponent("BeagleBone", "Server")]
-        try:
-            BeagleBoneContext = rootContext.bind_new_context(name)
-            #print "New BeagleBone context bound"
-            
-        except CosNaming.NamingContext.AlreadyBound, ex:
-            #print "BeagleBone context already exists"
-            obj = rootContext.resolve(name)
-            BeagleBoneContext = obj._narrow(CosNaming.NamingContext)
-            if BeagleBoneContext is None:
-                #print "BeagleBone.Server exists but is not a NamingContext"
-                sys.exit(1)
+        # create a Pyro daemon
+        pyrodaemon = Pyro4.core.Daemon(host=hostname)
+        print("daemon location string=%s" % pyrodaemon.locationStr)
+        print("daemon sockets=%s" % pyrodaemon.sockets)
         
-        # Bind the BBBServer object to the BeagleBone context
-        name = [CosNaming.NameComponent("BBBServer", "Object")]
-        try:
-            BeagleBoneContext.bind(name, servant)
-            #print "New BBBServer object bound"
+        # register a server object with the daemon
+        serveruri = pyrodaemon.register(Server())
+        print("server uri=%s" % serveruri)
         
-        except CosNaming.NamingContext.AlreadyBound:
-            BeagleBoneContext.rebind(name, servant)
-            #print "BBBServer binding already existed -- rebound"
+        # register it with the embedded nameserver directly
+        nameserverDaemon.nameserver.register("bbb.server", serveruri)
+        print("")
         
-        # Activate the POA
-        poaManager = poa._get_the_POAManager()
-        poaManager.activate()
+        # below is our custom event loop.
+        while True:
+            print("Waiting for events...")
+            # create sets of the socket objects we will be waiting on
+            # (a set provides fast lookup compared to a list)
+            nameserverSockets = set(nameserverDaemon.sockets)
+            pyroSockets = set(pyrodaemon.sockets)
+            rs = [broadcastServer]  # only the broadcast server is directly usable as a select() object
+            rs.extend(nameserverSockets)
+            rs.extend(pyroSockets)
+            rs, _, _ = select.select(rs, [], [], 3)
+            eventsForNameserver = []
+            eventsForDaemon = []
+            for s in rs:
+                if s is broadcastServer:
+                    print("Broadcast server received a request")
+                    broadcastServer.processRequest()
+                elif s in nameserverSockets:
+                    eventsForNameserver.append(s)
+                elif s in pyroSockets:
+                    eventsForDaemon.append(s)
+            if eventsForNameserver:
+                print("Nameserver received a request")
+                nameserverDaemon.events(eventsForNameserver)
+            if eventsForDaemon:
+                print("Daemon received a request")
+                pyrodaemon.events(eventsForDaemon)
         
-        # Block for ever (or until the ORB is shut down)
-        orb.run()
+        nameserverDaemon.close()
+        broadcastServer.close()
+        pyrodaemon.close()
+        print("done")
     else:
         print "The server should run as root!!:\nsudo su -\npython\
-        /home/ubuntu/bbb-darc/BBBServer/server.py"
+        /home/ubuntu/bbb-darc/BBBServer/PyroServer.py"
