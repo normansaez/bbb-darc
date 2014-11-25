@@ -1,12 +1,20 @@
 #!/usr/bin/env python
 
-import Pyro4
 import socket
-import sys, os
+import socket
+import select
+import sys
+
+import Pyro4.core
+import Pyro4.naming
+import Pyro4.socketutil
+import os
+
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
 import getpass
 import c_driver
+
 from time import sleep
 from server_dic import LED_STATUS
 from server_dic import LE_DICT
