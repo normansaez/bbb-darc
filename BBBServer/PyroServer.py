@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import Pyro4
+import socket
 import sys, os
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
