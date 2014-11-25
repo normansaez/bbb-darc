@@ -31,3 +31,5 @@ def subapmap(cam):
                 smap.append((i,j))
     
     return smap
+
+

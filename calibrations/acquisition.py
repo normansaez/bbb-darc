@@ -26,13 +26,17 @@ from BeagleDarc.Model import Camera
 from General_Calibration import Calibration
 
 class Acquisition:
-    def __init__(self,dir_name='slopes',camera='pike'):
+    def __init__(self,dir_name='slopes',camera='pike',server='corba'):
         #Camera instance
         self.Cam = Camera(camera)
         #Darc Controller instance
         self.c = darc.Control(self.Cam.name)
         #Beagle Controller instance
-        self.bbbc = Controller()
+        self.bbbc = None
+        if server=='corba':
+            self.bbbc = Controller()
+        else:
+            self.bbbc = Controller(server=server)
         #self.logger = logging.getLogger(__name__)
         #Camera instance
         self.Cam = Camera(camera)
@@ -260,12 +264,12 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'alt_050_v1_s_16_8_3_1_5_12_20_34'
+    dir_name = 'alt_030_v1_s_16_8_3_1_5_12_20_34'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
     star_list = [4,18,24,36]
-    altitude = -1
+    altitude = 1-
     '''
     
     acquire = 'images'
@@ -274,10 +278,11 @@ if __name__ == '__main__':
     #star_list = [5,26]
     #star_list = [1,18,26]
     star_list = [16,8,3,1,5,12,20,34]
-    altitude = 0.5
+    altitude = 0.3
+    server = 'PYRO'
     
 
-    a = Acquisition(dir_name=dir_name,camera='pike')
+    a = Acquisition(dir_name=dir_name,camera='pike',server=server)
     iterations = 14500./18. # 18 is the number of steps per position
     numberoffits = 1
     fpf = 10

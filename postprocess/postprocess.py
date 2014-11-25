@@ -428,19 +428,27 @@ def scattering(set1,set2,cam,star_list=[1],title='',xlabel='',ylabel=''):
 
     lot = int(set1.shape[0]/len(star_list))
     
-    if len(star_list)==1:
-        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
-        pl.legend(handle,('Star %d'%(star_list[0]),'Reference Line','%.3f*x+%.3f'%(a,b)))
-    elif len(star_list)==2:
-        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
-        pl.legend(handle,('Star %d'%(star_list[0]),'Star %d'%(star_list[1]),'Reference Line','%.3f*x+%.3f'%(a,b)))
-    elif len(star_list)==3:
-        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
-        pl.legend(handle,('Star %d'%(star_list[0]),'Star %d'%(star_list[1]),'Star %d'%(star_list[2]),'Reference Line','%.3f*x+%.3f'%(a,b)))
-    elif len(star_list)==4:
-        handle = pl.plot(set1[0:lot],set2[0:lot],'bo',set1[lot:2*lot],set2[lot:2*lot],'ko',set1[2*lot:3*lot],set2[2*lot:3*lot],'ro',set1[3*lot:4*lot],set2[3*lot:4*lot],'mo',[mini,maxi],[mini,maxi],'c-',[mini,maxi],[mini*a+b,maxi*a+b],'b-') 
-        pl.legend(handle,('Star %d'%(star_list[0]),'Star %d'%(star_list[1]),'Star %d'%(star_list[2]),'Star %d'%(star_list[3]),'Reference Line','%.3f*x+%.3f'%(a,b)))
-    
+    fig = pl.figure()
+    fig.set_size_inches(13,7)
+    ax = fig.add_subplot(111)
+    cmap = pl.cm.gist_ncar
+    ax.set_color_cycle([cmap(i) for i in np.linspace(0,0.9,len(star_list))])
+    h = []
+    labels = []
+    for ind in range(len(star_list)):
+        haux, = ax.plot(set1[lot*ind:lot*(ind+1)],'o')
+        h.append(haux)
+        labels.append('Star %d'%(star_list[ind]))
+
+    haux, = ax.plot([mini,maxi],[mini,maxi],'-')
+    h.append(haux)
+    labels.append('Reference Line')
+
+    haux, = ax.plot([mini,maxi],[mini*a+b,maxi*a+b],'-')
+    h.append(haux)
+    labels.append('Reference Line','%.3f*x+%.3f'%(a,b))
+
+    pl.legend(tuple(h),tuple(labels)) 
     pl.title(title+'\nMean Residual Error: %.3f[pix^2]'%(res[0]/set1.shape[0]))
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)
