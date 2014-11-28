@@ -52,6 +52,7 @@ class Controller:
                 print "Object reference is not an BBBServer::Server"
                 sys.exit(1)
         if server == 'PYRO':
+            Pyro4.config.NS_HOST = "10.42.0.97"
             with Pyro4.core.Proxy("PYRONAME:bbb.server") as proxy:
                 self.client = proxy
 
