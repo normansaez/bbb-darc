@@ -264,7 +264,6 @@ if __name__ == '__main__':
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
 
 
-    dir_name = 'alt_030_v1_s_16_8_3_1_5_12_20_34'
     '''
     acquire = 'slopes'
     prefix = 'useB_0'
@@ -272,23 +271,37 @@ if __name__ == '__main__':
     altitude = 1-
     '''
     
-    acquire = 'images'
-    prefix = 'useB_0'
     #star_list = [1,6,7,8,9,10,11,12,13,14,18,24,26,28,32,34,36,49,51]
     #star_list = [5,26]
     #star_list = [1,18,26]
-    star_list = [16,8,3,1,5,12,20,34]
-    altitude = 0.3
-    server = 'PYRO'
-    
 
-    a = Acquisition(dir_name=dir_name,camera='pike',server=server)
-    iterations = 14500./18. # 18 is the number of steps per position
+    #star_list = [16,8,3,1,5,12,20,34]
+    #star_list = [8,3,1,5,12,20]
+    #star_list = [1]
+
+
+    #USER INPUT AREA
+    star_list = [14,16,18,20,1]
+    altitude = 0.
+    server = 'PYRO'
+    v = 1
+    #server = 'corba'
+    acquire = 'images'
+    prefix = 'useB_0'
+    iterations = 14500./18. # 18 is the number of steps per position. it really makes 20
     numberoffits = 1
     fpf = 10
+
+    star_str = ''
+    for st in star_list:
+        star_str = star_str+str(st)+'_'
+
+    star_str = star_str[:-1]
+    
+    dir_name = 'alt_'+str(int(100*altitude)).zfill(3)+'_v'+str(v)+'_s_'+star_str  # Name of the directory
+    a = Acquisition(dir_name=dir_name,camera='pike',server=server)
     #a.first_calibration(star_list)
     for nof in range(1,numberoffits+1):
         a.take_all_data(iterations,star_list,prefix,acquire=acquire,altitude=altitude,fpf=fpf)
         #fix = prefix + '_altitude_%.0f'%(100*(nof-1)/(numberoffits-1))
         #a.take_all_data(iterations,star_list,fix,acquire=acquire,altitude=(nof-1.0)/(numberoffits-1))
-
