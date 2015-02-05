@@ -15,7 +15,7 @@ set nofoldenable
 "set number
 "colores
 "highlight Comment ctermfg=lightblue 
-"colorscheme peachpuff
+colorscheme peachpuff
 "colorscheme darkblue 
 "set spell spellang=en
 
@@ -34,13 +34,10 @@ endif
 " hex to decimal => echo 0x123
 " setlocal display=uhex
 " set list
-" Tell vim to remember certain things when we exit
-"  '10  :  marks will be remembered for up to 10 previously edited files
-"  "100 :  will save up to 100 lines for each register
-"  :20  :  up to 20 lines of command-line history will be remembered
-"  %    :  saves and restores the buffer list
-"  n... :  where to save the viminfo files
-set viminfo='10,\"100,:20,%,n~/.viminfo
-set viewoptions=cursor,folds
-au BufWinLeave * mkview
-au BufWinEnter * silent loadview
+map <S-Left> gT
+map <S-Right> gt
+"nnoremap <S-Up> gT
+"nnoremap <S-Down> gt
+"set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4
+set encoding=utf-8
+set fileencodings=utf-8
