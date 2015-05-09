@@ -1,12 +1,13 @@
 [user]
 	name = Norman Saez
 	email = nfsaez@uc.cl
+[difftool]
+    gui = meld
 [alias]
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    mdiff = difftool -t "meld" -y
 [core]
 	editor = vim
-[diff]
-	external = /home/nsaez/bbb-darc/utils/diff.py
 [push]
 	default = simple
 
